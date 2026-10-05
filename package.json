@@ -1,0 +1,29 @@
+{
+  "name": "zaib-attire-fashion-blog",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "ZAIB ATTIRE — Premium Fashion Trend Blog & Guest Posting Platform with Embedded SQLite Database & Admin Atelier",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "start": "node server/server.js",
+    "server": "node server/server.js",
+    "build": "npm --prefix client install && npm --prefix client run build && npm --prefix server install",
+    "install:all": "npm --prefix client install && npm --prefix server install",
+    "dev:client": "npm --prefix client run dev",
+    "dev:server": "npm --prefix server run dev"
+  },
+  "keywords": [
+    "zaib-attire",
+    "fashion",
+    "blog",
+    "guest-posting",
+    "admin-dashboard",
+    "haute-couture",
+    "sqlite",
+    "fullstack"
+  ],
+  "author": "ZAIB ATTIRE Editorial",
+  "license": "MIT"
+}

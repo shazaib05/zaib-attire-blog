@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Production build outputs (optional: can be built on host)
+client/dist/
+
+# SQLite temporary journal/WAL files
+server/fashion_editorial.db-wal
+server/fashion_editorial.db-shm
+
+# Environment & Logs
+.env
+.env.*
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
