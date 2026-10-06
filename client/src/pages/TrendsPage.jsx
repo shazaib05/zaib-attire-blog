@@ -106,13 +106,13 @@ export default function TrendsPage({ categories = [] }) {
         <div className="border-b border-luxury-300 pb-8 mb-8">
           <div className="flex items-center gap-2 text-[10px] tracking-luxury uppercase font-bold text-gold-600 mb-2">
             <Compass size={13} />
-            <span>THE EDITORIAL REPERTORY • HIGH FASHION ARCHIVES</span>
+            <span>THE EDITORIAL REPERTORY • FASHION BLOG & TREND ARCHIVES</span>
           </div>
           <h1 className="font-editorial text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-luxury-950 mb-3">
-            Fashion Trends & Runway Chronicles
+            Fashion Blog & Runway Trends
           </h1>
           <p className="font-cormorant text-base sm:text-xl text-luxury-600 max-w-2xl leading-relaxed italic">
-            Explore our curated catalog of avant-garde haute couture, street subcultures, quiet luxury narratives, and independent guest critiques from global ateliers.
+            Explore our curated fashion blog catalog of avant-garde haute couture, street subcultures, quiet luxury narratives, and independent guest critiques from global ateliers.
           </p>
         </div>
 

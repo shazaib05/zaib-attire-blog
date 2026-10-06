@@ -234,7 +234,7 @@ export default function BlogDetailPage() {
           <div className="flex items-center gap-1.5 overflow-hidden text-ellipsis whitespace-nowrap">
             <Link to="/" className="hover:text-gold-600 transition">Home</Link>
             <ChevronRight size={12} className="text-luxury-400 shrink-0" />
-            <Link to="/trends" className="hover:text-gold-600 transition">Trends</Link>
+            <Link to="/blog" className="hover:text-gold-600 transition">Blog & Trends</Link>
             <ChevronRight size={12} className="text-luxury-400 shrink-0" />
             <Link to={`/trends?category=${encodeURIComponent(post.category_name)}`} className="text-gold-700 font-semibold hover:underline shrink-0">
               {post.category_name}

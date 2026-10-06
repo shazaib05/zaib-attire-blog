@@ -96,6 +96,14 @@ function AppShell() {
             element={<HomePage categories={categories} tickerItems={tickerItems} />}
           />
           <Route
+            path="/blog"
+            element={<TrendsPage categories={categories} />}
+          />
+          <Route
+            path="/blogs"
+            element={<TrendsPage categories={categories} />}
+          />
+          <Route
             path="/trends"
             element={<TrendsPage categories={categories} />}
           />

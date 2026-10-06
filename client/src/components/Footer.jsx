@@ -45,8 +45,8 @@ export default function Footer({ categories = [] }) {
                 </Link>
               </li>
               <li>
-                <Link to="/trends" className="hover:text-gold-400 transition">
-                  Fashion Trends
+                <Link to="/blog" className="hover:text-gold-400 transition">
+                  Fashion Blog & Trends
                 </Link>
               </li>
               <li>

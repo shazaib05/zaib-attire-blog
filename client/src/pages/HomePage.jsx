@@ -92,10 +92,10 @@ export default function HomePage({ categories = [], tickerItems = [] }) {
 
           <div className="flex items-center gap-3">
             <Link
-              to="/trends"
+              to="/blog"
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-luxury-950 text-gold-400 hover:text-white hover:bg-black transition text-xs font-semibold tracking-luxury uppercase border border-gold-500/40 shadow-sm"
             >
-              <span>Explore All Trends</span>
+              <span>Explore All Blogs & Trends</span>
               <ArrowRight size={13} />
             </Link>
           </div>

@@ -149,8 +149,20 @@ export default function Header({ categories = [], onOpenSearchModal }) {
             Home
           </NavLink>
 
-          <NavLink to="/trends" className={navLinkClass}>
-            Fashion Trends
+          <NavLink
+            to="/blog"
+            className={({ isActive }) =>
+              `transition-all py-1.5 border-b-2 whitespace-nowrap uppercase tracking-luxury text-xs font-semibold ${
+                isActive || location.pathname === '/trends' || location.pathname === '/blogs'
+                  ? 'border-gold-600 text-luxury-950 font-bold'
+                  : 'border-transparent text-luxury-600 hover:text-luxury-950 hover:border-luxury-300'
+              }`
+            }
+          >
+            <span className="flex items-center gap-1">
+              <BookOpen size={12} className="text-gold-600" />
+              <span>Blog & Trends</span>
+            </span>
           </NavLink>
 
           <NavLink to="/write-for-us" className={navLinkClass}>
@@ -194,14 +206,17 @@ export default function Header({ categories = [], onOpenSearchModal }) {
             </NavLink>
 
             <NavLink
-              to="/trends"
+              to="/blog"
               className={({ isActive }) =>
-                `block py-2 text-xs uppercase tracking-luxury font-bold ${
-                  isActive ? 'text-gold-600' : 'text-luxury-900'
+                `block py-2 text-xs uppercase tracking-luxury font-bold flex items-center gap-1.5 ${
+                  isActive || location.pathname === '/trends' || location.pathname === '/blogs'
+                    ? 'text-gold-600'
+                    : 'text-luxury-900'
                 }`
               }
             >
-              Fashion Trends & Archives
+              <BookOpen size={13} className="text-gold-600" />
+              <span>Fashion Blog & Trends</span>
             </NavLink>
 
             <NavLink
