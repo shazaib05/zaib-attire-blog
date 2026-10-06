@@ -1,5 +1,5 @@
 // Centralized Resilient API utility for ZAIB ATTIRE
-// Supports dual mode: Live Express backend when available, and automatic fallback for Vercel/Netlify static deployment
+// Dual mode: Live Express backend when available, and zero-loss local persistence for Vercel/Netlify hosting
 import { FALLBACK_CATEGORIES, FALLBACK_TICKER, FALLBACK_SETTINGS, FALLBACK_POSTS } from './fallbackData';
 
 const API_BASE = import.meta.env.VITE_API_BASE || '/api';
@@ -42,6 +42,20 @@ function getStoredCategories() {
     if (local) return JSON.parse(local);
   } catch {}
   return [...FALLBACK_CATEGORIES];
+}
+
+function getStoredComments() {
+  try {
+    const local = localStorage.getItem('zaib_all_comments');
+    if (local) return JSON.parse(local);
+  } catch {}
+  return [];
+}
+
+function saveStoredComments(comments) {
+  try {
+    localStorage.setItem('zaib_all_comments', JSON.stringify(comments));
+  } catch {}
 }
 
 function getStoredResponses() {
@@ -127,12 +141,45 @@ export const api = {
   },
 
   getPostBySlug: async (slug) => {
-    return safeFetch(`${API_BASE}/posts/${slug}`, {}, () => {
+    let postData = null;
+    try {
+      const res = await fetch(`${API_BASE}/posts/${slug}`);
+      if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
+        postData = await res.json();
+      }
+    } catch {}
+
+    if (!postData) {
       const posts = getStoredPosts();
       const found = posts.find(p => p.slug === slug);
       if (!found) throw new Error('Post not found');
-      return found;
-    });
+      postData = {
+        ...found,
+        views: (found.views || 0) + 1,
+        comments: [],
+        related: posts.filter(p => p.category_name === found.category_name && p.id !== found.id).slice(0, 3)
+      };
+    }
+
+    // Always merge locally saved comments for this post
+    const allStoredComments = getStoredComments();
+    const localComments = allStoredComments.filter(
+      c => c.post_id === postData.id || c.post_id === postData.slug || c.post_id === slug
+    );
+    
+    const existingIds = new Set((postData.comments || []).map(c => c.id));
+    const mergedComments = [...(postData.comments || [])];
+    for (const lc of localComments) {
+      if (!existingIds.has(lc.id)) {
+        mergedComments.push(lc);
+      }
+    }
+    
+    // Sort comments newest first
+    mergedComments.sort((a, b) => new Date(b.created_at || Date.now()) - new Date(a.created_at || Date.now()));
+    postData.comments = mergedComments;
+
+    return postData;
   },
 
   likePost: async (id) => {
@@ -184,15 +231,125 @@ export const api = {
     });
   },
 
-  // Comments
+  // Comments (Reader Reflections)
   postComment: async (commentData) => {
-    return safeFetch(`${API_BASE}/comments`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(commentData)
-    }, () => {
-      return { success: true, message: 'Comment submitted for editorial review' };
+    const nowIso = new Date().toISOString();
+    const commentId = `cmt_${Date.now()}`;
+    const localComment = {
+      id: commentId,
+      post_id: commentData.post_id,
+      post_title: commentData.post_title || 'Haute Editorial Story',
+      author_name: commentData.author_name,
+      author_email: commentData.author_email || '',
+      content: commentData.content,
+      status: 'approved',
+      created_at: nowIso
+    };
+
+    // 1. Immediately persist to localStorage
+    const currentComments = getStoredComments();
+    currentComments.unshift(localComment);
+    saveStoredComments(currentComments);
+
+    // 2. Also register in local form submissions so it appears in Admin Recent Responses
+    recordLocalSubmission(
+      'Reader Comment',
+      commentData.author_name,
+      commentData.author_email,
+      commentData.post_title || 'Editorial Story',
+      'Critique & Reflection',
+      commentData.content
+    );
+
+    // 3. Forward to Google Sheets
+    await forwardToGoogleSheetsBrowser({
+      form_type: 'Reader Comment',
+      name: commentData.author_name,
+      email: commentData.author_email,
+      title_or_subject: commentData.post_title || 'Editorial Story',
+      category_or_type: 'Editorial Critique',
+      details: commentData.content,
+      reference_id: commentId
     });
+
+    // 4. Also try transmitting to backend server if reachable
+    try {
+      const res = await fetch(`${API_BASE}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(commentData)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.id) {
+          return {
+            ...localComment,
+            ...data,
+            created_at: data.created_at || nowIso
+          };
+        }
+      }
+    } catch {}
+
+    return localComment;
+  },
+
+  getAdminComments: async () => {
+    let serverComments = [];
+    try {
+      const res = await fetch(`${API_BASE}/admin/comments`);
+      if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
+        serverComments = await res.json();
+      }
+    } catch {}
+
+    const localComments = getStoredComments();
+    const seen = new Set();
+    const all = [];
+
+    // Prioritize server and local without duplicates
+    for (const c of [...serverComments, ...localComments]) {
+      if (c && c.id && !seen.has(c.id)) {
+        seen.add(c.id);
+        all.push({
+          ...c,
+          post_title: c.post_title || 'Haute Editorial Story',
+          created_at: c.created_at || new Date().toISOString()
+        });
+      }
+    }
+
+    all.sort((a, b) => new Date(b.created_at || Date.now()) - new Date(a.created_at || Date.now()));
+    return all;
+  },
+
+  updateCommentStatus: async (id, status) => {
+    const local = getStoredComments();
+    const found = local.find(c => c.id === id);
+    if (found) {
+      found.status = status;
+      saveStoredComments(local);
+    }
+    try {
+      await fetch(`${API_BASE}/admin/comments/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
+    } catch {}
+    return { success: true };
+  },
+
+  deleteComment: async (id) => {
+    let local = getStoredComments();
+    local = local.filter(c => c.id !== id);
+    saveStoredComments(local);
+
+    try {
+      await fetch(`${API_BASE}/admin/comments/${id}`, { method: 'DELETE' });
+    } catch {}
+
+    return { success: true };
   },
 
   // Settings & Ticker
@@ -288,12 +445,14 @@ export const api = {
     return safeFetch(`${API_BASE}/admin/stats`, {}, () => {
       const posts = getStoredPosts();
       const responses = getStoredResponses();
+      const comments = getStoredComments();
       return {
         total_posts: posts.length,
         total_views: posts.reduce((a, c) => a + (c.views || 0), 0) || 12450,
         total_likes: posts.reduce((a, c) => a + (c.likes || 0), 0) || 830,
-        pending_guest_posts: responses.filter(r => r.type === 'Guest Post Pitch').length || 2,
-        active_subscribers: responses.filter(r => r.type === 'Newsletter Subscriber').length || 48
+        pending_guest_posts: responses.filter(r => r.type === 'Guest Post Pitch').length || 0,
+        active_subscribers: responses.filter(r => r.type === 'Newsletter Subscriber').length || 12,
+        total_comments: comments.length
       };
     });
   },
@@ -429,28 +588,6 @@ export const api = {
 
   deleteGuestSubmission: async (id) => {
     return safeFetch(`${API_BASE}/admin/guest-submissions/${id}`, { method: 'DELETE' }, () => {
-      return { success: true };
-    });
-  },
-
-  getAdminComments: async () => {
-    return safeFetch(`${API_BASE}/admin/comments`, {}, () => {
-      return [];
-    });
-  },
-
-  updateCommentStatus: async (id, status) => {
-    return safeFetch(`${API_BASE}/admin/comments/${id}/status`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status })
-    }, () => {
-      return { success: true };
-    });
-  },
-
-  deleteComment: async (id) => {
-    return safeFetch(`${API_BASE}/admin/comments/${id}`, { method: 'DELETE' }, () => {
       return { success: true };
     });
   },

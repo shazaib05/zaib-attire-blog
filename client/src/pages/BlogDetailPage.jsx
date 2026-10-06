@@ -79,18 +79,42 @@ export default function BlogDetailPage() {
     setTimeout(() => setCopied(false), 2500);
   };
 
+  const formatCommentDate = (dateStr) => {
+    if (!dateStr) return new Date().toLocaleDateString();
+    try {
+      const safeStr = typeof dateStr === 'string' && dateStr.includes(' ') && !dateStr.includes('T')
+        ? dateStr.replace(' ', 'T')
+        : dateStr;
+      const d = new Date(safeStr);
+      return isNaN(d.getTime()) ? new Date().toLocaleDateString() : d.toLocaleDateString();
+    } catch {
+      return new Date().toLocaleDateString();
+    }
+  };
+
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (!authorName.trim() || !commentContent.trim()) return;
 
     setSubmittingComment(true);
     try {
-      const newComment = await api.postComment({
-        post_id: post.id,
-        author_name: authorName,
-        author_email: authorEmail,
-        content: commentContent
+      const res = await api.postComment({
+        post_id: post.id || post.slug,
+        post_title: post.title,
+        author_name: authorName.trim(),
+        author_email: authorEmail.trim(),
+        content: commentContent.trim()
       });
+
+      const newComment = (res && res.id && res.author_name) ? res : {
+        id: `cmt_${Date.now()}`,
+        post_id: post.id || post.slug,
+        post_title: post.title,
+        author_name: authorName.trim(),
+        author_email: authorEmail.trim(),
+        content: commentContent.trim(),
+        created_at: new Date().toISOString()
+      };
 
       setPost(prev => ({
         ...prev,
@@ -505,7 +529,7 @@ export default function BlogDetailPage() {
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-semibold text-sm text-luxury-950">{comment.author_name}</span>
                     <span className="text-[10px] text-luxury-400 uppercase tracking-wider">
-                      {new Date(comment.created_at).toLocaleDateString()}
+                      {formatCommentDate(comment.created_at)}
                     </span>
                   </div>
                   <p className="font-serif text-sm text-luxury-700 leading-relaxed">

@@ -569,9 +569,9 @@ router.delete('/guest-submissions/:id', (req, res) => {
 router.get('/comments', (req, res) => {
   try {
     const comments = db.prepare(`
-      SELECT c.*, p.title as post_title, p.slug as post_slug 
+      SELECT c.*, COALESCE(p.title, 'Haute Editorial Story') as post_title, p.slug as post_slug 
       FROM comments c
-      LEFT JOIN posts p ON c.post_id = p.id
+      LEFT JOIN posts p ON (c.post_id = p.id OR c.post_id = p.slug)
       ORDER BY c.created_at DESC
     `).all();
     res.json(comments);
