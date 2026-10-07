@@ -47,6 +47,20 @@
     <priority>0.7</priority>
   </url>
 
+  <url>
+    <loc>https://zaibattire.com/privacy</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <url>
+    <loc>https://zaibattire.com/terms</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
   <!-- Editorial Blog Posts -->
   <url>
     <loc>https://zaibattire.com/blog/architectural-drapery-haute-couture-2026</loc>

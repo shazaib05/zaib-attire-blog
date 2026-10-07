@@ -14,6 +14,11 @@ export default function AboutPage() {
         title="About The Atelier — Fashion Manifesto & Editorial Council"
         description="Learn the history, editorial mission, and artistic manifesto behind ZAIB ATTIRE. Chronicling haute couture, luxury trends, and independent designer guest voices."
         keywords="about zaib attire, fashion manifesto, haute couture editorial, luxury fashion journalism, runway critics"
+        canonicalUrl="/about"
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: 'About The Atelier', item: '/about' }
+        ]}
       />
       <div className="max-w-5xl mx-auto px-4 sm:px-8">
         

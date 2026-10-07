@@ -4,10 +4,33 @@ import {
   HelpCircle, Image as ImageIcon, Globe, User, BookOpen, Clock,
   ArrowRight, Check, Award, Compass, Share2, Link as LinkIcon,
   Bold, Italic, Heading2, Heading3, Quote, List, Eye, Edit3,
-  Lock, KeyRound, Mail, Building, LogOut, CheckCircle
+  Lock, KeyRound, Mail, Building, LogOut, CheckCircle, ChevronDown
 } from 'lucide-react';
 import { api } from '../utils/api';
 import SEO from '../components/SEO';
+
+const GUEST_POSTING_FAQS = [
+  {
+    question: "How do I submit a free fashion guest post to ZAIB ATTIRE?",
+    answer: "Simply create a free Contributor Passport with your name, Gmail, and brand website. Compose your fashion critique or brand story using our visual editor, insert your anchor text links, pick a cover photo, and click Submit Article."
+  },
+  {
+    question: "Are the backlinks from published guest posts dofollow and permanent?",
+    answer: "Yes. All accepted guest posts receive permanent, dofollow contextual anchor backlinks in the article copy as well as a dofollow attribution link in the author credentials card."
+  },
+  {
+    question: "What niches are eligible for guest posting?",
+    answer: "While ZAIB ATTIRE is dedicated to high fashion, haute couture, and apparel aesthetics, we accept relevant cross-niche submissions covering lifestyle, accessories, beauty, sustainable textiles, design craftsmanship, and brand launch stories."
+  },
+  {
+    question: "How fast will my guest post be indexed by Google Search?",
+    answer: "Our XML sitemap automatically notifies Googlebot upon publication. Well-crafted, original guest articles typically index on Google within 24 to 72 hours."
+  },
+  {
+    question: "Are there any hidden fees or charges for guest posting?",
+    answer: "No. Standard editorial guest posts are 100% free of charge for writers, brands, and digital agencies seeking high-authority organic search visibility."
+  }
+];
 
 const FASHION_IMAGE_PRESETS = [
   { label: 'Paris Atelier High Fashion', url: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1200&q=80' },
@@ -20,6 +43,7 @@ const FASHION_IMAGE_PRESETS = [
 
 export default function GuestPostingPage({ categories = [] }) {
   const [activeTab, setActiveTab] = useState('submit'); // 'submit' | 'track' | 'guidelines'
+  const [openFaqIndex, setOpenFaqIndex] = useState(null);
 
   // Contributor Authentication State
   const [contributor, setContributor] = useState(() => {
@@ -323,6 +347,12 @@ export default function GuestPostingPage({ categories = [] }) {
         title="Write an Article — Free Guest Posting & Contributor Platform"
         description="Publish high-authority fashion guest posts with brand backlinks on ZAIB ATTIRE. Reach luxury readers, fashion critics, and runway journalists with free guest posting."
         keywords="write for us fashion, fashion guest post, free guest posting, submit guest article, fashion backlink, fashion brand guest post, submit runway story"
+        canonicalUrl="/write"
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: 'Write / Guest Posting', item: '/write' }
+        ]}
+        faqs={GUEST_POSTING_FAQS}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
@@ -1326,6 +1356,50 @@ export default function GuestPostingPage({ categories = [] }) {
             </div>
           </div>
         )}
+
+        {/* High-Intent FAQ Section (Matches JSON-LD Schema for Google Rich Snippets) */}
+        <div className="mt-16 pt-12 border-t border-luxury-200">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-luxury-950 text-gold-400 text-[10px] tracking-luxury uppercase font-bold mb-3">
+              <HelpCircle size={12} />
+              <span>FREQUENTLY ASKED QUESTIONS</span>
+            </div>
+            <h3 className="font-editorial text-2xl sm:text-3xl font-bold text-luxury-950">
+              Contributor &amp; Backlink Intelligence
+            </h3>
+            <p className="text-xs text-luxury-600 mt-2 font-serif">
+              Key insights into our publication workflow, indexation speed, and dofollow backlink policies.
+            </p>
+          </div>
+
+          <div className="max-w-3xl mx-auto space-y-3">
+            {GUEST_POSTING_FAQS.map((faq, idx) => {
+              const isOpen = openFaqIndex === idx;
+              return (
+                <div
+                  key={idx}
+                  className="border border-luxury-200 bg-white transition shadow-2xs overflow-hidden"
+                >
+                  <button
+                    onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
+                    className="w-full px-5 py-4 text-left flex items-center justify-between gap-4 font-editorial font-bold text-base text-luxury-950 hover:text-gold-700 transition"
+                  >
+                    <span>{faq.question}</span>
+                    <ChevronDown
+                      size={18}
+                      className={`text-gold-600 transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180' : ''}`}
+                    />
+                  </button>
+                  {isOpen && (
+                    <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-luxury-700 font-serif leading-relaxed border-t border-luxury-100 bg-[#fafaf8]/50">
+                      {faq.answer}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
       </div>
     </div>

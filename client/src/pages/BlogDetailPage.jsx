@@ -285,6 +285,11 @@ export default function BlogDetailPage() {
           tags: post.tags,
           readTime: post.read_time
         }}
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: post.category_name || 'Haute Couture', item: `/trends?category=${encodeURIComponent(post.category_name || 'Haute Couture')}` },
+          { name: post.title, item: `/blog/${post.slug}` }
+        ]}
         type="article"
       />
       
@@ -336,9 +341,12 @@ export default function BlogDetailPage() {
         {/* Header Metadata & Category Tag */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
-            <span className="px-3 py-1 bg-luxury-950 text-gold-400 text-[10px] tracking-luxury uppercase font-bold">
+            <Link
+              to={`/trends?category=${encodeURIComponent(post.category_name)}`}
+              className="px-3 py-1 bg-luxury-950 text-gold-400 text-[10px] tracking-luxury uppercase font-bold hover:bg-gold-500 hover:text-luxury-950 transition"
+            >
               {post.category_name}
-            </span>
+            </Link>
             {(post.is_guest || post.is_guest_post) ? (
               <span className="px-3 py-1 bg-champagne-100 text-gold-800 border border-gold-300 text-[10px] tracking-luxury uppercase font-bold flex items-center gap-1">
                 <Feather size={10} />

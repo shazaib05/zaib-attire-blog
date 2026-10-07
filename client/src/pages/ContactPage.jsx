@@ -46,6 +46,10 @@ export default function ContactPage() {
         description="Direct correspondence with ZAIB ATTIRE editorial directors, advertising managers, press bureaus, and guest posting team."
         keywords="contact zaib attire, fashion editor contact, fashion guest post submission, advertise fashion blog, editorial press desk"
         canonicalUrl="/contact"
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: 'Contact Editorial Desk', item: '/contact' }
+        ]}
       />
       <div className="max-w-5xl mx-auto px-4 sm:px-8">
         

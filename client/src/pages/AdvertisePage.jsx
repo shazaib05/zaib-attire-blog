@@ -54,6 +54,10 @@ export default function AdvertisePage() {
         description="Partner with ZAIB ATTIRE. High-impact luxury display banners, sponsored editorial storytelling, brand showcases, and premium audience reach."
         keywords="advertise fashion blog, luxury fashion sponsorships, brand placement, fashion media kit, zaib attire advertising"
         canonicalUrl="/advertise"
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: 'Advertise & Media Kit', item: '/advertise' }
+        ]}
       />
       <div className="max-w-6xl mx-auto px-4 sm:px-8">
         

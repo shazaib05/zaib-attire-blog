@@ -105,6 +105,11 @@ export default function TrendsPage({ categories = [] }) {
         title="Fashion Blog & Runway Trends — Full Editorial Repertory"
         description="Explore the curated fashion blog archive of avant-garde haute couture, street subcultures, quiet luxury narratives, and guest critiques from global ateliers."
         keywords="fashion blog, runway trends 2026, street style blog, haute couture, quiet luxury articles, fashion archive"
+        canonicalUrl="/blog"
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: 'Fashion Blog & Runway Trends', item: '/blog' }
+        ]}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
         

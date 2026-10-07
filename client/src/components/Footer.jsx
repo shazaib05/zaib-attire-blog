@@ -124,12 +124,18 @@ export default function Footer({ categories = [] }) {
             © {new Date().getFullYear()} ZAIB ATTIRE JOURNAL. All rights reserved. Self-hosted database & guest posting backend.
           </div>
 
-          <div className="flex items-center space-x-6 text-[10px] uppercase tracking-wider">
-            <Link to="/write-for-us" className="hover:text-gold-400 transition">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-[10px] uppercase tracking-wider">
+            <Link to="/write" className="hover:text-gold-400 transition">
               Contributor Codex
             </Link>
             <Link to="/advertise" className="hover:text-gold-400 transition">
               Media Kit 2026
+            </Link>
+            <Link to="/privacy" className="hover:text-gold-400 transition">
+              Privacy Policy
+            </Link>
+            <Link to="/terms" className="hover:text-gold-400 transition">
+              Terms &amp; Guidelines
             </Link>
           </div>
         </div>

@@ -10,6 +10,8 @@ import GuestPostingPage from './pages/GuestPostingPage';
 import AdvertisePage from './pages/AdvertisePage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsPage from './pages/TermsPage';
 import AdminPage from './pages/AdminPage';
 import { api } from './utils/api';
 
@@ -138,6 +140,14 @@ function AppShell() {
           <Route
             path="/contact"
             element={<ContactPage />}
+          />
+          <Route
+            path="/privacy"
+            element={<PrivacyPolicyPage />}
+          />
+          <Route
+            path="/terms"
+            element={<TermsPage />}
           />
           <Route
             path="*"

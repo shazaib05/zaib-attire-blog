@@ -11,7 +11,9 @@ export default function SEO({
   description = DEFAULT_DESC,
   keywords = 'fashion blog, haute couture, runway trends 2026, street style, quiet luxury, fashion guest post, free guest posting, backlink fashion, luxury atelier',
   image = DEFAULT_IMAGE,
-  article = null, // { title, datePublished, authorName, authorBio, category, tags, readTime }
+  article = null, // { title, datePublished, dateModified, authorName, authorBio, authorWebsite, category, tags, readTime }
+  breadcrumbs = null, // [{ name, item }]
+  faqs = null, // [{ question, answer }]
   type = 'website'
 }) {
   const location = useLocation();
@@ -65,7 +67,7 @@ export default function SEO({
     setMeta('name', 'twitter:description', description);
     setMeta('name', 'twitter:image', image || DEFAULT_IMAGE);
 
-    // 6. JSON-LD Schema Markup
+    // 6. JSON-LD Schema Graph Builder
     let schemaScript = document.getElementById('seo-json-ld');
     if (!schemaScript) {
       schemaScript = document.createElement('script');
@@ -74,12 +76,44 @@ export default function SEO({
       document.head.appendChild(schemaScript);
     }
 
-    let schemaData;
+    const schemaGraph = [
+      {
+        '@type': 'Organization',
+        '@id': `${BASE_URL}/#organization`,
+        name: SITE_NAME,
+        url: BASE_URL,
+        logo: {
+          '@type': 'ImageObject',
+          url: `${BASE_URL}/logo.png`,
+          caption: SITE_NAME
+        },
+        sameAs: [
+          'https://instagram.com/zaibattire_official',
+          'https://twitter.com/zaibattire'
+        ]
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${BASE_URL}/#website`,
+        url: BASE_URL,
+        name: SITE_NAME,
+        description: DEFAULT_DESC,
+        publisher: {
+          '@id': `${BASE_URL}/#organization`
+        },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: `${BASE_URL}/blog?q={search_term_string}`,
+          'query-input': 'required name=search_term_string'
+        }
+      }
+    ];
+
+    // BlogPosting Schema
     if (article) {
-      // BlogPosting Schema
-      schemaData = {
-        '@context': 'https://schema.org',
+      schemaGraph.push({
         '@type': 'BlogPosting',
+        '@id': `${canonicalUrl}#article`,
         mainEntityOfPage: {
           '@type': 'WebPage',
           '@id': canonicalUrl
@@ -95,57 +129,46 @@ export default function SEO({
           url: article.authorWebsite || canonicalUrl
         },
         publisher: {
-          '@type': 'Organization',
-          name: SITE_NAME,
-          logo: {
-            '@type': 'ImageObject',
-            url: `${BASE_URL}/logo.png`
-          }
+          '@id': `${BASE_URL}/#organization`
         },
         articleSection: article.category || 'Fashion Trends',
         keywords: keywords
-      };
-    } else {
-      // WebSite / Organization Schema
-      schemaData = {
-        '@context': 'https://schema.org',
-        '@graph': [
-          {
-            '@type': 'Organization',
-            '@id': `${BASE_URL}/#organization`,
-            name: SITE_NAME,
-            url: BASE_URL,
-            logo: {
-              '@type': 'ImageObject',
-              url: `${BASE_URL}/logo.png`,
-              caption: SITE_NAME
-            },
-            sameAs: [
-              'https://instagram.com/zaibattire_official',
-              'https://twitter.com/zaibattire'
-            ]
-          },
-          {
-            '@type': 'WebSite',
-            '@id': `${BASE_URL}/#website`,
-            url: BASE_URL,
-            name: SITE_NAME,
-            description: DEFAULT_DESC,
-            publisher: {
-              '@id': `${BASE_URL}/#organization`
-            },
-            potentialAction: {
-              '@type': 'SearchAction',
-              target: `${BASE_URL}/blog?q={search_term_string}`,
-              'query-input': 'required name=search_term_string'
-            }
-          }
-        ]
-      };
+      });
     }
 
-    schemaScript.text = JSON.stringify(schemaData);
-  }, [fullTitle, description, keywords, image, canonicalUrl, type, article]);
+    // BreadcrumbList Schema
+    if (breadcrumbs && breadcrumbs.length > 0) {
+      schemaGraph.push({
+        '@type': 'BreadcrumbList',
+        itemListElement: breadcrumbs.map((bc, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: bc.name,
+          item: bc.item.startsWith('http') ? bc.item : `${BASE_URL}${bc.item}`
+        }))
+      });
+    }
+
+    // FAQPage Schema
+    if (faqs && faqs.length > 0) {
+      schemaGraph.push({
+        '@type': 'FAQPage',
+        mainEntity: faqs.map(f => ({
+          '@type': 'Question',
+          name: f.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: f.answer
+          }
+        }))
+      });
+    }
+
+    schemaScript.text = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': schemaGraph
+    });
+  }, [fullTitle, description, keywords, image, canonicalUrl, type, article, breadcrumbs, faqs]);
 
   return null;
 }
