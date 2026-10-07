@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles, Feather, Globe, Award, Compass, ArrowRight, Quote } from 'lucide-react';
+import SEO from '../components/SEO';
 
 export default function AboutPage() {
   useEffect(() => {
@@ -9,6 +10,11 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-[#fafaf8] py-10 sm:py-16 animate-fadeIn">
+      <SEO
+        title="About The Atelier — Fashion Manifesto & Editorial Council"
+        description="Learn the history, editorial mission, and artistic manifesto behind ZAIB ATTIRE. Chronicling haute couture, luxury trends, and independent designer guest voices."
+        keywords="about zaib attire, fashion manifesto, haute couture editorial, luxury fashion journalism, runway critics"
+      />
       <div className="max-w-5xl mx-auto px-4 sm:px-8">
         
         {/* Hero Section */}
@@ -28,8 +34,10 @@ export default function AboutPage() {
         {/* Hero Magazine Image Spread */}
         <div className="relative aspect-[21/9] overflow-hidden bg-luxury-950 shadow-xl border border-luxury-300 mb-16">
           <img
-            src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1600&q=80"
-            alt="ZAIB ATTIRE Runway"
+            src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1600&q=75"
+            alt="ZAIB ATTIRE Runway Haute Couture Editorial"
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-8">

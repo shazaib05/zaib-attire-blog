@@ -112,7 +112,15 @@ function AppShell() {
             element={<BlogDetailPage />}
           />
           <Route
+            path="/write"
+            element={<GuestPostingPage categories={categories} />}
+          />
+          <Route
             path="/write-for-us"
+            element={<GuestPostingPage categories={categories} />}
+          />
+          <Route
+            path="/guest-post"
             element={<GuestPostingPage categories={categories} />}
           />
           <Route

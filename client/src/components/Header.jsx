@@ -119,19 +119,19 @@ export default function Header({ categories = [], onOpenSearchModal }) {
           )}
         </Link>
 
-        {/* Right: Write For Us Action (Admin button REMOVED from top header!) */}
+        {/* Right: Write an Article Action */}
         <div className="flex items-center space-x-3">
           <Link
-            to="/write-for-us"
+            to="/write"
             className={`relative group overflow-hidden border border-gold-500 bg-luxury-950 text-gold-400 hover:text-luxury-950 text-xs tracking-wider uppercase font-semibold transition-all shadow-sm ${
               isScrolled ? 'px-3 py-1.5' : 'px-4 sm:px-5 py-2 sm:py-2.5'
             }`}
           >
             <span className="absolute inset-0 w-full h-full bg-gold-400 -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out -z-0"></span>
             <span className="relative z-10 flex items-center gap-1.5">
-              <Sparkles size={12} className="text-gold-400 group-hover:text-luxury-950 transition-colors" />
-              <span className="hidden sm:inline">Write For Us</span>
-              <span className="sm:hidden">Submit</span>
+              <Feather size={12} className="text-gold-400 group-hover:text-luxury-950 transition-colors" />
+              <span className="hidden sm:inline">Write an Article</span>
+              <span className="sm:hidden">Write</span>
               <ArrowUpRight size={12} className="opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
             </span>
           </Link>
@@ -165,10 +165,19 @@ export default function Header({ categories = [], onOpenSearchModal }) {
             </span>
           </NavLink>
 
-          <NavLink to="/write-for-us" className={navLinkClass}>
+          <NavLink
+            to="/write"
+            className={({ isActive }) =>
+              `transition-all py-1.5 border-b-2 whitespace-nowrap uppercase tracking-luxury text-xs font-semibold ${
+                isActive || location.pathname === '/write-for-us' || location.pathname === '/guest-post'
+                  ? 'border-gold-600 text-luxury-950 font-bold'
+                  : 'border-transparent text-luxury-600 hover:text-luxury-950 hover:border-luxury-300'
+              }`
+            }
+          >
             <span className="flex items-center gap-1">
               <Feather size={12} className="text-gold-600" />
-              <span>Guest Posting</span>
+              <span>Write / Guest Post</span>
             </span>
           </NavLink>
 
@@ -220,15 +229,17 @@ export default function Header({ categories = [], onOpenSearchModal }) {
             </NavLink>
 
             <NavLink
-              to="/write-for-us"
+              to="/write"
               className={({ isActive }) =>
                 `block py-2 text-xs uppercase tracking-luxury font-bold flex items-center gap-1.5 ${
-                  isActive ? 'text-gold-600' : 'text-gold-700'
+                  isActive || location.pathname === '/write-for-us' || location.pathname === '/guest-post'
+                    ? 'text-gold-600'
+                    : 'text-gold-700'
                 }`
               }
             >
               <Feather size={13} />
-              <span>Guest Posting Hub</span>
+              <span>Write an Article (Free Guest Post)</span>
             </NavLink>
 
             <NavLink

@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { api } from '../utils/api';
 import ArticleCard from '../components/ArticleCard';
+import SEO from '../components/SEO';
 
 export default function BlogDetailPage() {
   const { slug } = useParams();
@@ -133,6 +134,57 @@ export default function BlogDetailPage() {
     }
   };
 
+  const parseInlineMarkdown = (text) => {
+    if (!text) return text;
+
+    // Split on markdown link [text](url), bold **text**, and italic *text*
+    const regex = /(\[[^\]]+\]\([^)]+\)|\*\*[^*]+\*\*|\*[^*]+\*)/g;
+    const parts = text.split(regex);
+
+    return parts.map((part, index) => {
+      if (!part) return null;
+
+      // Link match
+      const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+      if (linkMatch) {
+        return (
+          <a
+            key={index}
+            href={linkMatch[2]}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gold-700 underline font-semibold hover:text-gold-600 transition"
+            title={`Dofollow Backlink to ${linkMatch[2]}`}
+          >
+            {linkMatch[1]}
+          </a>
+        );
+      }
+
+      // Bold match
+      const boldMatch = part.match(/^\*\*([^*]+)\*\*$/);
+      if (boldMatch) {
+        return (
+          <strong key={index} className="font-bold text-luxury-950">
+            {boldMatch[1]}
+          </strong>
+        );
+      }
+
+      // Italic match
+      const italicMatch = part.match(/^\*([^*]+)\*$/);
+      if (italicMatch) {
+        return (
+          <em key={index} className="italic text-luxury-800">
+            {italicMatch[1]}
+          </em>
+        );
+      }
+
+      return part;
+    });
+  };
+
   const renderFormattedContent = (content) => {
     if (!content) return null;
     const lines = content.split('\n');
@@ -160,7 +212,7 @@ export default function BlogDetailPage() {
       if (trimmed.startsWith('> ')) {
         return (
           <blockquote key={idx} className="border-l-2 border-gold-500 pl-6 my-8 italic font-cormorant text-xl sm:text-2xl text-luxury-800 bg-champagne-50/50 py-4 pr-4">
-            {trimmed.replace('> ', '')}
+            {parseInlineMarkdown(trimmed.replace('> ', ''))}
           </blockquote>
         );
       }
@@ -168,7 +220,7 @@ export default function BlogDetailPage() {
       if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
         return (
           <li key={idx} className="ml-6 list-disc text-luxury-700 my-2 leading-relaxed font-serif text-base sm:text-lg">
-            {trimmed.replace(/^[-*]\s+/, '')}
+            {parseInlineMarkdown(trimmed.replace(/^[-*]\s+/, ''))}
           </li>
         );
       }
@@ -177,14 +229,14 @@ export default function BlogDetailPage() {
       if (idx === 0) {
         return (
           <p key={idx} className="font-serif text-lg sm:text-xl text-luxury-900 leading-relaxed font-normal mb-6 first-letter:text-5xl first-letter:font-editorial first-letter:font-bold first-letter:text-gold-700 first-letter:mr-3 first-letter:float-left first-letter:leading-none">
-            {line}
+            {parseInlineMarkdown(line)}
           </p>
         );
       }
 
       return (
         <p key={idx} className="font-serif text-base sm:text-lg text-luxury-800 leading-relaxed font-normal mb-5">
-          {line}
+          {parseInlineMarkdown(line)}
         </p>
       );
     });
@@ -219,6 +271,22 @@ export default function BlogDetailPage() {
 
   return (
     <div className="min-h-screen bg-[#fafaf8] text-luxury-950 relative selection:bg-gold-500 selection:text-luxury-950">
+      <SEO
+        title={post.title}
+        description={post.subtitle || (post.content ? post.content.substring(0, 155) : '')}
+        image={post.cover_image}
+        keywords={`${post.tags ? post.tags.join(', ') : ''}, fashion blog, ${post.category_name}, runway review`}
+        article={{
+          title: post.title,
+          datePublished: post.created_at,
+          authorName: post.author_name,
+          authorWebsite: post.author_website,
+          category: post.category_name,
+          tags: post.tags,
+          readTime: post.read_time
+        }}
+        type="article"
+      />
       
       {/* Sticky Reading Progress Bar */}
       <div className="fixed top-0 left-0 right-0 h-1 bg-luxury-200 z-50">

@@ -4,6 +4,7 @@ import {
   CheckCircle2, Mail, ExternalLink, ArrowRight, ShieldCheck,
   Send, FileText, Download, DollarSign, Eye
 } from 'lucide-react';
+import SEO from '../components/SEO';
 import { api } from '../utils/api';
 
 export default function AdvertisePage() {
@@ -48,6 +49,12 @@ export default function AdvertisePage() {
 
   return (
     <div className="min-h-screen bg-[#fafaf8] py-10 sm:py-16 animate-fadeIn">
+      <SEO
+        title="Advertise With Us — Luxury Fashion Media Kit & Partnerships"
+        description="Partner with ZAIB ATTIRE. High-impact luxury display banners, sponsored editorial storytelling, brand showcases, and premium audience reach."
+        keywords="advertise fashion blog, luxury fashion sponsorships, brand placement, fashion media kit, zaib attire advertising"
+        canonicalUrl="/advertise"
+      />
       <div className="max-w-6xl mx-auto px-4 sm:px-8">
         
         {/* Hero Section */}

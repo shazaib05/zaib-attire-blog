@@ -1,0 +1,11 @@
+# Robots.txt for ZAIB ATTIRE — Haute Editorial
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+# Crawl Delay
+Crawl-delay: 1
+
+# Sitemap Location
+Sitemap: https://zaibattire.com/sitemap.xml

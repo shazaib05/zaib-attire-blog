@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Core Pages -->
+  <url>
+    <loc>https://zaibattire.com/</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://zaibattire.com/blog</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://zaibattire.com/write</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://zaibattire.com/advertise</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://zaibattire.com/about</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://zaibattire.com/contact</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Editorial Blog Posts -->
+  <url>
+    <loc>https://zaibattire.com/blog/architectural-drapery-haute-couture-2026</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Architectural Drapery Haute Couture 2026</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://zaibattire.com/blog/evolution-of-quiet-luxury-muted-tactility</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Evolution of Quiet Luxury Muted Tactility</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://zaibattire.com/blog/street-style-matrix-tokyo-milan-oversized-tailoring</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Street Style Matrix Tokyo to Milan</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://zaibattire.com/blog/sustainable-silk-circular-couture-revolution</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Sustainable Silk Circular Couture Revolution</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://zaibattire.com/blog/runway-report-parisian-winter-palettes</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Runway Report Parisian Winter Palettes</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://zaibattire.com/blog/sculptural-jewelry-avant-garde-accessories</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Sculptural Jewelry Avant-Garde Accessories</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://zaibattire.com/blog/chanel-ss26-parisian-couture</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Chanel SS26 Parisian Couture Review</image:title>
+    </image:image>
+  </url>
+
+  <url>
+    <loc>https://zaibattire.com/blog/dior-sculptural-tailoring-2026</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&amp;fit=crop&amp;w=1200&amp;q=80</image:loc>
+      <image:title>Dior Sculptural Tailoring 2026 Analysis</image:title>
+    </image:image>
+  </url>
+
+</urlset>

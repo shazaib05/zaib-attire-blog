@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, MapPin, Send, CheckCircle2, Phone, Clock, MessageSquare } from 'lucide-react';
+import SEO from '../components/SEO';
 import { api } from '../utils/api';
 
 export default function ContactPage() {
@@ -40,6 +41,12 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-[#fafaf8] py-10 sm:py-16 animate-fadeIn">
+      <SEO
+        title="Contact The Atelier — Editorial & Press Inquiries"
+        description="Direct correspondence with ZAIB ATTIRE editorial directors, advertising managers, press bureaus, and guest posting team."
+        keywords="contact zaib attire, fashion editor contact, fashion guest post submission, advertise fashion blog, editorial press desk"
+        canonicalUrl="/contact"
+      />
       <div className="max-w-5xl mx-auto px-4 sm:px-8">
         
         {/* Header */}

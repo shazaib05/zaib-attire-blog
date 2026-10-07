@@ -50,9 +50,9 @@ export default function Footer({ categories = [] }) {
                 </Link>
               </li>
               <li>
-                <Link to="/write-for-us" className="hover:text-gold-400 transition text-gold-400 flex items-center gap-1 font-semibold">
+                <Link to="/write" className="hover:text-gold-400 transition text-gold-400 flex items-center gap-1 font-semibold">
                   <Feather size={11} />
-                  <span>Guest Posting</span>
+                  <span>Write a Guest Post</span>
                 </Link>
               </li>
               <li>

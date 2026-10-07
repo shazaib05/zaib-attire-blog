@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import ArticleCard from '../components/ArticleCard';
 import AdBanner from '../components/AdBanner';
+import SEO from '../components/SEO';
 import { api } from '../utils/api';
 
 export default function TrendsPage({ categories = [] }) {
@@ -100,6 +101,11 @@ export default function TrendsPage({ categories = [] }) {
 
   return (
     <div className="min-h-screen bg-[#fafaf8] py-8 sm:py-12 animate-fadeIn">
+      <SEO
+        title="Fashion Blog & Runway Trends — Full Editorial Repertory"
+        description="Explore the curated fashion blog archive of avant-garde haute couture, street subcultures, quiet luxury narratives, and guest critiques from global ateliers."
+        keywords="fashion blog, runway trends 2026, street style blog, haute couture, quiet luxury articles, fashion archive"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
         
         {/* Page Hero Header */}

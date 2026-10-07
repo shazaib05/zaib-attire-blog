@@ -10,6 +10,7 @@ import TrendingStrip from '../components/TrendingStrip';
 import ArticleCard from '../components/ArticleCard';
 import AdBanner from '../components/AdBanner';
 import NewsletterSection from '../components/NewsletterSection';
+import SEO from '../components/SEO';
 import { api } from '../utils/api';
 
 export default function HomePage({ categories = [], tickerItems = [] }) {
@@ -56,6 +57,12 @@ export default function HomePage({ categories = [], tickerItems = [] }) {
 
   return (
     <div className="animate-fadeIn">
+      <SEO
+        title="ZAIB ATTIRE — Haute Couture, Runway Trends & Editorial Culture"
+        description="The premier fashion blog and runway trend forecast. Explore Paris, Milan, London, and New York collections, street style subcultures, and publish guest posts with brand backlinks."
+        keywords="fashion blog, runway trends 2026, haute couture, quiet luxury, fashion guest post, free guest posting, paris fashion week"
+      />
+
       {/* 1. Runway Ticker */}
       <Ticker tickerItems={tickerItems} />
 
