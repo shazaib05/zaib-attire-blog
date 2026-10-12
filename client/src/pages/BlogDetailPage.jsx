@@ -199,8 +199,21 @@ export default function BlogDetailPage() {
         title={post.title}
         description={post.subtitle || (post.content ? post.content.substring(0, 155) : '')}
         image={post.cover_image}
-        keywords={`${post.tags ? post.tags.join(', ') : ''}, fashion blog, ${post.category_name}`}
-        article={{ title: post.title, datePublished: post.created_at, authorName: post.author_name }}
+        keywords={`${Array.isArray(post.tags) ? post.tags.join(', ') : (typeof post.tags === 'string' ? post.tags : '')}, fashion blog, ${post.category_name || ''}`}
+        article={{
+          title: post.title,
+          datePublished: post.created_at,
+          authorName: post.author_name,
+          authorWebsite: post.author_website,
+          category: post.category_name,
+          tags: post.tags,
+          readTime: post.read_time
+        }}
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: post.category_name || 'Stories', item: `/trends?category=${encodeURIComponent(post.category_name || '')}` },
+          { name: post.title, item: `/blog/${post.slug}` }
+        ]}
         type="article"
       />
 
@@ -316,7 +329,7 @@ export default function BlogDetailPage() {
               className="p-2 rounded-full text-[#6b6b6b] hover:bg-[#f7f7f7] hover:text-[#1a1a1a] transition"
               title="Share on Twitter"
             >
-              <Twitter size={16} />
+              <XIcon size={16} />
             </a>
             <button
               onClick={handleShare}

@@ -24,6 +24,33 @@ function ScrollToTop() {
   return null;
 }
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("Caught error in React tree:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center bg-white">
+          <h2 className="font-serif text-2xl font-bold text-ink-900 mb-3">Unable to display this story</h2>
+          <p className="text-sm text-ink-500 mb-6 max-w-md">An unexpected formatting issue occurred. You can return to the home feed or refresh.</p>
+          <button onClick={() => window.location.href = '/'} className="btn-primary">
+            Return to Homepage
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 // Inner Application shell with routing context
 function AppShell() {
   const location = useLocation();
@@ -92,68 +119,70 @@ function AppShell() {
 
       {/* Multi-Page Route Outlet */}
       <div className="flex-1">
-        <Routes>
-          <Route
-            path="/"
-            element={<HomePage categories={categories} tickerItems={tickerItems} />}
-          />
-          <Route
-            path="/blog"
-            element={<TrendsPage categories={categories} />}
-          />
-          <Route
-            path="/blogs"
-            element={<TrendsPage categories={categories} />}
-          />
-          <Route
-            path="/trends"
-            element={<TrendsPage categories={categories} />}
-          />
-          <Route
-            path="/blog/:slug"
-            element={<BlogDetailPage />}
-          />
-          <Route
-            path="/write"
-            element={<GuestPostingPage categories={categories} />}
-          />
-          <Route
-            path="/write-for-us"
-            element={<GuestPostingPage categories={categories} />}
-          />
-          <Route
-            path="/guest-post"
-            element={<GuestPostingPage categories={categories} />}
-          />
-          <Route
-            path="/guest-posting"
-            element={<GuestPostingPage categories={categories} />}
-          />
-          <Route
-            path="/advertise"
-            element={<AdvertisePage />}
-          />
-          <Route
-            path="/about"
-            element={<AboutPage />}
-          />
-          <Route
-            path="/contact"
-            element={<ContactPage />}
-          />
-          <Route
-            path="/privacy"
-            element={<PrivacyPolicyPage />}
-          />
-          <Route
-            path="/terms"
-            element={<TermsPage />}
-          />
-          <Route
-            path="*"
-            element={<Navigate to="/" replace />}
-          />
-        </Routes>
+        <ErrorBoundary>
+          <Routes>
+            <Route
+              path="/"
+              element={<HomePage categories={categories} tickerItems={tickerItems} />}
+            />
+            <Route
+              path="/blog"
+              element={<TrendsPage categories={categories} />}
+            />
+            <Route
+              path="/blogs"
+              element={<TrendsPage categories={categories} />}
+            />
+            <Route
+              path="/trends"
+              element={<TrendsPage categories={categories} />}
+            />
+            <Route
+              path="/blog/:slug"
+              element={<BlogDetailPage />}
+            />
+            <Route
+              path="/write"
+              element={<GuestPostingPage categories={categories} />}
+            />
+            <Route
+              path="/write-for-us"
+              element={<GuestPostingPage categories={categories} />}
+            />
+            <Route
+              path="/guest-post"
+              element={<GuestPostingPage categories={categories} />}
+            />
+            <Route
+              path="/guest-posting"
+              element={<GuestPostingPage categories={categories} />}
+            />
+            <Route
+              path="/advertise"
+              element={<AdvertisePage />}
+            />
+            <Route
+              path="/about"
+              element={<AboutPage />}
+            />
+            <Route
+              path="/contact"
+              element={<ContactPage />}
+            />
+            <Route
+              path="/privacy"
+              element={<PrivacyPolicyPage />}
+            />
+            <Route
+              path="/terms"
+              element={<TermsPage />}
+            />
+            <Route
+              path="*"
+              element={<Navigate to="/" replace />}
+            />
+          </Routes>
+        </ErrorBoundary>
       </div>
 
       {/* Global Luxury Footer */}
