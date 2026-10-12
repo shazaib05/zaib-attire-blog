@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, Feather, Globe, Award, Compass, ArrowRight, Quote } from 'lucide-react';
+import { Feather, Globe, Award, Compass, ArrowRight, Quote, Check, PenLine } from 'lucide-react';
 import SEO from '../components/SEO';
 
 export default function AboutPage() {
@@ -9,149 +9,125 @@ export default function AboutPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#fafaf8] py-10 sm:py-16 animate-fadeIn">
+    <div className="min-h-screen bg-white py-10 sm:py-16 animate-fadeIn font-sans">
       <SEO
-        title="About The Atelier — Fashion Manifesto & Editorial Council"
-        description="Learn the history, editorial mission, and artistic manifesto behind ZAIB ATTIRE. Chronicling haute couture, luxury trends, and independent designer guest voices."
-        keywords="about zaib attire, fashion manifesto, haute couture editorial, luxury fashion journalism, runway critics"
+        title="About ZAIB ATTIRE — Fashion Manifesto & Editorial Council"
+        description="Learn the history, editorial mission, and contributor manifesto behind ZAIB ATTIRE. Chronicling haute couture, runway trends, and guest fashion voices."
+        keywords="about zaib attire, fashion manifesto, haute couture editorial, luxury fashion journalism, runway critics, fashion guest posting"
         canonicalUrl="/about"
         breadcrumbs={[
           { name: 'Home', item: '/' },
-          { name: 'About The Atelier', item: '/about' }
+          { name: 'About', item: '/about' }
         ]}
       />
-      <div className="max-w-5xl mx-auto px-4 sm:px-8">
+
+      <div className="max-w-reading mx-auto px-5 sm:px-8">
         
-        {/* Hero Section */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-luxury-950 text-gold-400 text-[10px] tracking-luxury uppercase font-bold mb-4">
-            <Compass size={12} />
-            <span>ESTABLISHED PARIS • MILAN • LONDON • NEW YORK</span>
+        {/* Masthead Header */}
+        <div className="border-b border-ink-200 pb-8 mb-10">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="w-3 h-[2px] bg-brand-accent"></span>
+            <span className="text-xs font-semibold text-ink-500 uppercase tracking-wider">
+              About The Publication
+            </span>
           </div>
-          <h1 className="font-editorial text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-luxury-950 mb-6">
-            The ZAIB ATTIRE Manifesto
+          <h1 className="font-serif text-4xl sm:text-5xl font-bold text-ink-900 tracking-tight mb-4">
+            About ZAIB ATTIRE
           </h1>
-          <p className="font-cormorant text-xl sm:text-2xl text-luxury-600 italic leading-relaxed">
-            "We believe high fashion is not mere consumption; it is architecture for the human form, an anthropological mirror of our era, and pure sensory art."
+          <p className="text-xl text-ink-600 font-serif leading-relaxed">
+            Where fashion critics, emerging stylists, and couture observers chronicle runway trends and publish original stories.
           </p>
         </div>
 
-        {/* Hero Magazine Image Spread */}
-        <div className="relative aspect-[21/9] overflow-hidden bg-luxury-950 shadow-xl border border-luxury-300 mb-16">
+        {/* Lead Hero Image */}
+        <div className="aspect-[16/9] overflow-hidden rounded-xl bg-ink-100 mb-10 border border-ink-200">
           <img
-            src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1600&q=75"
-            alt="ZAIB ATTIRE Runway Haute Couture Editorial"
-            loading="lazy"
-            decoding="async"
+            src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1600&q=80"
+            alt="ZAIB ATTIRE Runway Editorial"
             className="w-full h-full object-cover"
+            loading="lazy"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-8">
-            <p className="text-white font-editorial text-lg sm:text-2xl font-light">
-              Front Row Perspective • From Paris Haute Couture to Underground Subcultures
-            </p>
-          </div>
         </div>
 
-        {/* Brand Story Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-16 text-luxury-800 font-serif leading-relaxed text-base sm:text-lg">
+        {/* Editorial Body — Medium Article Style Typography */}
+        <div className="space-y-6 text-ink-800 font-serif text-lg leading-relaxed mb-12">
+          <p>
+            Founded as an independent fashion chronicle, <strong className="font-sans font-semibold text-ink-900">ZAIB ATTIRE</strong> has grown into an international platform celebrating contemporary couture, avant-garde garment construction, and runway culture.
+          </p>
+
+          <p>
+            In a digital landscape inundated with ephemeral micro-trends and disposable apparel, we stand for thoughtful fashion criticism — honoring master drapers, independent textile innovators, and visionary houses who treat style as an architectural art form.
+          </p>
+
+          <blockquote className="border-l-3 border-brand-accent pl-6 py-2 my-8 italic text-xl text-ink-700 bg-ink-50 rounded-r-lg">
+            "We believe high fashion is not mere consumption; it is architecture for the human form, an anthropological mirror of our era, and pure sensory expression."
+          </blockquote>
+
+          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-ink-900 pt-6">
+            The Contributor Ethos
+          </h2>
+
+          <p>
+            Unlike legacy publications behind closed doors, ZAIB ATTIRE champions a democratized guest posting ecosystem. We open our platform to emerging fashion writers, freelance stylists, brand founders, and culture critics from around the world.
+          </p>
+
+          <p>
+            Every guest article is held to clear editorial standards, rewarding contributors with wide organic readership, community exposure, and permanent dofollow backlinks to their brand or portfolio.
+          </p>
+        </div>
+
+        {/* Publication Stats */}
+        <div className="grid grid-cols-3 gap-4 border-y border-ink-200 py-8 mb-12 text-center">
           <div>
-            <h3 className="font-editorial text-2xl font-bold text-luxury-950 mb-4 not-italic font-sans">
-              Our Genesis
-            </h3>
-            <p className="mb-4">
-              Founded as an intimate atelier journal, <strong className="text-luxury-950 font-sans">ZAIB ATTIRE</strong> has grown into an internationally revered digital chronicle of contemporary couture, avant-garde garment construction, and runway semiotics.
-            </p>
-            <p>
-              In a digital landscape inundated with ephemeral micro-trends and disposable garments, ZAIB ATTIRE stands as a sanctuary of thoughtful fashion criticism, celebrating the master drapers, independent textile innovators, and visionary houses who treat style as high art.
-            </p>
+            <div className="font-serif text-3xl sm:text-4xl font-bold text-ink-900">100+</div>
+            <div className="text-xs text-ink-500 font-sans mt-1">Curated Stories</div>
           </div>
-
           <div>
-            <h3 className="font-editorial text-2xl font-bold text-luxury-950 mb-4 not-italic font-sans">
-              The Contributor Ethos
-            </h3>
-            <p className="mb-4">
-              Unlike legacy fashion houses governed by walled gardens, ZAIB ATTIRE champions a democratized guest posting ecosystem. We open our pages to emerging fashion critics, freelance stylists, and subculture historians from across the globe.
-            </p>
-            <p>
-              Every guest article is held to our exacting editorial codex, ensuring our readers experience a rigorous blend of high couture scholarship and fresh cultural energy.
-            </p>
+            <div className="font-serif text-3xl sm:text-4xl font-bold text-ink-900">50k+</div>
+            <div className="text-xs text-ink-500 font-sans mt-1">Monthly Readers</div>
+          </div>
+          <div>
+            <div className="font-serif text-3xl sm:text-4xl font-bold text-ink-900">100%</div>
+            <div className="text-xs text-ink-500 font-sans mt-1">Free Guest Posts</div>
           </div>
         </div>
 
-        {/* Four Fashion Bureaus */}
-        <div className="bg-luxury-950 text-white p-8 sm:p-12 border border-gold-500/40 mb-16 shadow-xl">
-          <div className="text-center max-w-xl mx-auto mb-10">
-            <span className="text-[10px] uppercase tracking-luxury text-gold-400 font-bold block mb-1">
-              GLOBAL FOOTPRINT
-            </span>
-            <h3 className="font-editorial text-2xl sm:text-3xl font-bold">
-              Our Four Editorial Capitals
-            </h3>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-            <div className="p-4 border border-luxury-800 bg-luxury-900/60">
-              <span className="text-gold-400 font-editorial text-xl font-bold block mb-1">PARIS</span>
-              <span className="text-[10px] uppercase tracking-wider text-luxury-400 block mb-2">Haute Couture & Heritage</span>
-              <p className="text-xs text-luxury-300 font-light font-serif">18 Rue du Faubourg Saint-Honoré</p>
-            </div>
-
-            <div className="p-4 border border-luxury-800 bg-luxury-900/60">
-              <span className="text-gold-400 font-editorial text-xl font-bold block mb-1">MILAN</span>
-              <span className="text-[10px] uppercase tracking-wider text-luxury-400 block mb-2">Artisanal Tailoring & Leather</span>
-              <p className="text-xs text-luxury-300 font-light font-serif">Via Monte Napoleone 12</p>
-            </div>
-
-            <div className="p-4 border border-luxury-800 bg-luxury-900/60">
-              <span className="text-gold-400 font-editorial text-xl font-bold block mb-1">LONDON</span>
-              <span className="text-[10px] uppercase tracking-wider text-luxury-400 block mb-2">Avant-Garde & Subculture</span>
-              <p className="text-xs text-luxury-300 font-light font-serif">Savile Row 7, Mayfair</p>
-            </div>
-
-            <div className="p-4 border border-luxury-800 bg-luxury-900/60">
-              <span className="text-gold-400 font-editorial text-xl font-bold block mb-1">NEW YORK</span>
-              <span className="text-[10px] uppercase tracking-wider text-luxury-400 block mb-2">Ready-To-Wear & Energy</span>
-              <p className="text-xs text-luxury-300 font-light font-serif">575 Broadway, SoHo</p>
-            </div>
+        {/* Four Fashion Capitals */}
+        <div className="mb-12">
+          <h3 className="font-serif text-xl font-bold text-ink-900 mb-4">
+            Editorial Desks
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { city: 'Paris', focus: 'Haute Couture' },
+              { city: 'Milan', focus: 'Heritage Tailoring' },
+              { city: 'London', focus: 'Avant-Garde Street' },
+              { city: 'New York', focus: 'Ready-to-Wear & Tech' },
+            ].map(({ city, focus }) => (
+              <div key={city} className="border border-ink-200 rounded-lg p-3.5 bg-ink-50/50 text-center">
+                <span className="font-serif font-bold text-base text-ink-900 block">{city}</span>
+                <span className="text-[11px] text-ink-500 font-sans">{focus}</span>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Dual CTA */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="p-8 bg-white border border-luxury-200 flex flex-col justify-between">
-            <div>
-              <h4 className="font-editorial text-xl font-bold text-luxury-950 mb-2">
-                Join As A Contributor
-              </h4>
-              <p className="text-xs text-luxury-600 leading-relaxed font-light mb-6">
-                Have an eye for runway design or a deep-dive essay on contemporary fashion? Pitch your guest story to our editors.
-              </p>
-            </div>
+        {/* Write for us CTA */}
+        <div className="border border-ink-200 rounded-2xl p-8 bg-gradient-to-br from-white to-ink-100 text-center space-y-4">
+          <Feather size={24} className="text-brand-accent mx-auto" />
+          <h3 className="font-serif text-2xl font-bold text-ink-900">
+            Write on ZAIB ATTIRE
+          </h3>
+          <p className="text-sm text-ink-500 max-w-md mx-auto leading-relaxed">
+            Have a fashion critique, trend report, or designer showcase to share? Submit your free guest post today with dofollow attribution.
+          </p>
+          <div>
             <Link
-              to="/write-for-us"
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-luxury font-bold text-gold-700 hover:text-gold-900"
+              to="/write"
+              className="btn-primary text-sm py-3 px-6 inline-flex"
             >
-              <span>Explore Contributor Hub</span>
-              <ArrowRight size={13} />
-            </Link>
-          </div>
-
-          <div className="p-8 bg-white border border-luxury-200 flex flex-col justify-between">
-            <div>
-              <h4 className="font-editorial text-xl font-bold text-luxury-950 mb-2">
-                Brand Collaborations
-              </h4>
-              <p className="text-xs text-luxury-600 leading-relaxed font-light mb-6">
-                Discover our high-impact billboard positions, native sponsored articles, and private fashion week partnerships.
-              </p>
-            </div>
-            <Link
-              to="/advertise"
-              className="inline-flex items-center gap-2 text-xs uppercase tracking-luxury font-bold text-gold-700 hover:text-gold-900"
-            >
-              <span>Explore Advertising Media Kit</span>
-              <ArrowRight size={13} />
+              <PenLine size={15} />
+              <span>Start Writing</span>
             </Link>
           </div>
         </div>

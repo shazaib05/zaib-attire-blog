@@ -12,7 +12,7 @@ import SEO from '../components/SEO';
 const GUEST_POSTING_FAQS = [
   {
     question: "How do I submit a free fashion guest post to ZAIB ATTIRE?",
-    answer: "Simply create a free Contributor Passport with your name, Gmail, and brand website. Compose your fashion critique or brand story using our visual editor, insert your anchor text links, pick a cover photo, and click Submit Article."
+    answer: "Simply create a free Contributor profile with your name, email, and brand website. Compose your article using our Medium-style story editor, insert your contextual anchor text links, pick a cover photo, and click Submit Article."
   },
   {
     question: "Are the backlinks from published guest posts dofollow and permanent?",
@@ -20,7 +20,7 @@ const GUEST_POSTING_FAQS = [
   },
   {
     question: "What niches are eligible for guest posting?",
-    answer: "While ZAIB ATTIRE is dedicated to high fashion, haute couture, and apparel aesthetics, we accept relevant cross-niche submissions covering lifestyle, accessories, beauty, sustainable textiles, design craftsmanship, and brand launch stories."
+    answer: "While ZAIB ATTIRE is dedicated to high fashion, haute couture, and apparel aesthetics, we accept relevant submissions covering lifestyle, accessories, footwear, beauty, sustainable textiles, design craftsmanship, and brand launch stories."
   },
   {
     question: "How fast will my guest post be indexed by Google Search?",
@@ -42,7 +42,7 @@ const FASHION_IMAGE_PRESETS = [
 ];
 
 export default function GuestPostingPage({ categories = [] }) {
-  const [activeTab, setActiveTab] = useState('submit'); // 'submit' | 'track' | 'guidelines'
+  const [activeTab, setActiveTab] = useState('submit'); // 'submit' | 'track' | 'guidelines' | 'faq'
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
 
   // Contributor Authentication State
@@ -222,7 +222,7 @@ export default function GuestPostingPage({ categories = [] }) {
     setErrorMsg('');
 
     if (!formData.title.trim()) {
-      setErrorMsg('Please enter an Article Headline.');
+      setErrorMsg('Please enter an Article Title.');
       return;
     }
     if (!formData.cover_image) {
@@ -283,26 +283,26 @@ export default function GuestPostingPage({ categories = [] }) {
 
   // Render article content preview with active clickable anchor links & markdown
   const renderPreviewContent = (text) => {
-    if (!text) return <p className="italic text-luxury-400">Article preview will appear here...</p>;
+    if (!text) return <p className="italic text-ink-400">Story preview will appear here...</p>;
 
     const lines = text.split('\n');
     return lines.map((line, idx) => {
       // Headings
       if (line.startsWith('### ')) {
-        return <h3 key={idx} className="font-editorial text-lg font-bold text-luxury-900 mt-4 mb-2">{line.replace('### ', '')}</h3>;
+        return <h3 key={idx} className="font-serif text-xl font-bold text-ink-900 mt-6 mb-2">{line.replace('### ', '')}</h3>;
       }
       if (line.startsWith('## ')) {
-        return <h2 key={idx} className="font-editorial text-xl font-bold text-luxury-950 mt-6 mb-3 pb-1 border-b border-luxury-200">{line.replace('## ', '')}</h2>;
+        return <h2 key={idx} className="font-serif text-2xl font-bold text-ink-900 mt-8 mb-3 pb-2 border-b border-ink-200">{line.replace('## ', '')}</h2>;
       }
       if (line.startsWith('> ')) {
         return (
-          <blockquote key={idx} className="border-l-2 border-gold-500 pl-4 py-1.5 my-3 italic font-serif text-luxury-800 bg-luxury-50/50">
+          <blockquote key={idx} className="border-l-3 border-brand-accent pl-5 py-2 my-5 italic font-serif text-ink-700 bg-ink-50/70 text-lg">
             {line.replace('> ', '')}
           </blockquote>
         );
       }
       if (line.startsWith('- ')) {
-        return <li key={idx} className="ml-4 list-disc text-luxury-700 my-1">{line.replace('- ', '')}</li>;
+        return <li key={idx} className="ml-5 list-disc text-ink-700 my-1 font-serif text-base">{line.replace('- ', '')}</li>;
       }
 
       // Parse markdown links [Anchor Text](URL) into live styled hyperlinks
@@ -321,7 +321,7 @@ export default function GuestPostingPage({ categories = [] }) {
             href={match[2]}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-gold-700 underline font-semibold hover:text-gold-600 transition"
+            className="text-brand-muted underline font-semibold hover:text-ink-900 transition"
             title={`Dofollow Backlink to ${match[2]}`}
           >
             {match[1]}
@@ -334,7 +334,7 @@ export default function GuestPostingPage({ categories = [] }) {
       }
 
       return line.trim() ? (
-        <p key={idx} className="my-2 leading-relaxed text-luxury-800 font-serif">
+        <p key={idx} className="my-4 leading-relaxed text-ink-800 font-serif text-lg">
           {parts.length > 0 ? parts : line}
         </p>
       ) : <br key={idx} />;
@@ -342,122 +342,114 @@ export default function GuestPostingPage({ categories = [] }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#fafaf8] py-8 sm:py-12 animate-fadeIn font-sans">
+    <div className="min-h-screen bg-white py-10 sm:py-14 animate-fadeIn font-sans">
       <SEO
-        title="Write an Article — Free Guest Posting & Contributor Platform"
-        description="Publish high-authority fashion guest posts with brand backlinks on ZAIB ATTIRE. Reach luxury readers, fashion critics, and runway journalists with free guest posting."
+        title="Write on ZAIB ATTIRE — Free Guest Posting & Publishing"
+        description="Publish your fashion articles with permanent dofollow backlinks on ZAIB ATTIRE. Reach style critics, buyers, and luxury readers for free."
         keywords="write for us fashion, fashion guest post, free guest posting, submit guest article, fashion backlink, fashion brand guest post, submit runway story"
         canonicalUrl="/write"
         breadcrumbs={[
           { name: 'Home', item: '/' },
-          { name: 'Write / Guest Posting', item: '/write' }
+          { name: 'Write on ZAIB ATTIRE', item: '/write' }
         ]}
         faqs={GUEST_POSTING_FAQS}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-8">
+      <div className="max-w-content mx-auto px-5 sm:px-8">
 
-        {/* Masthead Header */}
-        <div className="border-b border-luxury-300 pb-8 mb-8 text-center max-w-3xl mx-auto">
-          <div className="flex items-center justify-center gap-2 text-[10px] tracking-luxury uppercase font-bold text-gold-600 mb-2">
-            <Feather size={13} />
-            <span>GLOBAL CONTRIBUTOR DESK • FREE GUEST POSTING</span>
+        {/* Medium-style Publication Masthead */}
+        <div className="border-b border-ink-200 pb-10 mb-10 text-center max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-ink-100 text-xs font-semibold text-ink-700 mb-4">
+            <Feather size={13} className="text-brand-accent" />
+            <span>Open Publication Platform • Free Guest Posting</span>
           </div>
-          <h1 className="font-editorial text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-luxury-950 mb-3">
-            Write For ZAIB ATTIRE
+          <h1 className="font-serif text-4xl sm:text-5xl font-bold tracking-tight text-ink-900 mb-4">
+            Publish on ZAIB ATTIRE
           </h1>
-          <p className="font-cormorant text-base sm:text-xl text-luxury-600 leading-relaxed italic">
-            Publish your fashion trend analysis, brand story, or runway critique. Gain authority, reach high-fashion tastemakers, and secure permanent dofollow backlinks to your brand.
+          <p className="text-lg text-ink-500 leading-relaxed max-w-2xl mx-auto">
+            Share your fashion perspective, runway critique, or brand narrative. Gain organic search reach and secure permanent dofollow backlinks to your domain.
           </p>
         </div>
 
-        {/* Value Proposition Pills */}
+        {/* 4 Value Proposition Cards — Clean Minimal Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10 text-left">
-          <div className="bg-white border border-luxury-200 p-5 shadow-xs">
-            <div className="w-8 h-8 bg-luxury-950 text-gold-400 flex items-center justify-center font-bold text-xs mb-3">
-              01
-            </div>
-            <h4 className="font-editorial text-sm font-bold text-luxury-950 mb-1">
-              Dofollow Brand Backlinks
+          <div className="border border-ink-200 rounded-xl p-5 bg-white hover:border-ink-300 transition">
+            <span className="text-xs font-bold text-ink-400 block mb-2">01</span>
+            <h4 className="font-serif text-base font-bold text-ink-900 mb-1.5">
+              Dofollow Backlinks
             </h4>
-            <p className="text-[11px] text-luxury-600 leading-relaxed">
-              Include contextual anchor text and brand citations with high editorial SEO authority.
+            <p className="text-xs text-ink-500 leading-relaxed">
+              Include contextual in-content anchor links and permanent author bio links to your domain.
             </p>
           </div>
 
-          <div className="bg-white border border-luxury-200 p-5 shadow-xs">
-            <div className="w-8 h-8 bg-luxury-950 text-gold-400 flex items-center justify-center font-bold text-xs mb-3">
-              02
-            </div>
-            <h4 className="font-editorial text-sm font-bold text-luxury-950 mb-1">
-              High Fashion Readership
+          <div className="border border-ink-200 rounded-xl p-5 bg-white hover:border-ink-300 transition">
+            <span className="text-xs font-bold text-ink-400 block mb-2">02</span>
+            <h4 className="font-serif text-base font-bold text-ink-900 mb-1.5">
+              Global Fashion Reach
             </h4>
-            <p className="text-[11px] text-luxury-600 leading-relaxed">
-              Targeted exposure to runway buyers, boutique stylists, fashion students, and luxury consumers.
+            <p className="text-xs text-ink-500 leading-relaxed">
+              Reach boutique stylists, designers, fashion students, and high-fashion readers worldwide.
             </p>
           </div>
 
-          <div className="bg-white border border-luxury-200 p-5 shadow-xs">
-            <div className="w-8 h-8 bg-luxury-950 text-gold-400 flex items-center justify-center font-bold text-xs mb-3">
-              03
-            </div>
-            <h4 className="font-editorial text-sm font-bold text-luxury-950 mb-1">
-              Rapid 48-Hour Review
+          <div className="border border-ink-200 rounded-xl p-5 bg-white hover:border-ink-300 transition">
+            <span className="text-xs font-bold text-ink-400 block mb-2">03</span>
+            <h4 className="font-serif text-base font-bold text-ink-900 mb-1.5">
+              48-Hour Review
             </h4>
-            <p className="text-[11px] text-luxury-600 leading-relaxed">
-              Our editorial desk reviews, formats, and indexes all guest dispatches within 48 hours.
+            <p className="text-xs text-ink-500 leading-relaxed">
+              Our editorial desk reviews, formats, and indexes your dispatches within 48 hours.
             </p>
           </div>
 
-          <div className="bg-white border border-luxury-200 p-5 shadow-xs">
-            <div className="w-8 h-8 bg-luxury-950 text-gold-400 flex items-center justify-center font-bold text-xs mb-3">
-              04
-            </div>
-            <h4 className="font-editorial text-sm font-bold text-luxury-950 mb-1">
-              100% Free For Creators
+          <div className="border border-ink-200 rounded-xl p-5 bg-white hover:border-ink-300 transition">
+            <span className="text-xs font-bold text-ink-400 block mb-2">04</span>
+            <h4 className="font-serif text-base font-bold text-ink-900 mb-1.5">
+              100% Free For Writers
             </h4>
-            <p className="text-[11px] text-luxury-600 leading-relaxed">
-              No publishing fees. High-quality fashion discourse is rewarded with open publication.
+            <p className="text-xs text-ink-500 leading-relaxed">
+              Zero publishing fees. Quality fashion journalism and thoughtful analysis are rewarded with open publication.
             </p>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex border-b border-luxury-300 mb-10 text-xs uppercase tracking-luxury font-bold">
+        {/* Medium-style Navigation Bar */}
+        <div className="flex border-b border-ink-200 mb-10 overflow-x-auto scrollbar-none">
           <button
             onClick={() => setActiveTab('submit')}
-            className={`py-3 px-6 border-b-2 transition flex items-center gap-2 ${
+            className={`py-3 px-5 text-sm font-semibold transition border-b-2 flex items-center gap-2 shrink-0 ${
               activeTab === 'submit'
-                ? 'border-gold-600 text-luxury-950 bg-white'
-                : 'border-transparent text-luxury-500 hover:text-luxury-900'
+                ? 'border-ink-900 text-ink-900'
+                : 'border-transparent text-ink-500 hover:text-ink-800'
             }`}
           >
-            <Edit3 size={14} className={activeTab === 'submit' ? 'text-gold-600' : ''} />
-            <span>Write & Submit Article</span>
+            <Edit3 size={15} />
+            <span>Write Story</span>
           </button>
 
           <button
             onClick={() => setActiveTab('track')}
-            className={`py-3 px-6 border-b-2 transition flex items-center gap-2 ${
+            className={`py-3 px-5 text-sm font-semibold transition border-b-2 flex items-center gap-2 shrink-0 ${
               activeTab === 'track'
-                ? 'border-gold-600 text-luxury-950 bg-white'
-                : 'border-transparent text-luxury-500 hover:text-luxury-900'
+                ? 'border-ink-900 text-ink-900'
+                : 'border-transparent text-ink-500 hover:text-ink-800'
             }`}
           >
-            <Search size={14} className={activeTab === 'track' ? 'text-gold-600' : ''} />
-            <span>Track Submission Status</span>
+            <Search size={15} />
+            <span>Track Submission</span>
           </button>
 
           <button
             onClick={() => setActiveTab('guidelines')}
-            className={`py-3 px-6 border-b-2 transition flex items-center gap-2 ${
+            className={`py-3 px-5 text-sm font-semibold transition border-b-2 flex items-center gap-2 shrink-0 ${
               activeTab === 'guidelines'
-                ? 'border-gold-600 text-luxury-950 bg-white'
-                : 'border-transparent text-luxury-500 hover:text-luxury-900'
+                ? 'border-ink-900 text-ink-900'
+                : 'border-transparent text-ink-500 hover:text-ink-800'
             }`}
           >
-            <BookOpen size={14} className={activeTab === 'guidelines' ? 'text-gold-600' : ''} />
-            <span>Editorial Codex & Guidelines</span>
+            <BookOpen size={15} />
+            <span>Editorial Guidelines</span>
           </button>
         </div>
 
@@ -466,27 +458,24 @@ export default function GuestPostingPage({ categories = [] }) {
           <div>
             {/* Condition 1: Sign Up / Sign In Gate if not logged in */}
             {!contributor ? (
-              <div className="bg-white border border-luxury-300 p-8 sm:p-12 shadow-sm max-w-xl mx-auto my-6 animate-fadeIn">
+              <div className="border border-ink-200 rounded-2xl p-8 sm:p-12 max-w-lg mx-auto my-6 bg-white shadow-xs">
                 <div className="text-center mb-6">
-                  <div className="w-12 h-12 bg-luxury-950 text-gold-400 rounded-full flex items-center justify-center mx-auto mb-3 shadow-md">
+                  <div className="w-12 h-12 bg-ink-900 text-white rounded-full flex items-center justify-center mx-auto mb-3">
                     <User size={20} />
                   </div>
-                  <span className="text-[10px] uppercase tracking-luxury text-gold-700 font-bold block mb-1">
-                    CONTRIBUTOR PASSPORT REQUIRED
-                  </span>
-                  <h3 className="font-editorial text-2xl font-bold text-luxury-950">
-                    {authMode === 'signup' ? 'Create Your Contributor Profile' : 'Welcome Back, Contributor'}
+                  <h3 className="font-serif text-2xl font-bold text-ink-900">
+                    {authMode === 'signup' ? 'Create Contributor Profile' : 'Welcome Back'}
                   </h3>
-                  <p className="text-xs text-luxury-600 mt-1 font-light">
+                  <p className="text-sm text-ink-500 mt-1.5">
                     {authMode === 'signup'
-                      ? 'Sign up to submit guest posts, link your brand website, and track your publications.'
-                      : 'Sign in to access the author studio and submit your article.'}
+                      ? 'Sign up for free to draft articles, set your brand backlink, and track publications.'
+                      : 'Sign in to access your story drafting canvas.'}
                   </p>
                 </div>
 
                 {authError && (
-                  <div className="mb-5 p-3 bg-red-50 border border-red-300 text-red-800 text-xs flex items-center gap-2">
-                    <AlertCircle size={15} />
+                  <div className="mb-5 p-3.5 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs flex items-center gap-2">
+                    <AlertCircle size={15} className="shrink-0" />
                     <span>{authError}</span>
                   </div>
                 )}
@@ -494,7 +483,7 @@ export default function GuestPostingPage({ categories = [] }) {
                 <form onSubmit={handleAuthSubmit} className="space-y-4">
                   {authMode === 'signup' && (
                     <div>
-                      <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-1">
+                      <label className="block text-xs font-semibold text-ink-700 mb-1">
                         Your Full Name / Pen Name *
                       </label>
                       <input
@@ -503,14 +492,14 @@ export default function GuestPostingPage({ categories = [] }) {
                         value={authForm.name}
                         onChange={(e) => setAuthForm({ ...authForm, name: e.target.value })}
                         placeholder="e.g. Laurent Moret"
-                        className="w-full px-3.5 py-2.5 bg-luxury-50 border border-luxury-300 text-xs focus:bg-white focus:outline-none focus:border-gold-500"
+                        className="w-full px-3.5 py-2.5 bg-white border border-ink-200 rounded-lg text-sm text-ink-900 focus:outline-none focus:border-ink-400 transition"
                       />
                     </div>
                   )}
 
                   <div>
-                    <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-1">
-                      Email Address (Gmail / Corporate) *
+                    <label className="block text-xs font-semibold text-ink-700 mb-1">
+                      Email Address *
                     </label>
                     <div className="relative">
                       <input
@@ -518,15 +507,15 @@ export default function GuestPostingPage({ categories = [] }) {
                         required
                         value={authForm.email}
                         onChange={(e) => setAuthForm({ ...authForm, email: e.target.value })}
-                        placeholder="name@gmail.com"
-                        className="w-full pl-9 pr-3.5 py-2.5 bg-luxury-50 border border-luxury-300 text-xs focus:bg-white focus:outline-none focus:border-gold-500"
+                        placeholder="name@example.com"
+                        className="w-full pl-9 pr-3.5 py-2.5 bg-white border border-ink-200 rounded-lg text-sm text-ink-900 focus:outline-none focus:border-ink-400 transition"
                       />
-                      <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-luxury-400" />
+                      <Mail size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-1">
+                    <label className="block text-xs font-semibold text-ink-700 mb-1">
                       Password *
                     </label>
                     <div className="relative">
@@ -536,16 +525,16 @@ export default function GuestPostingPage({ categories = [] }) {
                         value={authForm.password}
                         onChange={(e) => setAuthForm({ ...authForm, password: e.target.value })}
                         placeholder="Create a password..."
-                        className="w-full pl-9 pr-3.5 py-2.5 bg-luxury-50 border border-luxury-300 text-xs focus:bg-white focus:outline-none focus:border-gold-500"
+                        className="w-full pl-9 pr-3.5 py-2.5 bg-white border border-ink-200 rounded-lg text-sm text-ink-900 focus:outline-none focus:border-ink-400 transition"
                       />
-                      <KeyRound size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-luxury-400" />
+                      <KeyRound size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />
                     </div>
                   </div>
 
                   {authMode === 'signup' && (
                     <>
                       <div>
-                        <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-1">
+                        <label className="block text-xs font-semibold text-ink-700 mb-1">
                           Brand / Company Name
                         </label>
                         <div className="relative">
@@ -553,16 +542,16 @@ export default function GuestPostingPage({ categories = [] }) {
                             type="text"
                             value={authForm.brand_name}
                             onChange={(e) => setAuthForm({ ...authForm, brand_name: e.target.value })}
-                            placeholder="e.g. Atelier Milan / Chic Footwear"
-                            className="w-full pl-9 pr-3.5 py-2.5 bg-luxury-50 border border-luxury-300 text-xs focus:bg-white focus:outline-none focus:border-gold-500"
+                            placeholder="e.g. Atelier Milan"
+                            className="w-full pl-9 pr-3.5 py-2.5 bg-white border border-ink-200 rounded-lg text-sm text-ink-900 focus:outline-none focus:border-ink-400 transition"
                           />
-                          <Building size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-luxury-400" />
+                          <Building size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />
                         </div>
                       </div>
 
                       <div>
-                        <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-1">
-                          Brand Website / Target URL (For Backlinks)
+                        <label className="block text-xs font-semibold text-ink-700 mb-1">
+                          Brand Website / Target URL (For Backlink)
                         </label>
                         <div className="relative">
                           <input
@@ -570,11 +559,11 @@ export default function GuestPostingPage({ categories = [] }) {
                             value={authForm.brand_website}
                             onChange={(e) => setAuthForm({ ...authForm, brand_website: e.target.value })}
                             placeholder="https://yourbrand.com"
-                            className="w-full pl-9 pr-3.5 py-2.5 bg-luxury-50 border border-luxury-300 text-xs focus:bg-white focus:outline-none focus:border-gold-500"
+                            className="w-full pl-9 pr-3.5 py-2.5 bg-white border border-ink-200 rounded-lg text-sm text-ink-900 focus:outline-none focus:border-ink-400 transition font-mono"
                           />
-                          <Globe size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gold-600" />
+                          <Globe size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-accent" />
                         </div>
-                        <span className="text-[10px] text-luxury-500 mt-1 block">
+                        <span className="text-[11px] text-ink-500 mt-1 block">
                           This URL will be linked in your author bio and available for in-text anchor links.
                         </span>
                       </div>
@@ -583,55 +572,55 @@ export default function GuestPostingPage({ categories = [] }) {
 
                   <button
                     type="submit"
-                    className="w-full py-3 bg-luxury-950 text-gold-400 hover:bg-gold-500 hover:text-luxury-950 font-bold text-xs uppercase tracking-luxury transition shadow-md"
+                    className="w-full py-3 btn-primary justify-center text-sm mt-2"
                   >
-                    {authMode === 'signup' ? 'Create Contributor Pass & Start Writing' : 'Sign In & Open Studio'}
+                    {authMode === 'signup' ? 'Create Profile & Start Writing' : 'Sign In'}
                   </button>
                 </form>
 
-                <div className="mt-6 pt-5 border-t border-luxury-200 text-center">
+                <div className="mt-6 pt-5 border-t border-ink-200 text-center">
                   <button
                     onClick={() => {
                       setAuthMode(authMode === 'signup' ? 'signin' : 'signup');
                       setAuthError('');
                     }}
-                    className="text-xs text-luxury-600 hover:text-gold-700 font-semibold transition"
+                    className="text-xs text-ink-600 hover:text-ink-900 font-semibold transition"
                   >
                     {authMode === 'signup'
-                      ? 'Already have an account? Sign In here'
-                      : "New contributor? Create your free account"}
+                      ? 'Already have a contributor pass? Sign In here'
+                      : "New contributor? Create your free profile"}
                   </button>
                 </div>
               </div>
             ) : (
               /* Condition 2: Full Rich Writing Studio (Authenticated) */
-              <div className="bg-white border border-luxury-200 p-6 sm:p-12 shadow-sm animate-fadeIn">
+              <div className="max-w-reading mx-auto">
                 {/* Active Contributor Banner */}
-                <div className="mb-8 p-4 bg-luxury-950 text-white border border-gold-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="mb-8 p-4 bg-ink-100 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-gold-500 text-luxury-950 font-bold flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 rounded-full bg-ink-900 text-white font-bold flex items-center justify-center shrink-0 text-sm">
                       {contributor.name ? contributor.name[0].toUpperCase() : 'A'}
                     </div>
                     <div>
-                      <div className="text-xs font-bold text-white flex items-center gap-2">
+                      <div className="text-sm font-bold text-ink-900 flex items-center gap-2">
                         <span>{contributor.name}</span>
-                        <span className="text-[10px] bg-gold-500/20 text-gold-400 px-2 py-0.5 border border-gold-500/30 uppercase tracking-widest font-mono">
-                          VERIFIED CONTRIBUTOR
+                        <span className="text-[10px] bg-brand-accent/20 text-brand-muted px-2 py-0.5 rounded-full font-medium">
+                          Contributor
                         </span>
                       </div>
-                      <div className="text-[10px] text-luxury-300 font-light flex items-center gap-3">
+                      <div className="text-xs text-ink-500 flex items-center gap-2">
                         <span>{contributor.email}</span>
                         {contributor.brand_name && (
                           <>
-                            <span>•</span>
-                            <span className="text-gold-400">Brand: {contributor.brand_name}</span>
+                            <span>·</span>
+                            <span>{contributor.brand_name}</span>
                           </>
                         )}
                         {contributor.brand_website && (
                           <>
-                            <span>•</span>
-                            <a href={contributor.brand_website} target="_blank" rel="noreferrer" className="underline hover:text-gold-300">
-                              {contributor.brand_website}
+                            <span>·</span>
+                            <a href={contributor.brand_website} target="_blank" rel="noreferrer" className="underline hover:text-ink-900">
+                              {contributor.brand_website.replace(/^https?:\/\//, '')}
                             </a>
                           </>
                         )}
@@ -641,8 +630,8 @@ export default function GuestPostingPage({ categories = [] }) {
 
                   <button
                     onClick={handleSignOut}
-                    className="text-[11px] uppercase tracking-wider text-luxury-400 hover:text-red-400 flex items-center gap-1 transition self-start sm:self-auto"
-                    title="Switch Account"
+                    className="text-xs text-ink-500 hover:text-red-500 flex items-center gap-1 transition self-start sm:self-auto font-medium"
+                    title="Sign Out"
                   >
                     <LogOut size={13} />
                     <span>Sign Out</span>
@@ -650,33 +639,33 @@ export default function GuestPostingPage({ categories = [] }) {
                 </div>
 
                 {submittedResult ? (
-                  <div className="text-center py-12 max-w-xl mx-auto space-y-6 animate-fadeIn">
-                    <div className="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto shadow-inner">
+                  <div className="text-center py-12 max-w-lg mx-auto space-y-6">
+                    <div className="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto">
                       <CheckCircle2 size={36} />
                     </div>
                     <div>
-                      <h3 className="font-editorial text-2xl sm:text-3xl font-bold text-luxury-950 mb-2">
-                        Article Transmitted to Editorial Committee
+                      <h3 className="font-serif text-3xl font-bold text-ink-900 mb-2">
+                        Story Submitted for Review
                       </h3>
-                      <p className="text-xs text-luxury-600 leading-relaxed">
-                        Your guest submission has been recorded. Our senior editors will inspect your prose, photography, and backlinks within 48 hours.
+                      <p className="text-sm text-ink-500 leading-relaxed">
+                        Your article has been submitted to the editorial desk. We review formatting, prose, and backlinks within 48 hours.
                       </p>
                     </div>
 
                     {/* Tracking ID Badge */}
-                    <div className="p-4 bg-luxury-950 text-white border border-gold-500/50 space-y-1">
-                      <span className="text-[10px] uppercase tracking-luxury text-gold-400 font-semibold block">
-                        YOUR UNIQUE SUBMISSION TRACKING CODE
+                    <div className="p-5 border border-ink-200 rounded-xl bg-ink-100 text-center space-y-1">
+                      <span className="text-xs text-ink-500 uppercase tracking-wider font-semibold block">
+                        Your Submission Tracking Code
                       </span>
-                      <div className="font-mono text-xl sm:text-2xl font-bold tracking-widest text-white selection:bg-gold-500 selection:text-black">
+                      <div className="font-mono text-xl sm:text-2xl font-bold text-ink-900 tracking-wider">
                         {submittedResult.tracking_id}
                       </div>
-                      <p className="text-[10px] text-luxury-400 pt-1">
-                        Use this code in the "Track Submission Status" tab to check review notes and publication progress.
+                      <p className="text-xs text-ink-400 pt-1">
+                        Use this code in the "Track Submission" tab to check review progress.
                       </p>
                     </div>
 
-                    <div className="flex justify-center gap-4 pt-4">
+                    <div className="flex justify-center gap-3 pt-4">
                       <button
                         onClick={() => {
                           setSubmittedResult(null);
@@ -696,173 +685,145 @@ export default function GuestPostingPage({ categories = [] }) {
                             author_avatar: ''
                           });
                         }}
-                        className="px-6 py-2.5 bg-luxury-950 text-gold-400 text-xs uppercase font-bold tracking-luxury hover:bg-gold-500 hover:text-luxury-950 transition"
+                        className="btn-primary text-xs py-2.5 px-5"
                       >
-                        Submit Another Article
+                        Submit Another Story
                       </button>
                       <button
                         onClick={() => {
                           setTrackId(submittedResult.tracking_id);
                           setActiveTab('track');
                         }}
-                        className="px-6 py-2.5 border border-luxury-300 text-luxury-800 text-xs uppercase font-bold tracking-luxury hover:border-gold-500 transition"
+                        className="btn-ghost text-xs py-2.5 px-5"
                       >
-                        View Status Tracker
+                        Track Status
                       </button>
                     </div>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-8">
                     {errorMsg && (
-                      <div className="p-4 bg-red-50 border border-red-300 text-red-800 text-xs flex items-center gap-2">
+                      <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm flex items-center gap-2">
                         <AlertCircle size={16} className="shrink-0" />
                         <span>{errorMsg}</span>
                       </div>
                     )}
 
-                    {/* Section 1: Article Headline & Metadata */}
-                    <div>
-                      <div className="text-[10px] uppercase tracking-luxury font-bold text-gold-700 mb-3 flex items-center gap-1.5">
-                        <BookOpen size={13} />
-                        <span>STEP 1: HEADLINE & CATEGORIZATION</span>
-                      </div>
+                    {/* Medium Story Composer */}
+                    <div className="space-y-4">
+                      {/* Title Input — Medium Style */}
+                      <input
+                        type="text"
+                        name="title"
+                        required
+                        value={formData.title}
+                        onChange={handleChange}
+                        placeholder="Title"
+                        className="w-full font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-ink-900 placeholder:text-ink-300 border-none outline-none focus:outline-none bg-transparent leading-tight"
+                      />
 
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-1">
-                            Article Title / Headline *
-                          </label>
+                      {/* Subtitle Input */}
+                      <input
+                        type="text"
+                        name="pitch_summary"
+                        value={formData.pitch_summary}
+                        onChange={handleChange}
+                        placeholder="Tell your story or pitch summary..."
+                        className="w-full font-sans text-lg text-ink-600 placeholder:text-ink-300 border-none outline-none focus:outline-none bg-transparent"
+                      />
+
+                      {/* Topic & Season Selector */}
+                      <div className="flex flex-wrap items-center gap-3 pt-2 pb-4 border-b border-ink-200">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-ink-400 font-medium">Topic:</span>
+                          <select
+                            name="category_name"
+                            value={formData.category_name}
+                            onChange={handleChange}
+                            className="text-xs bg-ink-100 hover:bg-ink-200 border-none rounded-full px-3 py-1 text-ink-800 font-medium focus:outline-none cursor-pointer"
+                          >
+                            {categories.map((c) => (
+                              <option key={c.id} value={c.name}>{c.name}</option>
+                            ))}
+                            <option value="Brand Spotlight">Brand Spotlight</option>
+                            <option value="Footwear & Accessories">Footwear & Accessories</option>
+                            <option value="Textile Technology">Textile Technology</option>
+                          </select>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-ink-400 font-medium">Season:</span>
+                          <select
+                            name="season"
+                            value={formData.season}
+                            onChange={handleChange}
+                            className="text-xs bg-ink-100 hover:bg-ink-200 border-none rounded-full px-3 py-1 text-ink-800 font-medium focus:outline-none cursor-pointer"
+                          >
+                            <option value="Spring / Summer 2026">Spring / Summer 2026</option>
+                            <option value="Fall / Winter 2026">Fall / Winter 2026</option>
+                            <option value="Resort 2026">Resort 2026</option>
+                            <option value="Annual Forecast">Annual Forecast</option>
+                          </select>
+                        </div>
+
+                        <div className="flex items-center gap-2 ml-auto">
                           <input
                             type="text"
-                            name="title"
-                            required
-                            value={formData.title}
+                            name="tags"
+                            value={formData.tags}
                             onChange={handleChange}
-                            placeholder="e.g. Sculptural Silhouettes: Why Parisian Ateliers Are Championing Structured Wool in 2026"
-                            className="w-full px-4 py-3 bg-luxury-50 border border-luxury-300 text-sm sm:text-base font-editorial font-bold focus:bg-white focus:outline-none focus:border-gold-500"
-                          />
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                          <div>
-                            <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-1">
-                              Category / Niche *
-                            </label>
-                            <select
-                              name="category_name"
-                              value={formData.category_name}
-                              onChange={handleChange}
-                              className="w-full px-3.5 py-2.5 bg-luxury-50 border border-luxury-300 text-xs uppercase tracking-wider focus:bg-white focus:outline-none focus:border-gold-500"
-                            >
-                              {categories.map((c) => (
-                                <option key={c.id} value={c.name}>{c.name}</option>
-                              ))}
-                              <option value="Brand Spotlight">Brand Spotlight</option>
-                              <option value="Footwear & Accessories">Footwear & Accessories</option>
-                              <option value="Textile Technology">Textile Technology</option>
-                            </select>
-                          </div>
-
-                          <div>
-                            <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-1">
-                              Fashion Season
-                            </label>
-                            <select
-                              name="season"
-                              value={formData.season}
-                              onChange={handleChange}
-                              className="w-full px-3.5 py-2.5 bg-luxury-50 border border-luxury-300 text-xs uppercase tracking-wider focus:bg-white focus:outline-none focus:border-gold-500"
-                            >
-                              <option value="Spring / Summer 2026">Spring / Summer 2026</option>
-                              <option value="Fall / Winter 2026">Fall / Winter 2026</option>
-                              <option value="Resort 2026">Resort 2026</option>
-                              <option value="Annual Forecast">Annual Forecast</option>
-                            </select>
-                          </div>
-
-                          <div>
-                            <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-1">
-                              SEO Tags (comma-separated)
-                            </label>
-                            <input
-                              type="text"
-                              name="tags"
-                              value={formData.tags}
-                              onChange={handleChange}
-                              placeholder="couture, brand spotlight, tailoring, boots"
-                              className="w-full px-3.5 py-2.5 bg-luxury-50 border border-luxury-300 text-xs focus:bg-white focus:outline-none focus:border-gold-500"
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-1">
-                            Pitch Summary / Excerpt (1-2 sentences)
-                          </label>
-                          <textarea
-                            name="pitch_summary"
-                            rows={2}
-                            value={formData.pitch_summary}
-                            onChange={handleChange}
-                            placeholder="A concise summary highlighting the narrative of your piece..."
-                            className="w-full px-3.5 py-2 bg-luxury-50 border border-luxury-300 text-xs font-serif italic focus:bg-white focus:outline-none focus:border-gold-500"
+                            placeholder="Add tags (comma-separated)..."
+                            className="text-xs bg-ink-100 rounded-full px-3 py-1 text-ink-800 placeholder:text-ink-400 focus:outline-none border-none"
                           />
                         </div>
                       </div>
                     </div>
 
-                    {/* Section 2: Featured Image (Required) */}
-                    <div className="pt-6 border-t border-luxury-200">
-                      <div className="text-[10px] uppercase tracking-luxury font-bold text-gold-700 mb-2 flex items-center justify-between">
-                        <div className="flex items-center gap-1.5">
-                          <ImageIcon size={13} />
-                          <span>STEP 2: FEATURED IMAGE (MANDATORY COVER PHOTO) *</span>
+                    {/* Featured Cover Image Section */}
+                    <div className="border border-ink-200 rounded-xl p-5 bg-white">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <ImageIcon size={15} className="text-brand-accent" />
+                          <span className="text-xs font-bold text-ink-800 uppercase tracking-wider">
+                            Featured Cover Photo *
+                          </span>
                         </div>
                         {formData.cover_image && (
-                          <span className="text-[10px] text-emerald-700 flex items-center gap-1 font-semibold">
-                            <Check size={12} /> Image Configured
+                          <span className="text-xs text-emerald-600 flex items-center gap-1 font-medium">
+                            <Check size={13} /> Cover Selected
                           </span>
                         )}
                       </div>
 
-                      {/* Selected Image Preview */}
+                      {/* Active cover photo thumbnail */}
                       {formData.cover_image && (
-                        <div className="mb-4 p-2 bg-luxury-50 border border-luxury-300 flex items-center gap-4">
+                        <div className="relative aspect-[21/9] rounded-lg overflow-hidden bg-ink-100 mb-4 border border-ink-200">
                           <img
                             src={formData.cover_image}
-                            alt="Cover Preview"
-                            className="w-24 h-16 object-cover border border-luxury-200 shadow-xs shrink-0"
-                            loading="lazy"
+                            alt="Cover preview"
+                            className="w-full h-full object-cover"
                           />
-                          <div className="overflow-hidden text-ellipsis">
-                            <span className="text-[10px] uppercase tracking-wider font-bold text-luxury-900 block">
-                              Active Featured Cover
-                            </span>
-                            <span className="text-[10px] text-luxury-500 font-mono truncate block">
-                              {formData.cover_image}
-                            </span>
-                          </div>
                         </div>
                       )}
 
-                      {/* Presets Grid */}
-                      <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-2">
-                        Select from 4K Curated Presets:
-                      </label>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-4">
+                      {/* Presets grid */}
+                      <span className="text-xs text-ink-500 font-medium block mb-2">
+                        Pick a high-resolution editorial photo preset:
+                      </span>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 mb-3">
                         {FASHION_IMAGE_PRESETS.map((preset, idx) => (
                           <button
                             type="button"
                             key={idx}
                             onClick={() => handlePresetSelect(preset.url)}
-                            className={`text-left relative aspect-[4/3] overflow-hidden border-2 transition group ${
+                            className={`relative aspect-[4/3] rounded-lg overflow-hidden border-2 transition ${
                               formData.cover_image === preset.url
-                                ? 'border-gold-600 ring-2 ring-gold-400'
-                                : 'border-transparent opacity-75 hover:opacity-100'
+                                ? 'border-brand-accent ring-2 ring-brand-accent/20'
+                                : 'border-transparent opacity-80 hover:opacity-100'
                             }`}
                           >
-                            <img src={preset.url} alt={preset.label} className="w-full h-full object-cover" loading="lazy" />
-                            <span className="absolute bottom-0 inset-x-0 bg-black/80 text-[8px] uppercase tracking-wider text-white p-1 truncate block">
+                            <img src={preset.url} alt={preset.label} className="w-full h-full object-cover" />
+                            <span className="absolute inset-x-0 bottom-0 bg-black/70 text-[9px] text-white p-1 truncate block text-left">
                               {preset.label}
                             </span>
                           </button>
@@ -870,122 +831,76 @@ export default function GuestPostingPage({ categories = [] }) {
                       </div>
 
                       <div>
-                        <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-1">
-                          Or Provide Custom High-Resolution Image URL *
-                        </label>
                         <input
                           type="url"
                           required
                           name="cover_image"
                           value={formData.cover_image}
                           onChange={handleChange}
-                          placeholder="https://images.unsplash.com/..."
-                          className="w-full px-3.5 py-2.5 bg-luxury-50 border border-luxury-300 text-xs focus:bg-white focus:outline-none focus:border-gold-500 font-mono"
+                          placeholder="Or paste custom image URL (https://...)"
+                          className="w-full px-3 py-2 bg-ink-100 rounded-lg text-xs font-mono text-ink-800 placeholder:text-ink-400 focus:outline-none focus:bg-white border border-transparent focus:border-ink-300 transition"
                         />
                       </div>
                     </div>
 
-                    {/* Section 3: Article Content with Rich Formatting & Anchor Text Tool */}
-                    <div className="pt-6 border-t border-luxury-200">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="text-[10px] uppercase tracking-luxury font-bold text-gold-700 flex items-center gap-1.5">
-                          <Feather size={13} />
-                          <span>STEP 3: ARTICLE BODY & ANCHOR TEXT (BACKLINKS) *</span>
-                        </div>
-
-                        {/* Editor Mode Tabs */}
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setEditorMode('edit')}
-                            className={`px-3 py-1 text-[11px] uppercase font-bold tracking-wider transition flex items-center gap-1 ${
-                              editorMode === 'edit'
-                                ? 'bg-luxury-950 text-gold-400'
-                                : 'bg-luxury-100 text-luxury-600 hover:bg-luxury-200'
-                            }`}
-                          >
-                            <Edit3 size={11} />
-                            <span>Write</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setEditorMode('preview')}
-                            className={`px-3 py-1 text-[11px] uppercase font-bold tracking-wider transition flex items-center gap-1 ${
-                              editorMode === 'preview'
-                                ? 'bg-luxury-950 text-gold-400'
-                                : 'bg-luxury-100 text-luxury-600 hover:bg-luxury-200'
-                            }`}
-                          >
-                            <Eye size={11} />
-                            <span>Live Preview</span>
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Formatting Toolbar */}
-                      {editorMode === 'edit' && (
-                        <div className="border border-b-0 border-luxury-300 bg-luxury-100 p-2 flex flex-wrap items-center gap-1.5 text-xs text-luxury-800">
+                    {/* Story Editor & Toolbar */}
+                    <div>
+                      {/* Toolbar & Mode Toggle */}
+                      <div className="flex items-center justify-between py-2 border-b border-ink-200 sticky top-[57px] bg-white z-20">
+                        {/* Writing Tools */}
+                        <div className="flex items-center gap-1">
                           <button
                             type="button"
                             onClick={() => insertText('**', '**')}
-                            className="p-1.5 hover:bg-white rounded transition"
+                            className="p-2 hover:bg-ink-100 rounded-md text-ink-700 transition"
                             title="Bold"
                           >
-                            <Bold size={14} />
+                            <Bold size={15} />
                           </button>
-
                           <button
                             type="button"
                             onClick={() => insertText('*', '*')}
-                            className="p-1.5 hover:bg-white rounded transition"
+                            className="p-2 hover:bg-ink-100 rounded-md text-ink-700 transition"
                             title="Italic"
                           >
-                            <Italic size={14} />
+                            <Italic size={15} />
                           </button>
-
-                          <span className="w-px h-4 bg-luxury-300 mx-1"></span>
-
                           <button
                             type="button"
                             onClick={() => insertText('## ', '\n')}
-                            className="px-2 py-1 hover:bg-white font-bold rounded transition text-[11px]"
-                            title="Heading 2"
+                            className="px-2 py-1 hover:bg-ink-100 rounded-md text-xs font-bold text-ink-700 transition"
+                            title="Large Header"
                           >
                             H2
                           </button>
-
                           <button
                             type="button"
                             onClick={() => insertText('### ', '\n')}
-                            className="px-2 py-1 hover:bg-white font-bold rounded transition text-[11px]"
-                            title="Heading 3"
+                            className="px-2 py-1 hover:bg-ink-100 rounded-md text-xs font-bold text-ink-700 transition"
+                            title="Small Header"
                           >
                             H3
                           </button>
-
-                          <span className="w-px h-4 bg-luxury-300 mx-1"></span>
-
                           <button
                             type="button"
                             onClick={() => insertText('> ', '\n')}
-                            className="p-1.5 hover:bg-white rounded transition"
+                            className="p-2 hover:bg-ink-100 rounded-md text-ink-700 transition"
                             title="Quote"
                           >
-                            <Quote size={14} />
+                            <Quote size={15} />
                           </button>
-
                           <button
                             type="button"
                             onClick={() => insertText('- ', '\n')}
-                            className="p-1.5 hover:bg-white rounded transition"
+                            className="p-2 hover:bg-ink-100 rounded-md text-ink-700 transition"
                             title="Bullet List"
                           >
-                            <List size={14} />
+                            <List size={15} />
                           </button>
 
-                          <span className="w-px h-4 bg-luxury-300 mx-1"></span>
+                          <span className="w-px h-5 bg-ink-200 mx-1"></span>
 
-                          {/* Prominent Anchor Text / Backlink Inserter */}
+                          {/* Link Inserter Button */}
                           <button
                             type="button"
                             onClick={() => {
@@ -999,40 +914,62 @@ export default function GuestPostingPage({ categories = [] }) {
                               });
                               setShowLinkModal(true);
                             }}
-                            className="px-2.5 py-1 bg-gold-500 hover:bg-gold-400 text-luxury-950 font-bold rounded transition flex items-center gap-1 text-[11px] uppercase tracking-wider shadow-xs"
-                            title="Insert Anchor Text / Dofollow Backlink"
+                            className="inline-flex items-center gap-1 px-3 py-1 bg-ink-100 hover:bg-ink-200 rounded-full text-xs font-semibold text-ink-900 transition"
+                            title="Insert Link / Anchor Text"
                           >
-                            <LinkIcon size={12} />
-                            <span>Insert Anchor Link</span>
+                            <LinkIcon size={12} className="text-brand-accent" />
+                            <span>Add Link</span>
                           </button>
-
-                          <span className="ml-auto text-[10px] text-luxury-500 hidden sm:inline">
-                            Word Count: {formData.content.trim() ? formData.content.trim().split(/\s+/).length : 0} words
-                          </span>
                         </div>
-                      )}
 
-                      {/* Link Inserter Modal / Popover */}
+                        {/* View Switcher */}
+                        <div className="flex items-center gap-1 bg-ink-100 p-0.5 rounded-full">
+                          <button
+                            type="button"
+                            onClick={() => setEditorMode('edit')}
+                            className={`px-3 py-1 rounded-full text-xs font-medium transition ${
+                              editorMode === 'edit'
+                                ? 'bg-white shadow-xs text-ink-900 font-semibold'
+                                : 'text-ink-600 hover:text-ink-900'
+                            }`}
+                          >
+                            Write
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setEditorMode('preview')}
+                            className={`px-3 py-1 rounded-full text-xs font-medium transition ${
+                              editorMode === 'preview'
+                                ? 'bg-white shadow-xs text-ink-900 font-semibold'
+                                : 'text-ink-600 hover:text-ink-900'
+                            }`}
+                          >
+                            Preview
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Modal to insert link */}
                       {showLinkModal && (
-                        <div className="p-4 bg-luxury-950 text-white border border-gold-500 mb-3 space-y-3 shadow-xl animate-fadeIn">
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs uppercase font-bold tracking-luxury text-gold-400 flex items-center gap-1.5">
-                              <LinkIcon size={14} />
+                        <div className="my-4 p-4 border border-ink-300 rounded-xl bg-ink-100 shadow-md animate-fadeIn">
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="text-xs font-bold text-ink-900 flex items-center gap-1.5">
+                              <LinkIcon size={14} className="text-brand-accent" />
                               <span>Insert Dofollow Brand Backlink</span>
                             </span>
                             <button
                               type="button"
                               onClick={() => setShowLinkModal(false)}
-                              className="text-luxury-400 hover:text-white text-xs font-bold"
+                              className="text-xs text-ink-500 hover:text-ink-900"
                             >
                               ✕ Close
                             </button>
                           </div>
 
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                             <div>
-                              <label className="block text-[10px] uppercase tracking-wider text-luxury-300 mb-1">
-                                Anchor Text (Keyword to click on) *
+                              <label className="block text-xs text-ink-700 font-medium mb-1">
+                                Anchor Text (keyword to click) *
                               </label>
                               <input
                                 type="text"
@@ -1040,13 +977,12 @@ export default function GuestPostingPage({ categories = [] }) {
                                 value={linkData.text}
                                 onChange={(e) => setLinkData({ ...linkData, text: e.target.value })}
                                 placeholder="e.g. Handmade Italian Leather Atelier"
-                                className="w-full px-3 py-2 bg-[#1a1a20] border border-luxury-700 text-xs text-white placeholder-luxury-500 focus:outline-none focus:border-gold-500"
+                                className="w-full px-3 py-2 bg-white border border-ink-200 rounded-lg text-xs text-ink-900 focus:outline-none focus:border-ink-400"
                               />
                             </div>
-
                             <div>
-                              <label className="block text-[10px] uppercase tracking-wider text-luxury-300 mb-1">
-                                Target Destination URL (Brand Backlink) *
+                              <label className="block text-xs text-ink-700 font-medium mb-1">
+                                Target Destination URL *
                               </label>
                               <input
                                 type="url"
@@ -1054,69 +990,73 @@ export default function GuestPostingPage({ categories = [] }) {
                                 value={linkData.url}
                                 onChange={(e) => setLinkData({ ...linkData, url: e.target.value })}
                                 placeholder="https://yourbrand.com/collection"
-                                className="w-full px-3 py-2 bg-[#1a1a20] border border-luxury-700 text-xs text-white placeholder-luxury-500 focus:outline-none focus:border-gold-500 font-mono"
+                                className="w-full px-3 py-2 bg-white border border-ink-200 rounded-lg text-xs text-ink-900 focus:outline-none focus:border-ink-400 font-mono"
                               />
                             </div>
                           </div>
 
-                          <div className="flex justify-end gap-2 pt-1">
+                          <div className="flex justify-end gap-2">
                             <button
                               type="button"
                               onClick={() => setShowLinkModal(false)}
-                              className="px-3 py-1.5 border border-luxury-700 text-luxury-300 text-xs uppercase"
+                              className="px-3 py-1.5 text-xs text-ink-600 hover:text-ink-900 font-medium"
                             >
                               Cancel
                             </button>
                             <button
                               type="button"
                               onClick={handleInsertLink}
-                              className="px-4 py-1.5 bg-gold-500 text-luxury-950 font-bold text-xs uppercase tracking-luxury hover:bg-gold-400 transition"
+                              className="btn-primary text-xs py-1.5 px-4"
                             >
-                              Embed Anchor Link
+                              Embed Link
                             </button>
                           </div>
                         </div>
                       )}
 
-                      {/* Content Input or Live Reader Preview */}
+                      {/* Content Canvas */}
                       {editorMode === 'edit' ? (
                         <textarea
                           id="article-content-editor"
                           name="content"
                           required
-                          rows={14}
+                          rows={16}
                           value={formData.content}
                           onChange={handleChange}
-                          placeholder="Draft your editorial article here. Use the formatting buttons above to structure your piece with Bold, Headings, and Anchor Links to your brand...&#10;&#10;Example:&#10;## The New Renaissance of Luxury Tailoring&#10;Contemporary ateliers are moving away from loud monograms and returning to sensory tactility. In our latest collection at [Atelier Milan](https://ateliermilan.com), we focus on unlined double-faced cashmere that drapes with architectural poise..."
-                          className="w-full px-4 py-3 bg-luxury-50 border border-luxury-300 text-sm font-serif leading-relaxed text-luxury-900 focus:bg-white focus:outline-none focus:border-gold-500 font-normal"
+                          placeholder="Tell your story...&#10;&#10;Use headings, quotes, and links to craft an engaging fashion article.&#10;&#10;Example:&#10;## The New Renaissance of Luxury Tailoring&#10;Contemporary ateliers are moving away from loud monograms and returning to sensory tactility. In our latest collection at [Atelier Milan](https://ateliermilan.com), we focus on unlined double-faced cashmere that drapes with architectural poise..."
+                          className="w-full pt-4 font-serif text-lg sm:text-xl leading-relaxed text-ink-800 placeholder:text-ink-300 border-none outline-none focus:outline-none bg-transparent resize-y min-h-[360px]"
                         />
                       ) : (
-                        <div className="p-6 bg-white border border-luxury-300 min-h-[300px]">
-                          <div className="text-[10px] uppercase tracking-widest text-gold-600 font-bold pb-2 mb-4 border-b border-luxury-100 flex items-center justify-between">
-                            <span>LIVE READER VIEW PREVIEW</span>
-                            <span className="text-luxury-400 font-normal">Clickable anchor links shown in gold</span>
+                        <div className="pt-6 min-h-[360px]">
+                          <div className="border-b border-ink-200 pb-2 mb-6 flex items-center justify-between text-xs text-ink-400">
+                            <span>Story Preview</span>
+                            <span>Links will render live upon publication</span>
                           </div>
                           {renderPreviewContent(formData.content)}
                         </div>
                       )}
 
-                      <div className="text-[10px] text-luxury-500 mt-2 flex flex-wrap items-center gap-4">
-                        <span>💡 Anchor Links render with permanent dofollow value</span>
-                        <span>💡 Tip: Click "Live Preview" to test how your anchor links look and click</span>
-                        <span>💡 Recommended length: 800 - 2,500 words</span>
+                      <div className="text-xs text-ink-400 flex items-center justify-between pt-3 border-t border-ink-200">
+                        <span>Word Count: {formData.content.trim() ? formData.content.trim().split(/\s+/).length : 0} words</span>
+                        <span>Recommended: 800 - 2,500 words</span>
                       </div>
                     </div>
 
-                    {/* Section 4: Author Bio & Brand Link Attribution */}
-                    <div className="pt-6 border-t border-luxury-200">
-                      <div className="text-[10px] uppercase tracking-luxury font-bold text-gold-700 mb-3 flex items-center gap-1.5">
-                        <User size={13} />
-                        <span>STEP 4: AUTHOR ATTRIBUTION & PERMANENT BACKLINK</span>
+                    {/* Author & Backlink Attribution Section */}
+                    <div className="border border-ink-200 rounded-xl p-6 bg-white space-y-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <User size={16} className="text-brand-accent" />
+                        <h4 className="font-serif text-base font-bold text-ink-900">
+                          Author Bio &amp; Permanent Backlink
+                        </h4>
                       </div>
+                      <p className="text-xs text-ink-500 leading-relaxed">
+                        This information will appear in the author card at the bottom of your published story.
+                      </p>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-1">
+                          <label className="block text-xs font-semibold text-ink-700 mb-1">
                             Author Name *
                           </label>
                           <input
@@ -1126,12 +1066,12 @@ export default function GuestPostingPage({ categories = [] }) {
                             value={formData.author_name}
                             onChange={handleChange}
                             placeholder="Your full name"
-                            className="w-full px-3.5 py-2.5 bg-luxury-50 border border-luxury-300 text-xs focus:bg-white focus:outline-none focus:border-gold-500"
+                            className="w-full px-3.5 py-2.5 bg-ink-100 rounded-lg text-sm text-ink-900 focus:outline-none focus:bg-white border border-transparent focus:border-ink-300"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-1">
+                          <label className="block text-xs font-semibold text-ink-700 mb-1">
                             Author Email *
                           </label>
                           <input
@@ -1140,13 +1080,13 @@ export default function GuestPostingPage({ categories = [] }) {
                             name="author_email"
                             value={formData.author_email}
                             onChange={handleChange}
-                            placeholder="your.email@domain.com"
-                            className="w-full px-3.5 py-2.5 bg-luxury-50 border border-luxury-300 text-xs focus:bg-white focus:outline-none focus:border-gold-500"
+                            placeholder="your.email@example.com"
+                            className="w-full px-3.5 py-2.5 bg-ink-100 rounded-lg text-sm text-ink-900 focus:outline-none focus:bg-white border border-transparent focus:border-ink-300"
                           />
                         </div>
 
                         <div>
-                          <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-1">
+                          <label className="block text-xs font-semibold text-ink-700 mb-1">
                             Brand / Website Backlink URL
                           </label>
                           <input
@@ -1155,15 +1095,15 @@ export default function GuestPostingPage({ categories = [] }) {
                             value={formData.author_website}
                             onChange={handleChange}
                             placeholder="https://yourbrand.com"
-                            className="w-full px-3.5 py-2.5 bg-luxury-50 border border-luxury-300 text-xs focus:bg-white focus:outline-none focus:border-gold-500 font-mono"
+                            className="w-full px-3.5 py-2.5 bg-ink-100 rounded-lg text-sm text-ink-900 focus:outline-none focus:bg-white border border-transparent focus:border-ink-300 font-mono"
                           />
-                          <span className="text-[9px] text-luxury-500 block mt-0.5">
-                            This URL receives a prominent author dofollow link in the article footer.
+                          <span className="text-[11px] text-ink-400 mt-1 block">
+                            Permanent dofollow attribution backlink.
                           </span>
                         </div>
 
                         <div>
-                          <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-1">
+                          <label className="block text-xs font-semibold text-ink-700 mb-1">
                             Social Handle
                           </label>
                           <input
@@ -1172,38 +1112,38 @@ export default function GuestPostingPage({ categories = [] }) {
                             value={formData.author_social}
                             onChange={handleChange}
                             placeholder="@yourbrand"
-                            className="w-full px-3.5 py-2.5 bg-luxury-50 border border-luxury-300 text-xs focus:bg-white focus:outline-none focus:border-gold-500"
+                            className="w-full px-3.5 py-2.5 bg-ink-100 rounded-lg text-sm text-ink-900 focus:outline-none focus:bg-white border border-transparent focus:border-ink-300"
                           />
                         </div>
 
                         <div className="sm:col-span-2">
-                          <label className="block text-[11px] uppercase tracking-wider font-semibold text-luxury-800 mb-1">
-                            Author Bio / Brand Description (2-3 sentences)
+                          <label className="block text-xs font-semibold text-ink-700 mb-1">
+                            Author Bio
                           </label>
                           <input
                             type="text"
                             name="author_bio"
                             value={formData.author_bio}
                             onChange={handleChange}
-                            placeholder="e.g. Editorial writer and creative director at Atelier Milan, specializing in architectural outerwear and heritage Italian leathercraft."
-                            className="w-full px-3.5 py-2.5 bg-luxury-50 border border-luxury-300 text-xs focus:bg-white focus:outline-none focus:border-gold-500"
+                            placeholder="Fashion writer and stylist specializing in luxury footwear and heritage tailoring."
+                            className="w-full px-3.5 py-2.5 bg-ink-100 rounded-lg text-sm text-ink-900 focus:outline-none focus:bg-white border border-transparent focus:border-ink-300"
                           />
                         </div>
                       </div>
                     </div>
 
-                    {/* Submit Action */}
-                    <div className="pt-8 border-t border-luxury-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-                      <p className="text-[11px] text-luxury-500 max-w-md">
-                        By submitting, you certify that this work is original and adheres to the ZAIB ATTIRE Editorial Standards. Anchor links and brand citations will be indexed upon publication.
+                    {/* Publish / Submit Action Button */}
+                    <div className="pt-6 border-t border-ink-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                      <p className="text-xs text-ink-400 max-w-sm">
+                        By submitting, you confirm this story is original and conforms to our editorial standards.
                       </p>
                       <button
                         type="submit"
                         disabled={submitting}
-                        className="w-full sm:w-auto px-10 py-3.5 bg-luxury-950 text-gold-400 hover:bg-gold-500 hover:text-luxury-950 transition text-xs uppercase tracking-luxury font-bold shadow-lg flex items-center justify-center gap-2 disabled:opacity-50"
+                        className="w-full sm:w-auto btn-primary py-3.5 px-8 text-sm disabled:opacity-50"
                       >
-                        <span>{submitting ? 'Transmitting To Editorial Desk...' : 'Submit Article For Review'}</span>
-                        <Send size={13} />
+                        <Feather size={15} />
+                        <span>{submitting ? 'Transmitting story...' : 'Publish / Submit Story'}</span>
                       </button>
                     </div>
                   </form>
@@ -1215,82 +1155,73 @@ export default function GuestPostingPage({ categories = [] }) {
 
         {/* TAB 2: TRACK SUBMISSION STATUS */}
         {activeTab === 'track' && (
-          <div className="bg-white border border-luxury-200 p-6 sm:p-12 shadow-sm max-w-3xl mx-auto">
-            <div className="text-center mb-8">
-              <Search size={32} className="text-gold-600 mx-auto mb-2" />
-              <h3 className="font-editorial text-2xl sm:text-3xl font-bold text-luxury-950 mb-2">
-                Real-Time Submission Status Lookup
+          <div className="border border-ink-200 rounded-2xl p-8 sm:p-12 max-w-lg mx-auto bg-white shadow-xs">
+            <div className="text-center mb-6">
+              <Search size={30} className="text-brand-accent mx-auto mb-2" />
+              <h3 className="font-serif text-2xl font-bold text-ink-900 mb-1.5">
+                Check Submission Status
               </h3>
-              <p className="text-xs text-luxury-600 max-w-md mx-auto">
-                Enter your unique tracking code (format: GP-XXXX or ZAIB-GUEST-XXXX) to review live editorial progress.
+              <p className="text-sm text-ink-500">
+                Enter your tracking code (e.g. GP-XXXX or ZAIB-GUEST-XXXX).
               </p>
             </div>
 
-            <form onSubmit={handleTrackSubmit} className="flex gap-2 max-w-lg mx-auto mb-8">
+            <form onSubmit={handleTrackSubmit} className="flex gap-2 mb-6">
               <input
                 type="text"
                 required
                 value={trackId}
                 onChange={(e) => setTrackId(e.target.value.toUpperCase())}
                 placeholder="GP-..."
-                className="flex-1 px-4 py-3 bg-luxury-50 border border-luxury-300 font-mono text-sm tracking-wider uppercase focus:bg-white focus:outline-none focus:border-gold-500"
+                className="flex-1 px-3.5 py-2.5 bg-ink-100 rounded-lg font-mono text-sm uppercase text-ink-900 focus:outline-none focus:bg-white border border-transparent focus:border-ink-300"
               />
               <button
                 type="submit"
                 disabled={trackingLoading}
-                className="px-6 py-3 bg-luxury-950 text-gold-400 hover:bg-gold-500 hover:text-luxury-950 transition text-xs uppercase tracking-luxury font-bold shrink-0 disabled:opacity-50"
+                className="btn-primary text-xs py-2.5 px-5 shrink-0 disabled:opacity-50"
               >
                 {trackingLoading ? 'Checking...' : 'Check Status'}
               </button>
             </form>
 
             {trackingError && (
-              <div className="p-4 bg-red-50 border border-red-300 text-red-800 text-xs flex items-center gap-2 max-w-lg mx-auto">
-                <AlertCircle size={16} />
+              <div className="p-3.5 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs flex items-center gap-2">
+                <AlertCircle size={15} className="shrink-0" />
                 <span>{trackingError}</span>
               </div>
             )}
 
             {trackingResult && (
-              <div className="border border-luxury-300 p-6 bg-luxury-50/70 max-w-lg mx-auto space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-luxury-200">
-                  <span className="text-[10px] uppercase tracking-luxury font-bold text-luxury-500">
-                    DISPATCH RECORD
-                  </span>
-                  <span className="font-mono text-xs font-bold text-luxury-950">
-                    {trackingResult.tracking_id || trackId}
-                  </span>
+              <div className="border border-ink-200 rounded-xl p-5 bg-ink-50/70 space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b border-ink-200 text-xs">
+                  <span className="font-semibold text-ink-500">RECORD</span>
+                  <span className="font-mono font-bold text-ink-900">{trackingResult.tracking_id || trackId}</span>
                 </div>
-
                 <div>
-                  <h4 className="font-editorial text-lg font-bold text-luxury-950 mb-1">
+                  <h4 className="font-serif text-base font-bold text-ink-900 mb-1">
                     {trackingResult.title}
                   </h4>
-                  <div className="text-xs text-luxury-600 flex items-center gap-2">
-                    <span>By {trackingResult.author_name || contributor?.name || 'Author'}</span>
-                    <span>•</span>
-                    <span className="text-gold-700 font-semibold">{trackingResult.category_name || 'Fashion'}</span>
-                  </div>
+                  <p className="text-xs text-ink-500">
+                    By {trackingResult.author_name || 'Author'} · {trackingResult.category_name || 'Fashion'}
+                  </p>
                 </div>
 
-                <div className="p-3 bg-white border border-luxury-200 flex items-center justify-between">
-                  <span className="text-xs uppercase tracking-wider font-semibold text-luxury-700">
-                    CURRENT EDITORIAL STATUS:
-                  </span>
-                  <span className={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-none ${
-                    trackingResult.status === 'approved' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
-                    trackingResult.status === 'rejected' ? 'bg-red-100 text-red-800 border border-red-300' :
-                    'bg-amber-100 text-amber-800 border border-amber-300'
+                <div className="p-3 bg-white border border-ink-200 rounded-lg flex items-center justify-between">
+                  <span className="text-xs font-semibold text-ink-700">STATUS:</span>
+                  <span className={`px-2.5 py-1 text-[11px] font-bold rounded-full ${
+                    trackingResult.status === 'approved' ? 'bg-emerald-100 text-emerald-800' :
+                    trackingResult.status === 'rejected' ? 'bg-red-100 text-red-800' :
+                    'bg-amber-100 text-amber-800'
                   }`}>
-                    {trackingResult.status === 'approved' ? '✓ APPROVED & PUBLISHED' :
-                     trackingResult.status === 'rejected' ? '✗ DECLINED' : '⏳ UNDER REVIEW (PENDING)'}
+                    {trackingResult.status === 'approved' ? '✓ Approved & Published' :
+                     trackingResult.status === 'rejected' ? '✗ Declined' : '⏳ Under Review'}
                   </span>
                 </div>
 
                 {trackingResult.reviewer_notes && (
-                  <div className="p-3 bg-champagne-50 border border-gold-300 text-xs text-luxury-800 italic font-serif">
-                    <span className="font-sans font-bold uppercase text-[9px] text-gold-800 block not-italic mb-1">
-                      EDITOR'S NOTE:
+                  <div className="p-3 bg-white border border-ink-200 rounded-lg text-xs text-ink-700 italic">
+                    <span className="font-sans font-bold text-[10px] text-brand-muted block not-italic mb-1">
+                      EDITOR NOTES:
                     </span>
                     "{trackingResult.reviewer_notes}"
                   </div>
@@ -1302,96 +1233,89 @@ export default function GuestPostingPage({ categories = [] }) {
 
         {/* TAB 3: GUIDELINES & CODEX */}
         {activeTab === 'guidelines' && (
-          <div className="bg-white border border-luxury-200 p-6 sm:p-12 shadow-sm space-y-8">
-            <div>
-              <span className="text-[10px] uppercase tracking-luxury font-bold text-gold-700 block mb-1">
-                EDITORIAL INTEGRITY & LINK QUALITY
-              </span>
-              <h3 className="font-editorial text-2xl sm:text-3xl font-bold text-luxury-950 mb-3">
-                The ZAIB ATTIRE Contributor Codex
+          <div className="max-w-3xl mx-auto space-y-8">
+            <div className="text-center">
+              <h3 className="font-serif text-3xl font-bold text-ink-900 mb-2">
+                Editorial Guidelines
               </h3>
-              <p className="text-xs text-luxury-600 leading-relaxed max-w-3xl">
-                We accept guest posts across fashion, apparel, sustainability, runway critiques, footwear, luxury accessories, and designer profiles. Every article is indexed and permanently maintained with high authority signals.
+              <p className="text-base text-ink-500">
+                Standards for guest contributors, authors, and partner brands.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
-              <div className="border border-luxury-200 p-6 space-y-3">
-                <h4 className="font-editorial text-lg font-bold text-luxury-950 flex items-center gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="border border-ink-200 rounded-2xl p-6 bg-white space-y-3">
+                <h4 className="font-serif text-lg font-bold text-ink-900 flex items-center gap-2">
                   <Check size={18} className="text-emerald-600" />
-                  <span>Accepted Article Topics</span>
+                  <span>Accepted Topics</span>
                 </h4>
-                <ul className="text-xs text-luxury-700 space-y-2 list-disc list-inside leading-relaxed font-serif">
+                <ul className="text-sm text-ink-600 space-y-2 list-disc list-inside leading-relaxed font-serif">
                   <li>Runway reviews of Paris, Milan, London, and New York Fashion Weeks.</li>
-                  <li>Brand launch analyses and designer studio showcases.</li>
+                  <li>Brand launch analyses and designer studio spotlights.</li>
                   <li>In-depth textile analysis: cashmere, silk organza, sustainable leather.</li>
                   <li>Streetwear subcultures and urban footwear trends.</li>
-                  <li>Quiet luxury, minimalist aesthetics, and wardrobe curation.</li>
+                  <li>Quiet luxury, minimalist aesthetics, and capsule wardrobes.</li>
                 </ul>
               </div>
 
-              <div className="border border-luxury-200 p-6 space-y-3">
-                <h4 className="font-editorial text-lg font-bold text-luxury-950 flex items-center gap-2">
-                  <AlertCircle size={18} className="text-amber-600" />
-                  <span>Backlink & Hyperlink Rules</span>
+              <div className="border border-ink-200 rounded-2xl p-6 bg-white space-y-3">
+                <h4 className="font-serif text-lg font-bold text-ink-900 flex items-center gap-2">
+                  <AlertCircle size={18} className="text-brand-muted" />
+                  <span>Backlink Rules</span>
                 </h4>
-                <ul className="text-xs text-luxury-700 space-y-2 list-disc list-inside leading-relaxed font-serif">
+                <ul className="text-sm text-ink-600 space-y-2 list-disc list-inside leading-relaxed font-serif">
                   <li>Natural contextual anchor text linking to relevant product/brand pages.</li>
                   <li>1-2 dofollow in-content anchor links allowed per 1,000 words.</li>
                   <li>1 permanent dofollow backlink in the Author Attribution card.</li>
-                  <li>Links must point to legitimate, HTTPS fashion/lifestyle/business domains.</li>
+                  <li>Links must point to legitimate, HTTPS domains.</li>
                   <li>No broken, deceptive, or spam link schemes.</li>
                 </ul>
               </div>
             </div>
 
-            <div className="pt-6 text-center">
+            <div className="text-center pt-4">
               <button
                 onClick={() => setActiveTab('submit')}
-                className="px-8 py-3 bg-luxury-950 text-gold-400 font-bold text-xs uppercase tracking-luxury hover:bg-gold-500 hover:text-luxury-950 transition inline-flex items-center gap-2"
+                className="btn-primary text-sm py-3 px-6"
               >
-                <span>Ready To Publish? Proceed To Form</span>
-                <ArrowRight size={13} />
+                <span>Ready to Submit? Write Your Story</span>
+                <ArrowRight size={14} />
               </button>
             </div>
           </div>
         )}
 
-        {/* High-Intent FAQ Section (Matches JSON-LD Schema for Google Rich Snippets) */}
-        <div className="mt-16 pt-12 border-t border-luxury-200">
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-luxury-950 text-gold-400 text-[10px] tracking-luxury uppercase font-bold mb-3">
-              <HelpCircle size={12} />
-              <span>FREQUENTLY ASKED QUESTIONS</span>
-            </div>
-            <h3 className="font-editorial text-2xl sm:text-3xl font-bold text-luxury-950">
-              Contributor &amp; Backlink Intelligence
+        {/* FAQ Accordion Section */}
+        <div className="mt-16 pt-12 border-t border-ink-200 max-w-3xl mx-auto">
+          <div className="text-center mb-8">
+            <h3 className="font-serif text-2xl font-bold text-ink-900 mb-2">
+              Frequently Asked Questions
             </h3>
-            <p className="text-xs text-luxury-600 mt-2 font-serif">
-              Key insights into our publication workflow, indexation speed, and dofollow backlink policies.
+            <p className="text-sm text-ink-500">
+              Everything you need to know about publishing and backlinks on ZAIB ATTIRE.
             </p>
           </div>
 
-          <div className="max-w-3xl mx-auto space-y-3">
+          <div className="space-y-3">
             {GUEST_POSTING_FAQS.map((faq, idx) => {
               const isOpen = openFaqIndex === idx;
               return (
                 <div
                   key={idx}
-                  className="border border-luxury-200 bg-white transition shadow-2xs overflow-hidden"
+                  className="border border-ink-200 rounded-xl bg-white overflow-hidden transition"
                 >
                   <button
                     onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
-                    className="w-full px-5 py-4 text-left flex items-center justify-between gap-4 font-editorial font-bold text-base text-luxury-950 hover:text-gold-700 transition"
+                    className="w-full px-5 py-4 text-left flex items-center justify-between gap-4 font-serif font-bold text-base text-ink-900 hover:text-ink-600 transition"
                   >
                     <span>{faq.question}</span>
                     <ChevronDown
                       size={18}
-                      className={`text-gold-600 transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180' : ''}`}
+                      className={`text-ink-400 transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180' : ''}`}
                     />
                   </button>
                   {isOpen && (
-                    <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-luxury-700 font-serif leading-relaxed border-t border-luxury-100 bg-[#fafaf8]/50">
+                    <div className="px-5 pb-5 pt-1 text-sm text-ink-600 font-serif leading-relaxed border-t border-ink-100">
                       {faq.answer}
                     </div>
                   )}

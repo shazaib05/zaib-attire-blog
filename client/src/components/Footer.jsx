@@ -1,145 +1,158 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Feather, ArrowUpRight, Sparkles, Megaphone, Shield } from 'lucide-react';
+import { Feather, Mail } from 'lucide-react';
+
+const XIcon = ({ size = 15 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+  </svg>
+);
+
+const InstagramIcon = ({ size = 15 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+  </svg>
+);
+
+const LinkedinIcon = ({ size = 15 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+    <rect width="4" height="12" x="2" y="9"/>
+    <circle cx="4" cy="4" r="2"/>
+  </svg>
+);
 
 export default function Footer({ categories = [] }) {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="bg-luxury-950 text-luxury-300 border-t border-luxury-800 pt-16 pb-12 text-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-8">
-        
-        {/* Main Columns Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-luxury-850">
-          
-          {/* Brand Manifesto & Official Logo */}
-          <div className="md:col-span-4 space-y-4">
+    <footer className="border-t border-ink-200 bg-white mt-16">
+      {/* Main content */}
+      <div className="max-w-content mx-auto px-5 sm:px-8 py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+
+          {/* Brand column */}
+          <div className="sm:col-span-2 lg:col-span-1 space-y-4">
             <Link to="/" className="inline-block group">
               <img
                 src="/logo.png"
                 alt="ZAIB ATTIRE"
-                className="h-6 sm:h-7 w-auto object-contain brightness-0 invert opacity-100 group-hover:scale-105 transition"
+                className="h-[26px] w-auto object-contain opacity-90 group-hover:opacity-100 transition-opacity"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'block';
+                }}
               />
+              <span className="hidden font-serif text-lg font-bold text-ink-900">ZAIB ATTIRE</span>
             </Link>
-            <p className="font-cormorant text-base sm:text-lg text-luxury-400 leading-relaxed italic max-w-sm">
-              "Dedicated to chronicling the highest echelon of sartorial expression, runway narratives, and emerging global fashion movements."
+            <p className="text-sm text-ink-500 leading-relaxed max-w-xs">
+              A premier fashion editorial and guest posting platform. Explore haute couture, runway trends, and publish your writing with a dofollow backlink.
             </p>
-            <div className="flex items-center space-x-3 pt-2 text-[10px] tracking-luxury uppercase font-medium text-gold-400">
-              <span>PARIS</span>
-              <span>•</span>
-              <span>MILAN</span>
-              <span>•</span>
-              <span>LONDON</span>
-              <span>•</span>
-              <span>NEW YORK</span>
+            {/* Social links */}
+            <div className="flex items-center gap-3 pt-1">
+              {[
+                { icon: XIcon, label: 'Twitter', href: '#' },
+                { icon: InstagramIcon, label: 'Instagram', href: '#' },
+                { icon: LinkedinIcon, label: 'LinkedIn', href: '#' },
+                { icon: Mail, label: 'Email', href: '/contact' },
+              ].map(({ icon: Icon, label, href }) => (
+                <a
+                  key={label}
+                  href={href}
+                  className="p-2 rounded-full bg-ink-100 hover:bg-ink-200 text-ink-600 hover:text-ink-900 transition-colors"
+                  title={label}
+                  aria-label={label}
+                >
+                  <Icon size={15} />
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Site Navigation Pages */}
-          <div className="md:col-span-2 space-y-3">
-            <div className="text-[10px] tracking-luxury uppercase font-bold text-white mb-2">
-              JOURNAL PAGES
-            </div>
-            <ul className="space-y-2 uppercase tracking-wider text-[11px]">
-              <li>
-                <Link to="/" className="hover:text-gold-400 transition">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link to="/blog" className="hover:text-gold-400 transition">
-                  Fashion Blog & Trends
-                </Link>
-              </li>
-              <li>
-                <Link to="/write" className="hover:text-gold-400 transition text-gold-400 flex items-center gap-1 font-semibold">
-                  <Feather size={11} />
-                  <span>Write a Guest Post</span>
-                </Link>
-              </li>
-              <li>
-                <Link to="/advertise" className="hover:text-gold-400 transition flex items-center gap-1">
-                  <Megaphone size={11} />
-                  <span>Advertise</span>
-                </Link>
-              </li>
-              <li>
-                <Link to="/about" className="hover:text-gold-400 transition">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link to="/contact" className="hover:text-gold-400 transition">
-                  Contact
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Trend Departments */}
-          <div className="md:col-span-3 space-y-3">
-            <div className="text-[10px] tracking-luxury uppercase font-bold text-white mb-2">
-              TREND CATEGORIES
-            </div>
-            <ul className="space-y-2 uppercase tracking-wider text-[11px]">
-              <li>
-                <Link to="/trends" className="hover:text-gold-400 transition">
-                  All Runway Stories
-                </Link>
-              </li>
-              {categories.map((c) => (
-                <li key={c.id}>
+          {/* Navigation */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-ink-900 uppercase tracking-widest">Navigate</h4>
+            <ul className="space-y-2.5">
+              {[
+                { to: '/', label: 'Home' },
+                { to: '/blog', label: 'Stories & Blog' },
+                { to: '/write', label: 'Write for Us', highlight: true },
+                { to: '/advertise', label: 'Advertise' },
+                { to: '/about', label: 'About' },
+                { to: '/contact', label: 'Contact' },
+              ].map(({ to, label, highlight }) => (
+                <li key={to}>
                   <Link
-                    to={`/trends?category=${encodeURIComponent(c.name)}`}
-                    className="hover:text-gold-400 transition text-luxury-400"
+                    to={to}
+                    className={`text-sm transition-colors ${
+                      highlight
+                        ? 'text-brand-accent font-semibold hover:text-brand-muted flex items-center gap-1'
+                        : 'text-ink-500 hover:text-ink-900'
+                    }`}
                   >
-                    {c.name}
+                    {highlight && <Feather size={12} />}
+                    {label}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Contributor Atelier Pitch */}
-          <div className="md:col-span-3 space-y-4">
-            <div className="text-[10px] tracking-luxury uppercase font-bold text-white mb-2">
-              CONTRIBUTOR ATELIER
-            </div>
-            <p className="text-luxury-400 text-xs leading-relaxed">
-              We welcome fashion scholars, stylists, and subculture writers to publish guest articles on ZAIB ATTIRE with dofollow author backlinks.
+          {/* Topics */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold text-ink-900 uppercase tracking-widest">Topics</h4>
+            <ul className="space-y-2.5">
+              <li>
+                <Link to="/blog" className="text-sm text-ink-500 hover:text-ink-900 transition-colors">
+                  All Topics
+                </Link>
+              </li>
+              {categories.slice(0, 7).map((cat) => (
+                <li key={cat.id}>
+                  <Link
+                    to={`/trends?category=${encodeURIComponent(cat.name)}`}
+                    className="text-sm text-ink-500 hover:text-ink-900 transition-colors"
+                  >
+                    {cat.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Guest post CTA */}
+          <div className="space-y-4">
+            <h4 className="text-xs font-bold text-ink-900 uppercase tracking-widest">Write for Us</h4>
+            <p className="text-sm text-ink-500 leading-relaxed">
+              Publish fashion articles, trend analyses, and brand stories on ZAIB ATTIRE — completely free, with a dofollow backlink.
             </p>
             <Link
-              to="/write-for-us"
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-luxury-900 border border-gold-500/50 text-gold-400 hover:bg-gold-500 hover:text-luxury-950 transition text-xs uppercase tracking-luxury font-bold"
+              to="/write"
+              className="btn-gold inline-flex text-sm py-2.5 px-5 rounded-full"
+              id="footer-guest-post-btn"
             >
-              <Feather size={12} />
-              <span>Submit Guest Pitch</span>
-              <ArrowUpRight size={12} />
+              <Feather size={14} />
+              Submit a Guest Post
             </Link>
+            <p className="text-xs text-ink-400 mt-1">Fast 48-hour review · 100% Free</p>
           </div>
 
         </div>
+      </div>
 
-        {/* Bottom Colophon Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] text-luxury-500 gap-4">
-          <div>
-            © {new Date().getFullYear()} ZAIB ATTIRE JOURNAL. All rights reserved. Self-hosted database & guest posting backend.
-          </div>
-
-          <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-[10px] uppercase tracking-wider">
-            <Link to="/write" className="hover:text-gold-400 transition">
-              Contributor Codex
-            </Link>
-            <Link to="/advertise" className="hover:text-gold-400 transition">
-              Media Kit 2026
-            </Link>
-            <Link to="/privacy" className="hover:text-gold-400 transition">
-              Privacy Policy
-            </Link>
-            <Link to="/terms" className="hover:text-gold-400 transition">
-              Terms &amp; Guidelines
-            </Link>
+      {/* Bottom bar */}
+      <div className="border-t border-ink-200">
+        <div className="max-w-content mx-auto px-5 sm:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ink-400">
+          <p>© {currentYear} ZAIB ATTIRE Journal. All rights reserved.</p>
+          <div className="flex flex-wrap items-center gap-4">
+            <Link to="/privacy" className="hover:text-ink-700 transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="hover:text-ink-700 transition-colors">Terms of Use</Link>
+            <Link to="/write" className="hover:text-ink-700 transition-colors">Guest Post Guidelines</Link>
+            <Link to="/advertise" className="hover:text-ink-700 transition-colors">Media Kit</Link>
           </div>
         </div>
-
       </div>
     </footer>
   );

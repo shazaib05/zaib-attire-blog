@@ -8,7 +8,7 @@ export default function PrivacyPolicyPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#fafaf8] py-12 sm:py-16 animate-fadeIn font-sans">
+    <div className="min-h-screen bg-white py-12 sm:py-16 animate-fadeIn font-sans">
       <SEO
         title="Privacy Policy — Data Protection & Contributor Privacy"
         description="Official privacy policy for ZAIB ATTIRE. How we protect contributor lead data, newsletter subscribers, cookies, and digital editorial communications."
@@ -20,75 +20,74 @@ export default function PrivacyPolicyPage() {
         ]}
       />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-8">
+      <div className="max-w-reading mx-auto px-5 sm:px-8">
         
         {/* Header */}
-        <div className="border-b border-luxury-200 pb-8 mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-luxury-950 text-gold-400 text-[10px] tracking-luxury uppercase font-bold mb-4">
-            <Shield size={12} />
-            <span>LEGAL &amp; COMPLIANCE CODEX • E-E-A-T TRUSTED</span>
+        <div className="border-b border-ink-200 pb-8 mb-10">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="w-3 h-[2px] bg-brand-accent"></span>
+            <span className="text-xs font-semibold text-ink-500 uppercase tracking-wider">
+              Legal &amp; Data Ethics
+            </span>
           </div>
-          <h1 className="font-editorial text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-luxury-950 mb-3">
+          <h1 className="font-serif text-4xl sm:text-5xl font-bold tracking-tight text-ink-900 mb-3">
             Privacy Policy
           </h1>
-          <p className="text-xs text-luxury-500 uppercase tracking-widest font-semibold">
-            Last Updated: October 2026 • Effective Date: January 1, 2026
+          <p className="text-sm text-ink-500">
+            Last updated: October 2026 · Effective Date: January 1, 2026
           </p>
         </div>
 
-        {/* Policy Content */}
-        <div className="prose prose-luxury max-w-none space-y-8 text-luxury-800 leading-relaxed font-serif text-base sm:text-lg">
+        {/* Policy Content — Medium Article Style Typography */}
+        <div className="space-y-8 text-ink-800 font-serif text-lg leading-relaxed">
           
-          <section className="bg-white p-6 sm:p-8 border border-luxury-200 shadow-sm space-y-4 font-sans text-sm">
-            <h2 className="font-editorial text-2xl font-bold text-luxury-950">1. Editorial Transparency &amp; Commitment</h2>
-            <p className="text-luxury-700 leading-relaxed font-serif text-base">
-              At <strong>ZAIB ATTIRE</strong> ("we", "our", or "the Atelier"), we prioritize the privacy and intellectual protection of our global readers, contributors, guest journalists, and commercial partners. This Privacy Policy outlines our transparent data practices across our web domains, APIs, and contributor portal.
+          <section className="space-y-3">
+            <h2 className="font-serif text-2xl font-bold text-ink-900">
+              1. Editorial Transparency &amp; Commitment
+            </h2>
+            <p>
+              At <strong>ZAIB ATTIRE</strong> ("we", "our", or "the platform"), we prioritize the privacy and intellectual property of our global readers, contributors, guest writers, and brand partners. This Privacy Policy outlines our transparent data practices across our web domains, APIs, and contributor portal.
             </p>
           </section>
 
-          <section className="bg-white p-6 sm:p-8 border border-luxury-200 shadow-sm space-y-4 font-sans text-sm">
-            <h2 className="font-editorial text-2xl font-bold text-luxury-950">2. Contributor &amp; Author Information Collected</h2>
-            <p className="text-luxury-700 leading-relaxed font-serif text-base">
-              When submitting guest articles, applying as a fashion contributor, or subscribing to our Haute Couture dispatches, we may collect:
+          <section className="space-y-3">
+            <h2 className="font-serif text-2xl font-bold text-ink-900">
+              2. Contributor &amp; Author Information Collected
+            </h2>
+            <p>
+              When submitting guest articles, applying as a fashion contributor, or subscribing to our email dispatches, we may collect:
             </p>
-            <ul className="list-disc pl-6 space-y-2 text-luxury-700 font-serif text-base">
-              <li><strong>Author Credentials:</strong> Legal or pen name, verified email (Gmail/corporate), and public author biography.</li>
-              <li><strong>Brand &amp; Web Entities:</strong> Brand name, target domain URL, and social media handles for backlink attribution.</li>
-              <li><strong>Communications:</strong> Editorial pitches, press release materials, and correspondence with our editors.</li>
+            <ul className="list-disc pl-6 space-y-2 text-ink-700">
+              <li><strong>Author Credentials:</strong> Pen name or legal name, verified email address, and author biography.</li>
+              <li><strong>Brand &amp; Target URL:</strong> Brand website URL and social handles for dofollow backlink attribution.</li>
+              <li><strong>Submissions:</strong> Article drafts, photography assets, and editorial correspondence.</li>
             </ul>
           </section>
 
-          <section className="bg-white p-6 sm:p-8 border border-luxury-200 shadow-sm space-y-4 font-sans text-sm">
-            <h2 className="font-editorial text-2xl font-bold text-luxury-950">3. How Your Information Is Utilized</h2>
-            <p className="text-luxury-700 leading-relaxed font-serif text-base">
-              Collected information is strictly applied to:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 text-luxury-700 font-serif text-base">
-              <li>Reviewing, formatting, and publishing fashion guest posts and runway reviews.</li>
-              <li>Facilitating verified dofollow anchor text backlinks to author web properties.</li>
-              <li>Maintaining contributor records and synchronizing editorial logs with our private Google Workspace dispatch systems.</li>
-              <li>Preventing automated spam, malicious code injections, or copyright infringements.</li>
-            </ul>
-          </section>
-
-          <section className="bg-white p-6 sm:p-8 border border-luxury-200 shadow-sm space-y-4 font-sans text-sm">
-            <h2 className="font-editorial text-2xl font-bold text-luxury-950">4. Third-Party Disclosures &amp; Backlinks</h2>
-            <p className="text-luxury-700 leading-relaxed font-serif text-base">
-              We never sell, rent, or lease author or subscriber data to third-party data brokers. Articles published on ZAIB ATTIRE are publicly indexable by major search engines (Google, Bing). Any links contained within published guest articles represent direct external links governed by the respective target websites’ privacy terms.
+          <section className="space-y-3">
+            <h2 className="font-serif text-2xl font-bold text-ink-900">
+              3. Protection of Contributor Passwords &amp; Data
+            </h2>
+            <p>
+              Contributor credentials and authentication tokens stored on client devices are handled with industry standards. We do not sell, rent, or trade your contact information to third-party data brokers.
             </p>
           </section>
 
-          <section className="bg-white p-6 sm:p-8 border border-luxury-200 shadow-sm space-y-4 font-sans text-sm">
-            <h2 className="font-editorial text-2xl font-bold text-luxury-950">5. Cookies &amp; Performance Metrics</h2>
-            <p className="text-luxury-700 leading-relaxed font-serif text-base">
-              We use minimal, high-efficiency local storage and session cookies exclusively to preserve contributor login states, reading preferences, and performance caching to uphold rapid Core Web Vitals performance.
+          <section className="space-y-3">
+            <h2 className="font-serif text-2xl font-bold text-ink-900">
+              4. Permanent Dofollow Link Integrity
+            </h2>
+            <p>
+              Articles accepted and published on ZAIB ATTIRE are maintained permanently in our searchable editorial archive. Contextual anchor links and author bio attribution links are preserved as dofollow references as long as the linked destination adheres to web safety standards.
             </p>
           </section>
 
-          <section className="bg-white p-6 sm:p-8 border border-luxury-200 shadow-sm space-y-4 font-sans text-sm">
-            <h2 className="font-editorial text-2xl font-bold text-luxury-950">6. Editorial Rights &amp; Data Erasure</h2>
-            <p className="text-luxury-700 leading-relaxed font-serif text-base">
-              Authors and readers may request data removal, author profile redaction, or article updates at any time by contacting our editorial desk at <strong className="text-luxury-950">editorial@zaibattire.com</strong>.
+          <section className="space-y-3">
+            <h2 className="font-serif text-2xl font-bold text-ink-900">
+              5. Contacting the Editorial Desk
+            </h2>
+            <p>
+              For data protection questions, author profile modifications, or removal inquiries, please contact our editorial desk at <a href="mailto:editorial@zaibattire.com" className="text-brand-muted underline hover:text-ink-900">editorial@zaibattire.com</a>.
             </p>
           </section>
 

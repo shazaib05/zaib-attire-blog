@@ -1,23 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import {
-  Sparkles, Feather, Search, Menu, X, ArrowUpRight,
-  Compass, BookOpen, Megaphone, Info, Mail
-} from 'lucide-react';
+import { Feather, Search, Menu, X, Bell, ChevronDown, PenLine } from 'lucide-react';
 
 export default function Header({ categories = [], onOpenSearchModal }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 30) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -25,190 +17,48 @@ export default function Header({ categories = [], onOpenSearchModal }) {
   // Close mobile drawer on route change
   useEffect(() => {
     setMobileMenuOpen(false);
+    setCategoriesOpen(false);
   }, [location.pathname]);
 
-  const currentDate = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  }).toUpperCase();
-
-  const navLinkClass = ({ isActive }) =>
-    `transition-all py-1.5 border-b-2 whitespace-nowrap uppercase tracking-luxury text-xs font-semibold ${
-      isActive
-        ? 'border-gold-600 text-luxury-950 font-bold'
-        : 'border-transparent text-luxury-600 hover:text-luxury-950 hover:border-luxury-300'
-    }`;
+  const navLinkBase =
+    'text-sm font-medium text-ink-600 hover:text-ink-900 transition-colors duration-150 py-1';
+  const navLinkActive = 'text-ink-900 font-semibold';
 
   return (
-    <header className="border-b border-luxury-200 bg-[#fafaf8] sticky top-0 z-40 backdrop-blur-md bg-opacity-95 transition-all duration-300 shadow-xs">
-      
-      {/* 1. Top Editorial Micro-Bar (Smoothly hides on scroll) */}
-      <div
-        className={`border-b border-luxury-200/80 px-4 sm:px-8 text-[10px] tracking-luxury uppercase font-medium text-luxury-600 flex justify-between items-center transition-all duration-300 overflow-hidden ${
-          isScrolled ? 'max-h-0 py-0 opacity-0 border-transparent' : 'max-h-12 py-2 opacity-100'
+    <>
+      <header
+        className={`sticky top-0 z-50 bg-white border-b border-ink-200 transition-all duration-200 ${
+          isScrolled ? 'shadow-sm' : ''
         }`}
       >
-        <div className="hidden md:flex items-center space-x-6">
-          <span className="text-luxury-950 font-semibold flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-gold-500 animate-pulse"></span>
-            PARIS • MILAN • LONDON • NEW YORK
-          </span>
-          <span className="text-luxury-400">|</span>
-          <span>VOL. XXVI — ATELIER EDITION</span>
-        </div>
-        <div className="text-center w-full md:w-auto font-serif tracking-wider text-luxury-700">
-          {currentDate}
-        </div>
-        <div className="hidden md:flex items-center space-x-4">
-          <Link
-            to="/write-for-us"
-            className="text-luxury-900 hover:text-gold-600 font-semibold tracking-wider transition-colors flex items-center gap-1"
-          >
-            <Feather size={11} className="text-gold-600" />
-            <span>CONTRIBUTOR CALL 2026</span>
-          </Link>
-          <span className="text-luxury-300">•</span>
-          <Link
-            to="/advertise"
-            className="text-luxury-700 hover:text-gold-600 tracking-wider transition-colors"
-          >
-            MEDIA KIT
-          </Link>
-        </div>
-      </div>
+        {/* ── Main navigation bar ── */}
+        <div className="max-w-content mx-auto px-5 sm:px-8 h-[57px] flex items-center justify-between gap-4">
+          
+          {/* Left: Logo */}
+          <div className="flex items-center gap-6 shrink-0">
+            <Link to="/" className="flex flex-col items-start group select-none">
+              <img
+                src="/logo.png"
+                alt="ZAIB ATTIRE"
+                className="h-[26px] w-auto object-contain transition-opacity group-hover:opacity-80"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'block';
+                }}
+              />
+              <span className="hidden font-serif text-xl font-bold text-ink-900 tracking-tight">
+                ZAIB ATTIRE
+              </span>
+            </Link>
+          </div>
 
-      {/* 2. Main Masthead (User's Official Logo) */}
-      <div
-        className={`max-w-7xl mx-auto px-4 sm:px-8 flex items-center justify-between transition-all duration-300 ${
-          isScrolled ? 'py-1.5' : 'py-2 sm:py-2.5'
-        }`}
-      >
-        {/* Left: Search Trigger & Mobile Menu Toggle */}
-        <div className="flex items-center space-x-3">
-          <button
-            onClick={onOpenSearchModal}
-            className="p-1.5 text-luxury-700 hover:text-luxury-950 hover:bg-luxury-100 rounded-full transition flex items-center gap-2 text-xs tracking-widest uppercase font-medium"
-            title="Search Editorial Archive"
-          >
-            <Search size={16} />
-            <span className="hidden sm:inline">Search</span>
-          </button>
-
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-1.5 text-luxury-700 hover:bg-luxury-100 rounded-full"
-            aria-label="Toggle Navigation Menu"
-          >
-            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
-
-        {/* Center: Official ZAIB ATTIRE Logo (Set to sleek scroll size) */}
-        <Link to="/" className="text-center flex flex-col items-center group select-none py-0.5">
-          <img
-            src="/logo.png"
-            alt="ZAIB ATTIRE"
-            className="h-6 sm:h-7 w-auto object-contain transition-all duration-300"
-          />
-          {!isScrolled && (
-            <p className="text-[8px] sm:text-[9px] tracking-[0.28em] uppercase text-luxury-700 font-semibold mt-1 hidden sm:block animate-fadeIn">
-              THE CHRONICLE OF CONTEMPORARY HIGH FASHION & RUNWAY CULTURE
-            </p>
-          )}
-        </Link>
-
-        {/* Right: Write an Article Action */}
-        <div className="flex items-center space-x-3">
-          <Link
-            to="/write"
-            className={`relative group overflow-hidden border border-gold-500 bg-luxury-950 text-gold-400 hover:text-luxury-950 text-xs tracking-wider uppercase font-semibold transition-all shadow-sm ${
-              isScrolled ? 'px-3 py-1.5' : 'px-4 sm:px-5 py-2 sm:py-2.5'
-            }`}
-          >
-            <span className="absolute inset-0 w-full h-full bg-gold-400 -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out -z-0"></span>
-            <span className="relative z-10 flex items-center gap-1.5">
-              <Feather size={12} className="text-gold-400 group-hover:text-luxury-950 transition-colors" />
-              <span className="hidden sm:inline">Write an Article</span>
-              <span className="sm:hidden">Write</span>
-              <ArrowUpRight size={12} className="opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-            </span>
-          </Link>
-        </div>
-      </div>
-
-      {/* 3. Primary Multi-Page Navigation Bar */}
-      <nav
-        className={`border-t border-luxury-200 hidden md:block bg-[#fdfdfb] transition-all duration-300 ${
-          isScrolled ? 'py-1 shadow-sm' : 'py-2'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 flex items-center justify-center gap-8 overflow-x-auto scrollbar-none">
-          <NavLink to="/" end className={navLinkClass}>
-            Home
-          </NavLink>
-
-          <NavLink
-            to="/blog"
-            className={({ isActive }) =>
-              `transition-all py-1.5 border-b-2 whitespace-nowrap uppercase tracking-luxury text-xs font-semibold ${
-                isActive || location.pathname === '/trends' || location.pathname === '/blogs'
-                  ? 'border-gold-600 text-luxury-950 font-bold'
-                  : 'border-transparent text-luxury-600 hover:text-luxury-950 hover:border-luxury-300'
-              }`
-            }
-          >
-            <span className="flex items-center gap-1">
-              <BookOpen size={12} className="text-gold-600" />
-              <span>Blog & Trends</span>
-            </span>
-          </NavLink>
-
-          <NavLink
-            to="/write"
-            className={({ isActive }) =>
-              `transition-all py-1.5 border-b-2 whitespace-nowrap uppercase tracking-luxury text-xs font-semibold ${
-                isActive || location.pathname === '/write-for-us' || location.pathname === '/guest-post'
-                  ? 'border-gold-600 text-luxury-950 font-bold'
-                  : 'border-transparent text-luxury-600 hover:text-luxury-950 hover:border-luxury-300'
-              }`
-            }
-          >
-            <span className="flex items-center gap-1">
-              <Feather size={12} className="text-gold-600" />
-              <span>Write / Guest Post</span>
-            </span>
-          </NavLink>
-
-          <NavLink to="/advertise" className={navLinkClass}>
-            <span className="flex items-center gap-1">
-              <Megaphone size={12} className="text-gold-600" />
-              <span>Advertise With Us</span>
-            </span>
-          </NavLink>
-
-          <NavLink to="/about" className={navLinkClass}>
-            About
-          </NavLink>
-
-          <NavLink to="/contact" className={navLinkClass}>
-            Contact
-          </NavLink>
-        </div>
-      </nav>
-
-      {/* 4. Mobile Navigation Drawer */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-luxury-200 bg-white px-6 py-5 space-y-4 shadow-xl animate-fadeIn">
-          <div className="space-y-2 border-b border-luxury-200 pb-4">
+          {/* Center: Horizontal nav — desktop only */}
+          <nav className="hidden md:flex items-center gap-1 flex-1 ml-4">
             <NavLink
               to="/"
               end
               className={({ isActive }) =>
-                `block py-2 text-xs uppercase tracking-luxury font-bold ${
-                  isActive ? 'text-gold-600' : 'text-luxury-900'
-                }`
+                `${navLinkBase} px-3 rounded-full hover:bg-ink-100 ${isActive ? navLinkActive : ''}`
               }
             >
               Home
@@ -217,95 +67,182 @@ export default function Header({ categories = [], onOpenSearchModal }) {
             <NavLink
               to="/blog"
               className={({ isActive }) =>
-                `block py-2 text-xs uppercase tracking-luxury font-bold flex items-center gap-1.5 ${
-                  isActive || location.pathname === '/trends' || location.pathname === '/blogs'
-                    ? 'text-gold-600'
-                    : 'text-luxury-900'
+                `${navLinkBase} px-3 rounded-full hover:bg-ink-100 ${
+                  isActive || location.pathname.startsWith('/trends')
+                    ? navLinkActive
+                    : ''
                 }`
               }
             >
-              <BookOpen size={13} className="text-gold-600" />
-              <span>Fashion Blog & Trends</span>
+              Stories
             </NavLink>
 
-            <NavLink
-              to="/write"
-              className={({ isActive }) =>
-                `block py-2 text-xs uppercase tracking-luxury font-bold flex items-center gap-1.5 ${
-                  isActive || location.pathname === '/write-for-us' || location.pathname === '/guest-post'
-                    ? 'text-gold-600'
-                    : 'text-gold-700'
-                }`
-              }
-            >
-              <Feather size={13} />
-              <span>Write an Article (Free Guest Post)</span>
-            </NavLink>
+            {/* Topics dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setCategoriesOpen(!categoriesOpen)}
+                className={`${navLinkBase} px-3 rounded-full hover:bg-ink-100 flex items-center gap-1`}
+              >
+                Topics
+                <ChevronDown
+                  size={14}
+                  className={`transition-transform duration-200 ${categoriesOpen ? 'rotate-180' : ''}`}
+                />
+              </button>
+              {categoriesOpen && (
+                <div className="absolute top-full left-0 mt-2 w-52 bg-white border border-ink-200 rounded-xl shadow-lg py-2 z-50 animate-fadeIn">
+                  <Link
+                    to="/blog"
+                    className="block px-4 py-2 text-sm text-ink-700 hover:bg-ink-100 hover:text-ink-900 transition-colors"
+                    onClick={() => setCategoriesOpen(false)}
+                  >
+                    All Topics
+                  </Link>
+                  <div className="border-t border-ink-200 my-1" />
+                  {categories.slice(0, 8).map((cat) => (
+                    <Link
+                      key={cat.id}
+                      to={`/trends?category=${encodeURIComponent(cat.name)}`}
+                      className="block px-4 py-2 text-sm text-ink-600 hover:bg-ink-100 hover:text-ink-900 transition-colors truncate"
+                      onClick={() => setCategoriesOpen(false)}
+                    >
+                      {cat.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <NavLink
               to="/advertise"
               className={({ isActive }) =>
-                `block py-2 text-xs uppercase tracking-luxury font-bold flex items-center gap-1.5 ${
-                  isActive ? 'text-gold-600' : 'text-luxury-900'
-                }`
+                `${navLinkBase} px-3 rounded-full hover:bg-ink-100 ${isActive ? navLinkActive : ''}`
               }
             >
-              <Megaphone size={13} />
-              <span>Advertise & Media Kit</span>
+              Advertise
             </NavLink>
 
             <NavLink
               to="/about"
               className={({ isActive }) =>
-                `block py-2 text-xs uppercase tracking-luxury font-bold ${
-                  isActive ? 'text-gold-600' : 'text-luxury-900'
-                }`
+                `${navLinkBase} px-3 rounded-full hover:bg-ink-100 ${isActive ? navLinkActive : ''}`
               }
             >
-              About The Journal
+              About
             </NavLink>
+          </nav>
 
-            <NavLink
-              to="/contact"
-              className={({ isActive }) =>
-                `block py-2 text-xs uppercase tracking-luxury font-bold ${
-                  isActive ? 'text-gold-600' : 'text-luxury-900'
-                }`
-              }
+          {/* Right: Actions */}
+          <div className="flex items-center gap-2 shrink-0">
+            {/* Search */}
+            <button
+              onClick={onOpenSearchModal}
+              className="p-2 text-ink-500 hover:text-ink-900 hover:bg-ink-100 rounded-full transition-colors"
+              title="Search"
+              id="header-search-btn"
             >
-              Contact Offices
-            </NavLink>
-          </div>
+              <Search size={18} />
+            </button>
 
-          {/* Quick Category Jump in Mobile Menu */}
-          <div>
-            <div className="text-[10px] uppercase tracking-luxury font-bold text-luxury-500 mb-2">
-              BROWSE DEPARTMENTS
-            </div>
-            <div className="grid grid-cols-2 gap-2 text-[11px] text-luxury-700">
-              {categories.slice(0, 6).map((c) => (
-                <Link
-                  key={c.id}
-                  to={`/trends?category=${encodeURIComponent(c.name)}`}
-                  className="py-1 hover:text-gold-600 truncate block"
-                >
-                  • {c.name}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div className="pt-2">
+            {/* Write for us — desktop */}
             <Link
-              to="/write-for-us"
-              className="block w-full py-3 bg-luxury-950 text-gold-400 text-xs uppercase tracking-luxury font-bold text-center border border-gold-500/50 shadow-sm"
+              to="/write"
+              className="hidden sm:inline-flex items-center gap-1.5 btn-ghost text-sm py-2 px-4"
+              id="header-write-btn"
             >
-              Submit Guest Story
+              <PenLine size={15} />
+              <span>Write</span>
             </Link>
+
+            {/* CTA: Guest Post — desktop */}
+            <Link
+              to="/write"
+              className="hidden sm:inline-flex btn-primary text-sm py-2 px-5"
+              id="header-guest-post-btn"
+            >
+              <Feather size={14} />
+              <span>Guest Post</span>
+            </Link>
+
+            {/* Mobile menu toggle */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-ink-600 hover:bg-ink-100 rounded-full transition-colors"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
           </div>
         </div>
-      )}
 
-    </header>
+        {/* ── Mobile drawer ── */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white border-t border-ink-200 px-5 py-4 space-y-1 shadow-lg animate-fadeIn">
+            {[
+              { to: '/', label: 'Home', end: true },
+              { to: '/blog', label: 'Stories' },
+              { to: '/write', label: 'Write / Guest Post', highlight: true },
+              { to: '/advertise', label: 'Advertise' },
+              { to: '/about', label: 'About' },
+              { to: '/contact', label: 'Contact' },
+            ].map(({ to, label, end, highlight }) => (
+              <NavLink
+                key={to}
+                to={to}
+                end={end}
+                className={({ isActive }) =>
+                  `block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'bg-ink-100 text-ink-900 font-semibold'
+                      : highlight
+                      ? 'text-brand-accent font-semibold'
+                      : 'text-ink-700 hover:bg-ink-100 hover:text-ink-900'
+                  }`
+                }
+              >
+                {highlight && <Feather size={13} className="inline mr-1.5" />}
+                {label}
+              </NavLink>
+            ))}
+
+            {/* Categories section */}
+            {categories.length > 0 && (
+              <div className="pt-3 border-t border-ink-200">
+                <p className="text-xs font-semibold text-ink-400 uppercase tracking-wider px-3 mb-2">
+                  Topics
+                </p>
+                <div className="flex flex-wrap gap-2 px-3">
+                  {categories.slice(0, 8).map((cat) => (
+                    <Link
+                      key={cat.id}
+                      to={`/trends?category=${encodeURIComponent(cat.name)}`}
+                      className="topic-pill text-xs"
+                    >
+                      {cat.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Mobile CTA */}
+            <div className="pt-3 border-t border-ink-200">
+              <Link to="/write" className="btn-gold w-full justify-center text-sm py-3 rounded-xl">
+                <Feather size={15} />
+                Submit a Guest Post — It's Free
+              </Link>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* Close dropdown when clicking outside */}
+      {categoriesOpen && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => setCategoriesOpen(false)}
+        />
+      )}
+    </>
   );
 }

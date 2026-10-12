@@ -1,17 +1,119 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import {
-  Sparkles, Feather, ArrowRight, Quote, Compass, BookOpen,
-  TrendingUp, Award, Layers, Megaphone
-} from 'lucide-react';
-import Ticker from '../components/Ticker';
+import { Feather, ArrowRight, TrendingUp, Sparkles, PenLine, BookOpen } from 'lucide-react';
 import HeroFeatured from '../components/HeroFeatured';
-import TrendingStrip from '../components/TrendingStrip';
 import ArticleCard from '../components/ArticleCard';
 import AdBanner from '../components/AdBanner';
 import NewsletterSection from '../components/NewsletterSection';
 import SEO from '../components/SEO';
 import { api } from '../utils/api';
+
+// ── Side panel: Topics widget ──
+function TopicsWidget({ categories }) {
+  if (!categories?.length) return null;
+  return (
+    <div className="mb-8">
+      <h3 className="text-sm font-bold text-ink-900 mb-3">Recommended Topics</h3>
+      <div className="flex flex-wrap gap-2">
+        {categories.slice(0, 10).map((cat) => (
+          <Link
+            key={cat.id}
+            to={`/trends?category=${encodeURIComponent(cat.name)}`}
+            className="topic-pill text-sm"
+          >
+            {cat.name}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Side panel: Staff picks / trending sidebar ──
+function SidebarPicks({ posts, onSelectPost }) {
+  if (!posts?.length) return null;
+  return (
+    <div className="mb-8">
+      <div className="flex items-center gap-2 mb-4">
+        <TrendingUp size={15} className="text-brand-accent" />
+        <h3 className="text-sm font-bold text-ink-900">Trending Now</h3>
+      </div>
+      <div className="space-y-5">
+        {posts.slice(0, 5).map((post, i) => (
+          <div
+            key={post.id}
+            onClick={() => onSelectPost(post.slug)}
+            className="group cursor-pointer flex items-start gap-3"
+          >
+            <span className="text-2xl font-bold text-ink-200 leading-none shrink-0 w-7 pt-0.5">
+              0{i + 1}
+            </span>
+            <div>
+              {/* Author */}
+              <div className="flex items-center gap-1.5 mb-1">
+                {post.author_avatar ? (
+                  <img src={post.author_avatar} alt={post.author_name} className="w-4 h-4 rounded-full" />
+                ) : (
+                  <div className="w-4 h-4 rounded-full bg-ink-900 text-white text-[8px] flex items-center justify-center font-bold">
+                    {post.author_name?.charAt(0)}
+                  </div>
+                )}
+                <span className="text-xs font-medium text-ink-600">{post.author_name}</span>
+              </div>
+              <h4 className="text-sm font-bold text-ink-900 group-hover:text-ink-600 transition-colors leading-snug line-clamp-2">
+                {post.title}
+              </h4>
+              <p className="text-xs text-ink-400 mt-1">{post.read_time || '5 min read'}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── Guest post CTA banner ──
+function GuestPostCTA() {
+  return (
+    <div className="border border-ink-200 rounded-2xl p-6 bg-gradient-to-br from-white to-ink-100 mb-8">
+      <div className="flex items-center gap-2 mb-2">
+        <Feather size={16} className="text-brand-accent" />
+        <span className="text-xs font-semibold text-brand-muted uppercase tracking-wider">
+          Free Guest Posting
+        </span>
+      </div>
+      <h3 className="font-serif text-xl font-bold text-ink-900 mb-2 leading-snug">
+        Write for ZAIB ATTIRE
+      </h3>
+      <p className="text-sm text-ink-500 leading-relaxed mb-4">
+        Publish your fashion articles with a dofollow backlink. 100% free — reviewed in 48 hours.
+      </p>
+      <Link
+        to="/write"
+        className="btn-gold inline-flex text-sm py-2.5 px-5 w-full justify-center"
+        id="sidebar-guest-post-btn"
+      >
+        <PenLine size={14} />
+        Submit Your Article
+      </Link>
+    </div>
+  );
+}
+
+// ── Skeleton loader ──
+function ArticleSkeleton() {
+  return (
+    <div className="space-y-4 py-5 border-b border-ink-200">
+      <div className="flex gap-3 items-center">
+        <div className="skeleton w-5 h-5 rounded-full" />
+        <div className="skeleton w-28 h-3 rounded" />
+      </div>
+      <div className="skeleton w-full h-5 rounded" />
+      <div className="skeleton w-4/5 h-5 rounded" />
+      <div className="skeleton w-3/5 h-4 rounded" />
+    </div>
+  );
+}
 
 export default function HomePage({ categories = [], tickerItems = [] }) {
   const navigate = useNavigate();
@@ -19,6 +121,7 @@ export default function HomePage({ categories = [], tickerItems = [] }) {
   const [trendingPosts, setTrendingPosts] = useState([]);
   const [curatedPosts, setCuratedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeCategory, setActiveCategory] = useState('All');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -28,7 +131,7 @@ export default function HomePage({ categories = [], tickerItems = [] }) {
         const [feat, trend, postsRes] = await Promise.all([
           api.getFeaturedPost(),
           api.getTrendingPosts(),
-          api.getPosts({ limit: 8 })
+          api.getPosts({ limit: 12 }),
         ]);
         setFeaturedPost(feat);
         setTrendingPosts(trend || []);
@@ -45,219 +148,196 @@ export default function HomePage({ categories = [], tickerItems = [] }) {
   const handleLikePost = async (id) => {
     try {
       const res = await api.likePost(id);
-      setCuratedPosts(prev => prev.map(p => p.id === id ? { ...p, likes: res.likes } : p));
-      if (featuredPost?.id === id) {
-        setFeaturedPost(prev => ({ ...prev, likes: res.likes }));
-      }
-      setTrendingPosts(prev => prev.map(p => p.id === id ? { ...p, likes: res.likes } : p));
+      setCuratedPosts((prev) => prev.map((p) => (p.id === id ? { ...p, likes: res.likes } : p)));
+      if (featuredPost?.id === id) setFeaturedPost((prev) => ({ ...prev, likes: res.likes }));
+      setTrendingPosts((prev) => prev.map((p) => (p.id === id ? { ...p, likes: res.likes } : p)));
     } catch (err) {
       console.error(err);
     }
   };
 
+  // Category pills for filtering
+  const categoryPills = ['All', ...categories.slice(0, 6).map((c) => c.name)];
+  const filteredPosts =
+    activeCategory === 'All'
+      ? curatedPosts
+      : curatedPosts.filter((p) => p.category_name === activeCategory);
+
   return (
-    <div className="animate-fadeIn">
+    <div className="animate-fadeIn bg-white min-h-screen">
       <SEO
-        title="ZAIB ATTIRE — Haute Couture, Runway Trends & Editorial Culture"
-        description="The premier fashion blog and runway trend forecast. Explore Paris, Milan, London, and New York collections, street style subcultures, and publish guest posts with brand backlinks."
-        keywords="fashion blog, runway trends 2026, haute couture, quiet luxury, fashion guest post, free guest posting, paris fashion week"
+        title="ZAIB ATTIRE — Fashion Stories, Runway Trends & Free Guest Posting"
+        description="Discover fashion trends, haute couture analysis, and publish free guest posts with dofollow backlinks on ZAIB ATTIRE — the premier fashion editorial platform."
+        keywords="fashion blog, runway trends 2026, haute couture, guest post, free guest posting, fashion editorial"
         canonicalUrl="/"
       />
 
-      {/* 1. Runway Ticker */}
-      <Ticker tickerItems={tickerItems} />
-
-      {/* 2. Top Leaderboard Billboard Advertisement */}
-      <AdBanner type="leaderboard" />
-
-      {/* 3. Hero Featured Cover Story */}
+      {/* ── Hero Featured Story ── */}
       <HeroFeatured
         post={featuredPost}
         onSelectPost={(slug) => navigate(`/blog/${slug}`)}
         onLikePost={handleLikePost}
       />
 
-      {/* 4. Trending Strip (01-04 ranking) */}
-      <TrendingStrip
-        posts={trendingPosts}
-        onSelectPost={(slug) => navigate(`/blog/${slug}`)}
-      />
+      {/* ── Divider ── */}
+      <div className="max-w-content mx-auto px-5 sm:px-8">
+        <hr className="article-divider" />
+      </div>
 
-      {/* 5. Main Editorial Highlights Feed */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-8 py-12 w-full">
-        
-        {/* Curated Trends Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-luxury-300 mb-10">
-          <div>
-            <div className="text-[10px] tracking-luxury uppercase text-gold-600 font-bold mb-1 flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-gold-500 animate-ping"></span>
-              <span>CURATED RUNWAY ARCHIVE • EDITION 2026</span>
+      {/* ── Main 2-column layout (Medium style) ── */}
+      <div className="max-w-content mx-auto px-5 sm:px-8 py-8">
+        <div className="flex flex-col lg:flex-row gap-12 xl:gap-16">
+
+          {/* ── Left: Main feed ── */}
+          <main className="flex-1 min-w-0">
+
+            {/* Category filter pills */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6 scrollbar-none border-b border-ink-200">
+              {categoryPills.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`shrink-0 px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                    activeCategory === cat
+                      ? 'bg-ink-900 text-white'
+                      : 'text-ink-600 hover:bg-ink-100'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+              <Link
+                to="/blog"
+                className="shrink-0 ml-auto text-sm text-ink-400 hover:text-ink-900 transition-colors flex items-center gap-1 whitespace-nowrap"
+              >
+                See all <ArrowRight size={13} />
+              </Link>
             </div>
-            <h2 className="font-editorial text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-luxury-950">
-              The Season's Defining Fashion Trends
-            </h2>
-          </div>
 
-          <div className="flex items-center gap-3">
-            <Link
-              to="/blog"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-luxury-950 text-gold-400 hover:text-white hover:bg-black transition text-xs font-semibold tracking-luxury uppercase border border-gold-500/40 shadow-sm"
-            >
-              <span>Explore All Blogs & Trends</span>
-              <ArrowRight size={13} />
-            </Link>
-          </div>
-        </div>
+            {/* Articles feed */}
+            {loading ? (
+              <div>
+                {[...Array(5)].map((_, i) => <ArticleSkeleton key={i} />)}
+              </div>
+            ) : filteredPosts.length > 0 ? (
+              <div>
+                {/* Top 3 as list */}
+                {filteredPosts.slice(0, 3).map((post) => (
+                  <ArticleCard
+                    key={post.id}
+                    post={post}
+                    layout="horizontal"
+                    onSelectPost={(slug) => navigate(`/blog/${slug}`)}
+                    onLikePost={handleLikePost}
+                  />
+                ))}
 
-        {/* Fashion Category Quick Explore Pills */}
-        <div className="mb-10 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
-          <span className="text-[10px] tracking-luxury uppercase font-bold text-luxury-500 mr-2 shrink-0">
-            TREND DEPARTMENTS:
-          </span>
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              to={`/trends?category=${encodeURIComponent(cat.name)}`}
-              className="px-3.5 py-1.5 bg-white border border-luxury-200 text-luxury-800 hover:border-gold-500 hover:text-gold-600 transition text-[11px] uppercase tracking-wider font-medium shrink-0 shadow-xs"
-            >
-              {cat.name}
-              {cat.post_count > 0 && <span className="ml-1 text-[9px] text-luxury-400">({cat.post_count})</span>}
-            </Link>
-          ))}
-        </div>
+                {/* Top ad insertion */}
+                <div className="py-4">
+                  <AdBanner type="leaderboard" />
+                </div>
 
-        {/* Articles Grid with Native Ad inserted */}
-        {loading ? (
-          <div className="py-24 text-center">
-            <div className="w-8 h-8 border-2 border-gold-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-            <p className="text-xs tracking-luxury uppercase text-luxury-500">Arranging Runway Columns...</p>
-          </div>
-        ) : curatedPosts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {curatedPosts.slice(0, 2).map((post) => (
-              <ArticleCard
-                key={post.id}
-                post={post}
+                {/* Next articles as grid */}
+                {filteredPosts.length > 3 && (
+                  <div>
+                    <h2 className="font-serif text-xl font-bold text-ink-900 mb-5 mt-2">
+                      More Stories
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                      {filteredPosts.slice(3, 9).map((post) => (
+                        <ArticleCard
+                          key={post.id}
+                          post={post}
+                          layout="default"
+                          onSelectPost={(slug) => navigate(`/blog/${slug}`)}
+                          onLikePost={handleLikePost}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Remaining list */}
+                {filteredPosts.length > 9 && (
+                  <div className="mt-8 border-t border-ink-200 pt-6">
+                    <h2 className="font-serif text-xl font-bold text-ink-900 mb-3">
+                      Latest Posts
+                    </h2>
+                    {filteredPosts.slice(9).map((post) => (
+                      <ArticleCard
+                        key={post.id}
+                        post={post}
+                        layout="horizontal"
+                        onSelectPost={(slug) => navigate(`/blog/${slug}`)}
+                        onLikePost={handleLikePost}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {/* Load more */}
+                <div className="mt-10 text-center">
+                  <Link
+                    to="/blog"
+                    className="btn-ghost text-sm inline-flex py-3 px-8"
+                  >
+                    <BookOpen size={15} />
+                    <span>Browse All Stories</span>
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="py-24 text-center">
+                <Sparkles size={32} className="mx-auto text-ink-300 mb-4" />
+                <p className="font-serif text-xl text-ink-700 mb-2">No articles yet in this topic.</p>
+                <p className="text-sm text-ink-400 mb-6">
+                  Be the first to contribute — submit a guest post!
+                </p>
+                <Link to="/write" className="btn-gold inline-flex">
+                  <Feather size={14} />
+                  Submit Guest Post
+                </Link>
+              </div>
+            )}
+          </main>
+
+          {/* ── Right: Sidebar ── */}
+          <aside className="hidden lg:block w-72 xl:w-80 shrink-0">
+            {/* Guest post CTA */}
+            <GuestPostCTA />
+
+            {/* Topics */}
+            <TopicsWidget categories={categories} />
+
+            <div className="border-t border-ink-200 pt-6">
+              {/* Trending sidebar */}
+              <SidebarPicks
+                posts={trendingPosts}
                 onSelectPost={(slug) => navigate(`/blog/${slug}`)}
-                onLikePost={handleLikePost}
               />
-            ))}
+            </div>
 
-            {/* Injected Native Sponsored Editorial Card */}
-            <AdBanner type="native-card" />
+            {/* Sidebar ad */}
+            <div className="mt-4">
+              <AdBanner type="sidebar" />
+            </div>
+          </aside>
+        </div>
+      </div>
 
-            {/* Remaining articles */}
-            {curatedPosts.slice(2, 6).map((post) => (
-              <ArticleCard
-                key={post.id}
-                post={post}
-                onSelectPost={(slug) => navigate(`/blog/${slug}`)}
-                onLikePost={handleLikePost}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="py-20 text-center bg-white border border-luxury-200 p-8">
-            <p className="font-editorial text-lg text-luxury-800 mb-2">No articles found in this archive.</p>
-            <Link
-              to="/write-for-us"
-              className="inline-block mt-4 px-6 py-2.5 bg-luxury-950 text-gold-400 font-bold text-xs uppercase tracking-luxury hover:bg-gold-500 hover:text-luxury-950 transition"
-            >
-              Submit Guest Post
-            </Link>
-          </div>
-        )}
-
-        {/* 6. Panoramic Mid-Magazine Luxury Brand Spread */}
-        <AdBanner type="panoramic" />
-
-        {/* 7. Magazine Editorial Quote / Atmosphere Breakout */}
-        <div className="my-14 bg-champagne-50 border-y border-gold-300/60 p-8 sm:p-14 text-center relative overflow-hidden">
-          <Quote size={40} className="text-gold-400/40 mx-auto mb-4" />
-          <blockquote className="font-editorial text-xl sm:text-2xl md:text-3xl font-normal text-luxury-900 max-w-3xl mx-auto leading-relaxed">
-            "Fashion is neither moral nor immoral, but it is done to bring up sensations."
+      {/* ── Full-width editorial quote ── */}
+      <div className="bg-ink-100 border-y border-ink-200 py-14 my-10">
+        <div className="max-w-reading mx-auto px-5 text-center">
+          <blockquote className="font-serif text-2xl sm:text-3xl text-ink-800 font-medium leading-relaxed mb-4">
+            "Fashion is the armor to survive the reality of everyday life."
           </blockquote>
-          <cite className="font-cormorant text-base sm:text-lg text-gold-700 italic block mt-4">
-            — Camille de Valois, Editor-in-Chief, ZAIB ATTIRE
+          <cite className="text-sm text-ink-400 not-italic">
+            — ZAIB ATTIRE Editorial
           </cite>
         </div>
+      </div>
 
-        {/* 8. Dual Action Columns: Guest Posting Atelier & Advertising Partnerships */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 my-14">
-          
-          {/* Guest Posting Card */}
-          <div className="bg-luxury-950 text-white p-8 sm:p-10 border border-gold-500/40 flex flex-col justify-between relative overflow-hidden group">
-            <div className="relative z-10 space-y-3">
-              <div className="inline-flex items-center gap-1.5 text-gold-400 text-[10px] uppercase tracking-luxury font-bold bg-luxury-900 px-2.5 py-1 border border-gold-500/30">
-                <Feather size={12} />
-                <span>CONTRIBUTOR ATELIER</span>
-              </div>
-              <h3 className="font-editorial text-2xl sm:text-3xl font-bold">
-                Write For ZAIB ATTIRE
-              </h3>
-              <p className="text-xs text-luxury-300 leading-relaxed font-light">
-                Are you a fashion journalist, freelance stylist, or couture critic? Publish your guest essays, trend forecasts, and styling narratives on our global editorial platform with full author attribution & portfolio backlinks.
-              </p>
-            </div>
-
-            <div className="pt-8 relative z-10 flex items-center justify-between">
-              <span className="text-[11px] text-luxury-400 uppercase tracking-wider">
-                Fast 48-Hour Review
-              </span>
-              <Link
-                to="/write-for-us"
-                className="px-6 py-3 bg-gold-500 hover:bg-gold-400 text-luxury-950 font-bold text-xs uppercase tracking-luxury transition flex items-center gap-2 shadow-md"
-              >
-                <span>Guest Submission Hub</span>
-                <ArrowRight size={13} />
-              </Link>
-            </div>
-
-            {/* Subtle luxury watermark */}
-            <div className="absolute -bottom-6 -right-6 text-luxury-900/40 pointer-events-none select-none">
-              <Feather size={140} />
-            </div>
-          </div>
-
-          {/* Advertising & Media Kit Card */}
-          <div className="bg-[#18181c] text-white p-8 sm:p-10 border border-luxury-800 flex flex-col justify-between relative overflow-hidden group">
-            <div className="relative z-10 space-y-3">
-              <div className="inline-flex items-center gap-1.5 text-gold-400 text-[10px] uppercase tracking-luxury font-bold bg-luxury-900 px-2.5 py-1 border border-gold-500/30">
-                <Megaphone size={12} />
-                <span>BRAND MONETIZATION & PARTNERSHIPS</span>
-              </div>
-              <h3 className="font-editorial text-2xl sm:text-3xl font-bold">
-                Advertise With Us
-              </h3>
-              <p className="text-xs text-luxury-300 leading-relaxed font-light">
-                Connect your maison, fragrance, luxury jewelry, or contemporary collection with over 240,000 discerning fashion enthusiasts, industry buyers, and stylists worldwide. High-impact billboards, native sponsored articles, and newsletter takeovers.
-              </p>
-            </div>
-
-            <div className="pt-8 relative z-10 flex items-center justify-between">
-              <span className="text-[11px] text-luxury-400 uppercase tracking-wider">
-                Media Kit 2026 Available
-              </span>
-              <Link
-                to="/advertise"
-                className="px-6 py-3 bg-white hover:bg-luxury-100 text-luxury-950 font-bold text-xs uppercase tracking-luxury transition flex items-center gap-2 shadow-md"
-              >
-                <span>Explore Ad Formats</span>
-                <ArrowRight size={13} />
-              </Link>
-            </div>
-
-            {/* Subtle luxury watermark */}
-            <div className="absolute -bottom-6 -right-6 text-luxury-900/30 pointer-events-none select-none">
-              <Sparkles size={140} />
-            </div>
-          </div>
-
-        </div>
-
-      </main>
-
-      {/* 9. VIP Atelier Newsletter */}
+      {/* ── Newsletter ── */}
       <NewsletterSection />
     </div>
   );

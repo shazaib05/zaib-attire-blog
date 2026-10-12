@@ -1,44 +1,42 @@
 import React from 'react';
-import { Flame, Sparkles } from 'lucide-react';
+import { Flame } from 'lucide-react';
 
 export default function Ticker({ tickerItems = [] }) {
   if (!tickerItems || tickerItems.length === 0) return null;
 
-  // Duplicate items for continuous seamless loop
+  // Duplicate items for seamless continuous loop
   const loopItems = [...tickerItems, ...tickerItems];
 
   return (
-    <div className="bg-luxury-950 text-luxury-100 border-y border-luxury-800 overflow-hidden relative select-none">
-      <div className="max-w-7xl mx-auto flex items-center">
-        {/* Fixed Left Badge */}
-        <div className="bg-gold-500 text-luxury-950 font-bold px-3 sm:px-4 py-2 text-[10px] tracking-luxury uppercase flex items-center gap-1.5 shrink-0 z-10 shadow-md">
-          <Flame size={12} className="text-luxury-950 fill-current animate-pulse" />
-          <span>TRENDING NOW</span>
+    <div className="bg-ink-900 text-white overflow-hidden relative select-none border-b border-ink-800">
+      <div className="flex items-center">
+        {/* Fixed left badge */}
+        <div className="bg-brand-accent text-ink-900 font-bold px-3 sm:px-4 py-2 text-[10px] tracking-widest uppercase flex items-center gap-1.5 shrink-0 z-10">
+          <Flame size={11} className="fill-current animate-pulse" />
+          <span>Trending</span>
         </div>
 
         {/* Scrolling marquee */}
-        <div className="overflow-hidden flex-1 py-2">
-          <div className="animate-ticker flex items-center space-x-12 whitespace-nowrap">
+        <div className="overflow-hidden flex-1 py-2 relative">
+          {/* Fade masks */}
+          <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-ink-900 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-ink-900 to-transparent z-10 pointer-events-none" />
+
+          <div className="animate-ticker flex items-center gap-10 whitespace-nowrap px-4">
             {loopItems.map((item, idx) => (
-              <div key={`${item.id}-${idx}`} className="flex items-center space-x-3 text-xs tracking-wider font-light">
+              <div key={`${item.id}-${idx}`} className="flex items-center gap-3 text-xs font-light">
                 {item.tag && (
-                  <span className="text-[9px] px-1.5 py-0.5 bg-luxury-800 text-gold-400 border border-gold-500/30 uppercase font-medium tracking-widest">
+                  <span className="px-2 py-0.5 bg-white/10 text-brand-light text-[9px] uppercase font-semibold tracking-wider rounded-sm">
                     {item.tag}
                   </span>
                 )}
-                <span className="text-luxury-200 hover:text-gold-400 transition-colors cursor-pointer">
+                <span className="text-ink-300 hover:text-white transition-colors cursor-pointer">
                   {item.headline}
                 </span>
-                <span className="text-gold-500/40">•</span>
+                <span className="text-ink-600">·</span>
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Right subtle pulse */}
-        <div className="hidden sm:flex items-center gap-2 px-4 py-2 text-[10px] tracking-widest text-gold-400 font-medium shrink-0 border-l border-luxury-850">
-          <Sparkles size={11} className="text-gold-400 animate-spin" style={{ animationDuration: '6s' }} />
-          <span>SS/26 FORECAST</span>
         </div>
       </div>
     </div>

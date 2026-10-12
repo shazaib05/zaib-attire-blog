@@ -81,7 +81,7 @@ function AppShell() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fafaf8] text-luxury-950 flex flex-col font-sans selection:bg-gold-500 selection:text-luxury-950">
+    <div className="min-h-screen bg-white text-ink-900 flex flex-col font-sans selection:bg-ink-200 selection:text-ink-900">
       <ScrollToTop />
 
       {/* Primary Header with User's Official Logo & Navigation */}

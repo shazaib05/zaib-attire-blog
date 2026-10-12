@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Sparkles, Feather, Send, Search, CheckCircle2, AlertCircle, HelpCircle, Image, Globe, User, BookOpen } from 'lucide-react';
+import { X, Feather, Send, Search, CheckCircle2, AlertCircle, HelpCircle, Image as ImageIcon, Globe, User, BookOpen } from 'lucide-react';
 import { api } from '../utils/api';
 
 const FASHION_IMAGE_PRESETS = [
@@ -95,523 +95,300 @@ export default function GuestPostModal({ onClose, categories = [], onPostCreated
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-luxury-950/85 backdrop-blur-md overflow-y-auto flex justify-center p-3 sm:p-6 animate-fadeIn">
-      <div className="relative bg-[#fafaf8] w-full max-w-3xl my-auto rounded-none shadow-2xl border border-gold-500/30 flex flex-col max-h-[92vh]">
+    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm overflow-y-auto flex justify-center p-3 sm:p-6 animate-fadeIn font-sans">
+      <div className="relative bg-white w-full max-w-3xl my-auto rounded-2xl shadow-2xl border border-ink-200 flex flex-col max-h-[92vh] overflow-hidden">
         
         {/* Header Bar */}
-        <div className="bg-luxury-950 text-white px-6 py-5 flex items-center justify-between border-b border-luxury-800">
+        <div className="px-6 py-4 flex items-center justify-between border-b border-ink-200 bg-white">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-full bg-gold-500/20 text-gold-400 flex items-center justify-center border border-gold-500/40">
-              <Feather size={16} />
+            <div className="w-8 h-8 rounded-full bg-ink-100 flex items-center justify-center text-ink-900">
+              <Feather size={16} className="text-brand-accent" />
             </div>
             <div>
-              <h3 className="font-editorial text-lg sm:text-xl font-bold tracking-wide flex items-center gap-2">
-                <span>The Contributor Desk</span>
-                <span className="text-[10px] bg-gold-500 text-luxury-950 font-bold px-1.5 py-0.5 tracking-widest uppercase">
-                  OPEN CALL
+              <h3 className="font-serif text-lg sm:text-xl font-bold text-ink-900 flex items-center gap-2">
+                <span>Write Story</span>
+                <span className="text-[10px] bg-brand-accent/20 text-brand-muted font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  Free Guest Post
                 </span>
               </h3>
-              <p className="text-[10px] tracking-luxury uppercase text-luxury-400">
-                PITCH YOUR EDITORIAL PIECE TO ZAIB ATTIRE
+              <p className="text-xs text-ink-400">
+                Submit an article to ZAIB ATTIRE with permanent dofollow backlinks
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 text-luxury-400 hover:text-white hover:bg-luxury-800 rounded-full transition"
+            className="p-1.5 text-ink-400 hover:text-ink-900 hover:bg-ink-100 rounded-full transition"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-luxury-200 bg-[#f4f4f0] text-xs font-semibold uppercase tracking-wider">
+        <div className="flex border-b border-ink-200 bg-ink-100 text-xs font-semibold">
           <button
             onClick={() => setActiveTab('submit')}
-            className={`flex-1 py-3 px-4 text-center border-b-2 transition-all flex items-center justify-center gap-1.5 ${
+            className={`flex-1 py-3 text-center transition ${
               activeTab === 'submit'
-                ? 'border-gold-600 bg-white text-luxury-950 font-bold'
-                : 'border-transparent text-luxury-600 hover:text-luxury-950'
+                ? 'bg-white text-ink-900 border-b-2 border-ink-900'
+                : 'text-ink-500 hover:text-ink-900'
             }`}
           >
-            <Sparkles size={14} className="text-gold-600" />
-            <span>Submit Guest Article</span>
+            Submit Story
           </button>
-
           <button
             onClick={() => setActiveTab('track')}
-            className={`flex-1 py-3 px-4 text-center border-b-2 transition-all flex items-center justify-center gap-1.5 ${
+            className={`flex-1 py-3 text-center transition ${
               activeTab === 'track'
-                ? 'border-gold-600 bg-white text-luxury-950 font-bold'
-                : 'border-transparent text-luxury-600 hover:text-luxury-950'
+                ? 'bg-white text-ink-900 border-b-2 border-ink-900'
+                : 'text-ink-500 hover:text-ink-900'
             }`}
           >
-            <Search size={14} className="text-gold-600" />
-            <span>Track Submission Status</span>
+            Track Status
           </button>
-
           <button
             onClick={() => setActiveTab('guidelines')}
-            className={`flex-1 py-3 px-4 text-center border-b-2 transition-all flex items-center justify-center gap-1.5 ${
+            className={`flex-1 py-3 text-center transition ${
               activeTab === 'guidelines'
-                ? 'border-gold-600 bg-white text-luxury-950 font-bold'
-                : 'border-transparent text-luxury-600 hover:text-luxury-950'
+                ? 'bg-white text-ink-900 border-b-2 border-ink-900'
+                : 'text-ink-500 hover:text-ink-900'
             }`}
           >
-            <BookOpen size={14} className="text-gold-600" />
-            <span>Guidelines & Perks</span>
+            Guidelines
           </button>
         </div>
 
-        {/* Tab Content Body */}
-        <div className="p-6 sm:p-8 overflow-y-auto flex-1">
-          
-          {/* TAB 1: SUBMIT GUEST ARTICLE */}
+        {/* Modal Body */}
+        <div className="p-6 overflow-y-auto space-y-6 flex-1">
           {activeTab === 'submit' && (
-            <div>
-              {submittedResult ? (
-                <div className="text-center py-8 px-4">
-                  <div className="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-300">
-                    <CheckCircle2 size={32} />
+            submittedResult ? (
+              <div className="text-center py-8 space-y-4">
+                <div className="w-16 h-16 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto">
+                  <CheckCircle2 size={36} />
+                </div>
+                <h4 className="font-serif text-2xl font-bold text-ink-900">
+                  Article Transmitted
+                </h4>
+                <p className="text-sm text-ink-500 max-w-md mx-auto">
+                  Your piece has been transmitted to our editorial desk for review within 48 hours.
+                </p>
+                <div className="p-4 border border-ink-200 rounded-xl bg-ink-100 text-center space-y-1 max-w-sm mx-auto">
+                  <span className="text-xs text-ink-500 uppercase font-semibold">Tracking Code</span>
+                  <div className="font-mono text-xl font-bold text-ink-900">{submittedResult.tracking_id}</div>
+                </div>
+                <button onClick={onClose} className="btn-primary text-xs py-2 px-6">
+                  Close Window
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {errorMsg && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700 flex items-center gap-2">
+                    <AlertCircle size={15} />
+                    <span>{errorMsg}</span>
                   </div>
-                  <h4 className="font-editorial text-2xl font-bold text-luxury-950 mb-2">
-                    Submission Received at the Atelier Desk
-                  </h4>
-                  <p className="text-luxury-700 text-sm max-w-md mx-auto leading-relaxed mb-6 font-light">
-                    Your piece has been placed before our editorial review board. Acceptance notifications are dispatched within 48 hours.
-                  </p>
+                )}
 
-                  <div className="bg-champagne-50 p-4 border border-gold-300 max-w-sm mx-auto mb-6 text-left">
-                    <div className="text-[10px] tracking-widest uppercase text-luxury-600 font-semibold mb-1">
-                      YOUR TRACKING REFERENCE:
-                    </div>
-                    <div className="font-mono text-sm font-bold text-gold-800 break-all select-all">
-                      {submittedResult.submissionId}
-                    </div>
+                <div>
+                  <label className="block text-xs font-semibold text-ink-700 mb-1">
+                    Article Title *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    placeholder="e.g. Sculptural Silhouettes: Why Ateliers Champion Wool in 2026"
+                    className="w-full px-3.5 py-2.5 bg-ink-100 rounded-lg text-sm text-ink-900 focus:outline-none focus:bg-white border border-transparent focus:border-ink-300 font-serif font-bold"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-ink-700 mb-1">
+                      Topic / Category *
+                    </label>
+                    <select
+                      name="category_name"
+                      value={formData.category_name}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 bg-ink-100 rounded-lg text-xs text-ink-900 focus:outline-none focus:bg-white border border-transparent focus:border-ink-300"
+                    >
+                      {categories.map((c) => (
+                        <option key={c.id} value={c.name}>{c.name}</option>
+                      ))}
+                    </select>
                   </div>
 
-                  <div className="flex justify-center gap-4">
-                    <button
-                      onClick={() => {
-                        setTrackId(submittedResult.submissionId);
-                        setActiveTab('track');
-                        setSubmittedResult(null);
-                      }}
-                      className="px-5 py-2.5 bg-luxury-950 text-white font-bold text-xs uppercase tracking-luxury hover:bg-gold-500 hover:text-luxury-950 transition"
+                  <div>
+                    <label className="block text-xs font-semibold text-ink-700 mb-1">
+                      Fashion Season
+                    </label>
+                    <select
+                      name="season"
+                      value={formData.season}
+                      onChange={handleChange}
+                      className="w-full px-3 py-2 bg-ink-100 rounded-lg text-xs text-ink-900 focus:outline-none focus:bg-white border border-transparent focus:border-ink-300"
                     >
-                      Track In Portal
-                    </button>
-                    <button
-                      onClick={onClose}
-                      className="px-5 py-2.5 border border-luxury-300 text-luxury-800 font-bold text-xs uppercase tracking-luxury hover:bg-luxury-100 transition"
-                    >
-                      Return to Journal
-                    </button>
+                      <option value="Spring / Summer 2026">Spring / Summer 2026</option>
+                      <option value="Fall / Winter 2026">Fall / Winter 2026</option>
+                      <option value="Resort 2026">Resort 2026</option>
+                    </select>
                   </div>
                 </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {errorMsg && (
-                    <div className="p-3 bg-rose-50 text-rose-800 border border-rose-300 text-xs flex items-center gap-2">
-                      <AlertCircle size={14} className="shrink-0" />
-                      <span>{errorMsg}</span>
-                    </div>
-                  )}
 
-                  {/* Section 1: Editorial Pitch */}
-                  <div className="border-b border-luxury-200 pb-5">
-                    <h4 className="font-editorial text-base font-bold text-luxury-950 mb-3 flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-luxury-950 text-gold-400 text-[10px] flex items-center justify-center font-bold">1</span>
-                      <span>The Editorial Concept</span>
-                    </h4>
-
-                    <div className="space-y-4">
-                      <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-luxury-700 mb-1">
-                          Article Title *
-                        </label>
-                        <input
-                          type="text"
-                          name="title"
-                          required
-                          value={formData.title}
-                          onChange={handleChange}
-                          placeholder="e.g. Sculptural Silhouettes: Why Tokyo Tailoring is Dismantling Streetwear"
-                          className="w-full p-3 border border-luxury-300 text-sm focus:outline-none focus:border-gold-500"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-xs font-semibold uppercase tracking-wider text-luxury-700 mb-1">
-                            Primary Category *
-                          </label>
-                          <select
-                            name="category_name"
-                            value={formData.category_name}
-                            onChange={handleChange}
-                            className="w-full p-3 border border-luxury-300 text-xs uppercase tracking-wider focus:outline-none focus:border-gold-500 bg-white"
-                          >
-                            {categories.map((c) => (
-                              <option key={c.id} value={c.name}>{c.name}</option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div>
-                          <label className="block text-xs font-semibold uppercase tracking-wider text-luxury-700 mb-1">
-                            Fashion Season
-                          </label>
-                          <select
-                            name="season"
-                            value={formData.season}
-                            onChange={handleChange}
-                            className="w-full p-3 border border-luxury-300 text-xs uppercase tracking-wider focus:outline-none focus:border-gold-500 bg-white"
-                          >
-                            <option value="Spring / Summer 2026">Spring / Summer 2026</option>
-                            <option value="Fall / Winter 2026">Fall / Winter 2026</option>
-                            <option value="Resort 2026">Resort 2026</option>
-                            <option value="Pre-Fall 2026">Pre-Fall 2026</option>
-                            <option value="Timeless / Archival">Timeless / Archival</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-luxury-700 mb-1">
-                          Pitch Excerpt / Subtitle
-                        </label>
-                        <input
-                          type="text"
-                          name="pitch_summary"
-                          value={formData.pitch_summary}
-                          onChange={handleChange}
-                          placeholder="Brief 1-2 sentence hook highlighting the core thesis of your critique."
-                          className="w-full p-3 border border-luxury-300 text-xs focus:outline-none focus:border-gold-500"
-                        />
-                      </div>
-                    </div>
+                <div>
+                  <label className="block text-xs font-semibold text-ink-700 mb-1">
+                    Cover Photo (Presets)
+                  </label>
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-2">
+                    {FASHION_IMAGE_PRESETS.map((preset, idx) => (
+                      <button
+                        type="button"
+                        key={idx}
+                        onClick={() => handlePresetSelect(preset.url)}
+                        className={`aspect-[4/3] rounded-lg overflow-hidden border-2 transition ${
+                          formData.cover_image === preset.url
+                            ? 'border-brand-accent'
+                            : 'border-transparent opacity-75 hover:opacity-100'
+                        }`}
+                      >
+                        <img src={preset.url} alt="" className="w-full h-full object-cover" />
+                      </button>
+                    ))}
                   </div>
+                </div>
 
-                  {/* Section 2: Visual Mood & Photography */}
-                  <div className="border-b border-luxury-200 pb-5">
-                    <h4 className="font-editorial text-base font-bold text-luxury-950 mb-3 flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-luxury-950 text-gold-400 text-[10px] flex items-center justify-center font-bold">2</span>
-                      <span>Cover Photography & Mood</span>
-                    </h4>
+                <div>
+                  <label className="block text-xs font-semibold text-ink-700 mb-1">
+                    Article Body *
+                  </label>
+                  <textarea
+                    required
+                    rows={8}
+                    name="content"
+                    value={formData.content}
+                    onChange={handleChange}
+                    placeholder="Draft your fashion story... You can use markdown like ## Subheading and [Anchor Text](https://yourbrand.com) for backlinks."
+                    className="w-full px-3.5 py-2.5 bg-ink-100 rounded-lg text-sm text-ink-900 font-serif focus:outline-none focus:bg-white border border-transparent focus:border-ink-300"
+                  />
+                </div>
 
-                    <div className="space-y-3">
-                      <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-luxury-700 mb-1">
-                          Cover Image URL (Direct high-res link)
-                        </label>
-                        <input
-                          type="url"
-                          name="cover_image"
-                          value={formData.cover_image}
-                          onChange={handleChange}
-                          placeholder="https://images.unsplash.com/..."
-                          className="w-full p-3 border border-luxury-300 text-xs focus:outline-none focus:border-gold-500 font-mono"
-                        />
-                      </div>
-
-                      {/* Preset Chooser */}
-                      <div>
-                        <span className="text-[10px] uppercase tracking-wider font-semibold text-luxury-500 block mb-1.5">
-                          Or select from curated runway imagery presets:
-                        </span>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                          {FASHION_IMAGE_PRESETS.map((preset, idx) => (
-                            <button
-                              type="button"
-                              key={idx}
-                              onClick={() => handlePresetSelect(preset.url)}
-                              className={`p-1.5 border text-left flex items-center space-x-2 text-[10px] transition ${
-                                formData.cover_image === preset.url
-                                  ? 'border-gold-600 bg-gold-50 font-bold'
-                                  : 'border-luxury-200 hover:border-luxury-400'
-                              }`}
-                            >
-                              <img src={preset.url} alt="" className="w-6 h-6 object-cover" />
-                              <span className="truncate">{preset.label}</span>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Section 3: Article Body Content */}
-                  <div className="border-b border-luxury-200 pb-5">
-                    <div className="flex items-center justify-between mb-3">
-                      <h4 className="font-editorial text-base font-bold text-luxury-950 flex items-center gap-2">
-                        <span className="w-5 h-5 rounded-full bg-luxury-950 text-gold-400 text-[10px] flex items-center justify-center font-bold">3</span>
-                        <span>Full Article Manuscript *</span>
-                      </h4>
-                      <span className="text-[10px] text-luxury-500 uppercase tracking-wider">
-                        Supports Markdown (## Heading, &gt; Quote)
-                      </span>
-                    </div>
-
-                    <textarea
-                      name="content"
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-ink-200">
+                  <div>
+                    <label className="block text-xs font-semibold text-ink-700 mb-1">
+                      Author Name *
+                    </label>
+                    <input
+                      type="text"
                       required
-                      rows={8}
-                      value={formData.content}
+                      name="author_name"
+                      value={formData.author_name}
                       onChange={handleChange}
-                      placeholder={`## The Evolution of Form\n\nBegin your fashion critique here. Describe textures, runway context, tailoring techniques, and cultural significance...\n\n> "Fashion is the armor to survive the reality of everyday life."\n\n### Materiality and Craftsmanship\nDetail specific textiles, silhouetting, or atelier heritage.`}
-                      className="w-full p-3 border border-luxury-300 text-xs leading-relaxed focus:outline-none focus:border-gold-500 font-sans"
-                    ></textarea>
-
-                    <div className="mt-2">
-                      <label className="block text-xs font-semibold uppercase tracking-wider text-luxury-700 mb-1">
-                        Thematic Tags (Comma separated)
-                      </label>
-                      <input
-                        type="text"
-                        name="tags"
-                        value={formData.tags}
-                        onChange={handleChange}
-                        placeholder="Couture, Milan, Leather, Tailoring, Avant-Garde"
-                        className="w-full p-2.5 border border-luxury-300 text-xs focus:outline-none focus:border-gold-500"
-                      />
-                    </div>
+                      placeholder="Your full name"
+                      className="w-full px-3 py-2 bg-ink-100 rounded-lg text-xs text-ink-900 focus:outline-none focus:bg-white border border-transparent focus:border-ink-300"
+                    />
                   </div>
 
-                  {/* Section 4: Author Credentials & Bio */}
-                  <div className="border-b border-luxury-200 pb-5">
-                    <h4 className="font-editorial text-base font-bold text-luxury-950 mb-3 flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-luxury-950 text-gold-400 text-[10px] flex items-center justify-center font-bold">4</span>
-                      <span>Author Byline & Attribution *</span>
-                    </h4>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-luxury-700 mb-1">
-                          Your Full Name *
-                        </label>
-                        <input
-                          type="text"
-                          name="author_name"
-                          required
-                          value={formData.author_name}
-                          onChange={handleChange}
-                          placeholder="e.g. Julian Vance"
-                          className="w-full p-2.5 border border-luxury-300 text-xs focus:outline-none focus:border-gold-500"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-luxury-700 mb-1">
-                          Editorial Email *
-                        </label>
-                        <input
-                          type="email"
-                          name="author_email"
-                          required
-                          value={formData.author_email}
-                          onChange={handleChange}
-                          placeholder="julian@fashionpress.co"
-                          className="w-full p-2.5 border border-luxury-300 text-xs focus:outline-none focus:border-gold-500"
-                        />
-                      </div>
-
-                      <div className="sm:col-span-2">
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-luxury-700 mb-1">
-                          Author Bio (Appears under published article)
-                        </label>
-                        <input
-                          type="text"
-                          name="author_bio"
-                          value={formData.author_bio}
-                          onChange={handleChange}
-                          placeholder="e.g. Freelance fashion stylist and runway commentator based between Tokyo and Paris."
-                          className="w-full p-2.5 border border-luxury-300 text-xs focus:outline-none focus:border-gold-500"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-luxury-700 mb-1">
-                          Portfolio / Website URL (Do-Follow Link)
-                        </label>
-                        <input
-                          type="url"
-                          name="author_website"
-                          value={formData.author_website}
-                          onChange={handleChange}
-                          placeholder="https://yourportfolio.com"
-                          className="w-full p-2.5 border border-luxury-300 text-xs focus:outline-none focus:border-gold-500"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-semibold uppercase tracking-wider text-luxury-700 mb-1">
-                          Social Handle (Instagram/X)
-                        </label>
-                        <input
-                          type="text"
-                          name="author_social"
-                          value={formData.author_social}
-                          onChange={handleChange}
-                          placeholder="@your_handle"
-                          className="w-full p-2.5 border border-luxury-300 text-xs focus:outline-none focus:border-gold-500"
-                        />
-                      </div>
-                    </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-ink-700 mb-1">
+                      Author Email *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      name="author_email"
+                      value={formData.author_email}
+                      onChange={handleChange}
+                      placeholder="your@email.com"
+                      className="w-full px-3 py-2 bg-ink-100 rounded-lg text-xs text-ink-900 focus:outline-none focus:bg-white border border-transparent focus:border-ink-300"
+                    />
                   </div>
 
-                  {/* Submission Action */}
-                  <div className="flex items-center justify-between pt-2">
-                    <p className="text-[11px] text-luxury-500 max-w-sm">
-                      By submitting, you certify this writing is original and adheres to the ZAIB ATTIRE Editorial Codex.
-                    </p>
-
-                    <button
-                      type="submit"
-                      disabled={submitting}
-                      className="px-8 py-3 bg-luxury-950 hover:bg-gold-500 text-white hover:text-luxury-950 font-bold text-xs uppercase tracking-luxury transition-all flex items-center gap-2 shadow-lg"
-                    >
-                      <Send size={14} />
-                      <span>{submitting ? 'Transmitting...' : 'Submit For Review'}</span>
-                    </button>
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-semibold text-ink-700 mb-1">
+                      Brand Website / Target URL (Permanent Backlink)
+                    </label>
+                    <input
+                      type="url"
+                      name="author_website"
+                      value={formData.author_website}
+                      onChange={handleChange}
+                      placeholder="https://yourbrand.com"
+                      className="w-full px-3 py-2 bg-ink-100 rounded-lg text-xs text-ink-900 focus:outline-none focus:bg-white border border-transparent focus:border-ink-300 font-mono"
+                    />
                   </div>
-                </form>
-              )}
-            </div>
+                </div>
+
+                <div className="pt-3 flex justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="btn-ghost text-xs py-2 px-4"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="btn-primary text-xs py-2 px-5 disabled:opacity-50"
+                  >
+                    {submitting ? 'Transmitting...' : 'Submit Story'}
+                  </button>
+                </div>
+              </form>
+            )
           )}
 
-          {/* TAB 2: TRACK SUBMISSION STATUS */}
           {activeTab === 'track' && (
-            <div className="py-4 space-y-6">
-              <div className="text-center max-w-md mx-auto">
-                <Search size={32} className="text-gold-600 mx-auto mb-2" />
-                <h4 className="font-editorial text-xl font-bold text-luxury-950">
-                  Track Editorial Review
-                </h4>
-                <p className="text-xs text-luxury-600 mt-1">
-                  Enter your submission reference code (e.g. <span className="font-mono text-gold-700 font-bold">gsub_01</span> or your submitted ID) to view your review status in real time.
-                </p>
-              </div>
-
-              <form onSubmit={handleTrackSubmit} className="flex gap-2 max-w-md mx-auto">
+            <div className="space-y-4 max-w-md mx-auto py-4">
+              <form onSubmit={handleTrackSubmit} className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="e.g. gsub_01"
+                  required
                   value={trackId}
-                  onChange={(e) => setTrackId(e.target.value)}
-                  className="flex-1 p-3 border border-luxury-300 text-xs tracking-wider uppercase font-mono focus:outline-none focus:border-gold-500"
+                  onChange={(e) => setTrackId(e.target.value.toUpperCase())}
+                  placeholder="GP-..."
+                  className="flex-1 px-3 py-2 bg-ink-100 rounded-lg text-xs font-mono text-ink-900 focus:outline-none focus:bg-white border border-transparent focus:border-ink-300 uppercase"
                 />
                 <button
                   type="submit"
                   disabled={trackingLoading}
-                  className="px-6 py-3 bg-luxury-950 text-gold-400 font-bold text-xs uppercase tracking-luxury hover:bg-gold-500 hover:text-luxury-950 transition"
+                  className="btn-primary text-xs py-2 px-4 shrink-0"
                 >
-                  {trackingLoading ? 'Checking...' : 'Inspect'}
+                  {trackingLoading ? 'Checking...' : 'Check Status'}
                 </button>
               </form>
 
               {trackingError && (
-                <div className="p-3 bg-rose-50 text-rose-800 border border-rose-300 text-xs max-w-md mx-auto text-center">
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
                   {trackingError}
                 </div>
               )}
 
               {trackingResult && (
-                <div className="bg-white p-6 border border-luxury-200 max-w-lg mx-auto shadow-sm space-y-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-luxury-200">
-                    <span className="text-[10px] tracking-widest uppercase font-semibold text-luxury-500">
-                      SUBMISSION STATUS
-                    </span>
-                    <span className={`px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-                      trackingResult.status === 'approved'
-                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                        : trackingResult.status === 'rejected'
-                        ? 'bg-rose-100 text-rose-800 border border-rose-300'
-                        : 'bg-amber-100 text-amber-800 border border-amber-300 animate-pulse'
-                    }`}>
-                      {trackingResult.status === 'approved' ? '✓ Accepted & Published' :
-                       trackingResult.status === 'rejected' ? '✗ Not Selected' : '⟳ Under Editorial Review'}
-                    </span>
-                  </div>
-
-                  <div>
-                    <h5 className="font-editorial text-lg font-bold text-luxury-950">
-                      {trackingResult.title}
-                    </h5>
-                    <p className="text-xs text-luxury-500 mt-0.5">
-                      Contributed by {trackingResult.author_name} • {trackingResult.category_name}
-                    </p>
-                  </div>
-
-                  {trackingResult.editorial_feedback && (
-                    <div className="p-3.5 bg-champagne-50 border-l-2 border-gold-500 text-xs text-luxury-800 italic">
-                      <span className="font-bold not-italic text-gold-800 block text-[10px] uppercase mb-0.5">
-                        Editorial Desk Notes:
-                      </span>
-                      "{trackingResult.editorial_feedback}"
-                    </div>
+                <div className="border border-ink-200 rounded-xl p-4 bg-ink-50 space-y-2">
+                  <h4 className="font-serif font-bold text-sm text-ink-900">{trackingResult.title}</h4>
+                  <p className="text-xs text-ink-500">Status: <strong className="text-ink-900">{trackingResult.status}</strong></p>
+                  {trackingResult.reviewer_notes && (
+                    <p className="text-xs text-ink-600 italic">Notes: "{trackingResult.reviewer_notes}"</p>
                   )}
-
-                  <div className="text-[10px] text-luxury-400">
-                    Submitted: {new Date(trackingResult.created_at).toLocaleString()}
-                  </div>
                 </div>
               )}
             </div>
           )}
 
-          {/* TAB 3: GUIDELINES & PERKS */}
           {activeTab === 'guidelines' && (
-            <div className="space-y-6">
-              <div className="bg-champagne-50 p-6 border border-gold-300">
-                <h4 className="font-editorial text-xl font-bold text-luxury-950 mb-2">
-                  Why Write For ZAIB ATTIRE?
-                </h4>
-                <p className="text-xs text-luxury-700 leading-relaxed font-light">
-                  ZAIB ATTIRE is an editorial sanctuary for serious fashion discourse. We offer prominent byline attribution, do-follow links to your creative portfolio, and amplification across our international readership of stylists, buyers, and fashion connoisseurs.
-                </p>
-              </div>
-
-              <div className="space-y-4">
-                <h5 className="font-editorial text-base font-bold text-luxury-900 border-b border-luxury-200 pb-2">
-                  Editorial Standards Checklist
-                </h5>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                  <div className="p-4 bg-white border border-luxury-200">
-                    <span className="font-bold text-luxury-950 block mb-1">01. Originality & Depth</span>
-                    <p className="text-luxury-600">Articles must be 100% original, unpublished, and feature thoughtful analysis rather than superficial listicles.</p>
-                  </div>
-
-                  <div className="p-4 bg-white border border-luxury-200">
-                    <span className="font-bold text-luxury-950 block mb-1">02. Word Count & Tone</span>
-                    <p className="text-luxury-600">800 to 2,500 words written in an authoritative, poetic, yet accessible editorial tone.</p>
-                  </div>
-
-                  <div className="p-4 bg-white border border-luxury-200">
-                    <span className="font-bold text-luxury-950 block mb-1">03. Author Attribution</span>
-                    <p className="text-luxury-600">Every contributor receives a permanent author profile card featuring their bio, portfolio link, and social channels.</p>
-                  </div>
-
-                  <div className="p-4 bg-white border border-luxury-200">
-                    <span className="font-bold text-luxury-950 block mb-1">04. Fast Turnaround</span>
-                    <p className="text-luxury-600">Our editor board reviews submissions within 48 to 72 hours, providing constructive feedback.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="text-center pt-4">
-                <button
-                  onClick={() => setActiveTab('submit')}
-                  className="px-6 py-2.5 bg-luxury-950 text-gold-400 font-bold text-xs uppercase tracking-luxury hover:bg-gold-500 hover:text-luxury-950 transition"
-                >
-                  Ready? Pitch Your Story Now
-                </button>
-              </div>
+            <div className="space-y-4 text-xs text-ink-600 leading-relaxed font-serif">
+              <h4 className="font-sans font-bold text-ink-900 text-sm">Guest Post Standards</h4>
+              <p>1. Articles must be original, insightful fashion analysis or brand stories.</p>
+              <p>2. Up to 2 contextual dofollow anchor links permitted per piece.</p>
+              <p>3. Each author receives a permanent author attribution card with brand backlink.</p>
+              <p>4. Editorial reviews are completed within 48 hours.</p>
             </div>
           )}
-
         </div>
 
       </div>

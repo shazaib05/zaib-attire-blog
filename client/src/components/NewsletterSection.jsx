@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, CheckCircle2, Sparkles, ArrowRight } from 'lucide-react';
+import { Mail, CheckCircle2, ArrowRight, Feather } from 'lucide-react';
 import { api } from '../utils/api';
 
 export default function NewsletterSection() {
@@ -16,7 +16,7 @@ export default function NewsletterSection() {
     setMessage('');
     try {
       const res = await api.subscribeNewsletter(email);
-      setMessage(res.message || 'You have entered the Atelier Circle.');
+      setMessage(res.message || 'You\'re subscribed! Welcome to ZAIB ATTIRE.');
       setIsSuccess(true);
       setEmail('');
     } catch {
@@ -28,56 +28,62 @@ export default function NewsletterSection() {
   };
 
   return (
-    <section className="bg-luxury-950 text-white border-t border-luxury-800 py-16 sm:py-20 relative overflow-hidden">
-      {/* Subtle gold luxury background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-      <div className="max-w-4xl mx-auto px-4 sm:px-8 text-center relative z-10">
-        <div className="inline-flex items-center gap-2 text-gold-400 text-[10px] tracking-luxury uppercase font-bold mb-3 border border-gold-500/30 px-3 py-1">
-          <Sparkles size={11} className="text-gold-400" />
-          <span>JOIN THE ATELIER CIRCLE</span>
+    <section className="bg-white border-t border-ink-200 py-14 sm:py-20">
+      <div className="max-w-reading mx-auto px-5 text-center">
+        {/* Icon */}
+        <div className="w-12 h-12 rounded-full bg-brand-accent/10 border border-brand-accent/20 flex items-center justify-center mx-auto mb-5">
+          <Feather size={20} className="text-brand-accent" />
         </div>
 
-        <h3 className="font-editorial text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4">
-          Private Dispatches from the World's Runways
-        </h3>
-
-        <p className="font-cormorant text-lg sm:text-xl text-luxury-300 max-w-2xl mx-auto italic mb-8 font-light">
-          "Receive front-row analysis, curated lookbooks, and invitation-only contributor dispatches directly to your inbox every Sunday morning."
+        <h2 className="font-serif text-2xl sm:text-3xl font-bold text-ink-900 mb-3">
+          Stories in Your Inbox
+        </h2>
+        <p className="text-base text-ink-500 leading-relaxed mb-8 max-w-md mx-auto">
+          Get curated fashion articles, runway trends, and guest post updates delivered every Sunday morning.
         </p>
 
         {isSuccess ? (
-          <div className="p-4 bg-gold-500/15 border border-gold-500/40 text-gold-300 max-w-md mx-auto text-xs tracking-wider uppercase font-semibold flex items-center justify-center gap-2">
-            <CheckCircle2 size={16} className="text-gold-400" />
-            <span>{message}</span>
+          <div className="flex items-center justify-center gap-2.5 text-green-700 bg-green-50 border border-green-200 px-6 py-4 rounded-2xl max-w-sm mx-auto">
+            <CheckCircle2 size={18} />
+            <span className="text-sm font-medium">{message}</span>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
-            <div className="relative flex-1">
-              <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-luxury-500" />
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your personal email address..."
-                className="w-full pl-10 pr-4 py-3 bg-luxury-900 border border-luxury-700 text-xs tracking-wider placeholder:text-luxury-500 text-white focus:outline-none focus:border-gold-500 transition"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="px-6 py-3 bg-gold-500 hover:bg-gold-400 text-luxury-950 font-bold text-xs uppercase tracking-luxury transition shadow-glow-gold flex items-center justify-center gap-2 shrink-0"
+          <>
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col sm:flex-row gap-2.5 max-w-sm mx-auto"
+              id="newsletter-form"
             >
-              <span>{submitting ? 'Connecting...' : 'Request Invitation'}</span>
-              <ArrowRight size={13} />
-            </button>
-          </form>
+              <div className="relative flex-1">
+                <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-400 pointer-events-none" />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Your email address"
+                  className="w-full pl-11 pr-4 py-3 border border-ink-200 rounded-full text-sm text-ink-900 placeholder:text-ink-400 focus:outline-none focus:border-ink-400 focus:ring-2 focus:ring-ink-100 transition bg-white"
+                  id="newsletter-email-input"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={submitting}
+                className="btn-primary text-sm py-3 px-6 shrink-0 disabled:opacity-60"
+                id="newsletter-submit-btn"
+              >
+                {submitting ? 'Subscribing...' : 'Subscribe'}
+                {!submitting && <ArrowRight size={14} />}
+              </button>
+            </form>
+            {message && !isSuccess && (
+              <p className="text-xs text-red-500 mt-3">{message}</p>
+            )}
+            <p className="text-xs text-ink-400 mt-4">
+              No spam · Unsubscribe at any time
+            </p>
+          </>
         )}
-
-        <p className="text-[10px] text-luxury-500 uppercase tracking-widest mt-4">
-          Strictly Curated • No Algorithms • Unsubscribe at Any Moment
-        </p>
       </div>
     </section>
   );
