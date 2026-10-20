@@ -22,5 +22,4 @@ Disallow: /checkout
 Disallow: /account/
 
 # Sitemap Location
-Sitemap: https://zaibattire.com/sitemap.xml
 Sitemap: https://www.zaibattire.com/sitemap.xml
