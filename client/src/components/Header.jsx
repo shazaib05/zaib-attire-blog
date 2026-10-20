@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Search,
-  Feather,
+  PenLine,
   Menu,
   X,
-  Compass,
-  ArrowRight,
 } from 'lucide-react';
 
-export default function Header({ categories = [], onOpenSearchModal }) {
+export default function Header({ onOpenSearchModal }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
 
@@ -22,15 +20,15 @@ export default function Header({ categories = [], onOpenSearchModal }) {
     <>
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-ink-200 transition-shadow duration-200">
         <div className="max-w-content mx-auto px-5 sm:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-20">
 
-            {/*  Left: Logo  */}
-            <div className="flex items-center gap-8">
-              <Link to="/" className="flex items-center gap-2 group">
+            {/* Left: Logo */}
+            <div className="flex items-center gap-10 lg:gap-14">
+              <Link to="/" className="flex items-center gap-2 group shrink-0">
                 <img
                   src="/logo.png"
                   alt="ZAIB ATTIRE"
-                  className="h-[30px] w-auto object-contain transition-transform group-hover:scale-[1.02]"
+                  className="h-[32px] w-auto object-contain transition-transform group-hover:scale-[1.02]"
                   onError={(e) => {
                     e.target.style.display = 'none';
                     e.target.nextSibling.style.display = 'block';
@@ -41,66 +39,67 @@ export default function Header({ categories = [], onOpenSearchModal }) {
                 </span>
               </Link>
 
-              {/* Desktop Nav links */}
-              <nav className="hidden md:flex items-center gap-1">
+              {/* Desktop Navigation: Exactly 4 options with generous, elegant spacing */}
+              <nav className="hidden md:flex items-center space-x-8 lg:space-x-10">
                 <Link
                   to="/"
-                  className={`nav-link text-sm font-medium ${isActive('/') && location.pathname === '/' ? 'text-ink-900 font-semibold' : 'text-ink-600'}`}
+                  className={`text-sm tracking-wide transition-colors py-2 ${
+                    isActive('/') && location.pathname === '/'
+                      ? 'text-ink-900 font-semibold border-b-2 border-ink-900'
+                      : 'text-ink-600 hover:text-ink-900 font-medium'
+                  }`}
                 >
                   Home
                 </Link>
 
                 <Link
                   to="/blog"
-                  className={`nav-link text-sm font-medium ${isActive('/blog') ? 'text-ink-900 font-semibold' : 'text-ink-600'}`}
+                  className={`text-sm tracking-wide transition-colors py-2 ${
+                    isActive('/blog')
+                      ? 'text-ink-900 font-semibold border-b-2 border-ink-900'
+                      : 'text-ink-600 hover:text-ink-900 font-medium'
+                  }`}
                 >
                   Blog
                 </Link>
 
                 <Link
-                  to="/write"
-                  className={`nav-link text-sm font-medium flex items-center gap-1.5 ${
-                    isActive('/write') ? 'text-brand-accent font-semibold' : 'text-ink-600 hover:text-brand-accent'
-                  }`}
-                >
-                  <Feather size={14} className="text-brand-accent" />
-                  <span>Write for Us</span>
-                  <span className="text-[10px] uppercase font-bold tracking-wider bg-brand-accent/10 text-brand-accent px-1.5 py-0.5 rounded-full">
-                    Free
-                  </span>
-                </Link>
-
-                <Link
                   to="/about"
-                  className={`nav-link text-sm font-medium ${isActive('/about') ? 'text-ink-900 font-semibold' : 'text-ink-600'}`}
+                  className={`text-sm tracking-wide transition-colors py-2 ${
+                    isActive('/about')
+                      ? 'text-ink-900 font-semibold border-b-2 border-ink-900'
+                      : 'text-ink-600 hover:text-ink-900 font-medium'
+                  }`}
                 >
                   About
                 </Link>
 
                 <Link
-                  to="/contact"
-                  className={`nav-link text-sm font-medium ${isActive('/contact') ? 'text-ink-900 font-semibold' : 'text-ink-600'}`}
+                  to="/write"
+                  className={`text-sm tracking-wide transition-colors py-2 flex items-center gap-1.5 ${
+                    isActive('/write')
+                      ? 'text-ink-900 font-semibold border-b-2 border-ink-900'
+                      : 'text-ink-600 hover:text-ink-900 font-medium'
+                  }`}
                 >
-                  Contact
+                  <PenLine size={15} />
+                  <span>Write</span>
                 </Link>
               </nav>
             </div>
 
-            {/*  Right: Search + Action CTA  */}
-            <div className="flex items-center gap-3">
-              {/* Search trigger */}
+            {/* Right: Search Only */}
+            <div className="flex items-center gap-4">
               <button
                 onClick={onOpenSearchModal}
-                className="flex items-center gap-2 px-3 py-1.5 text-xs text-ink-500 bg-ink-100 hover:bg-ink-200 rounded-full transition-colors cursor-pointer"
+                className="flex items-center gap-2 px-3.5 py-1.5 text-xs text-ink-600 bg-ink-100 hover:bg-ink-200 rounded-full transition-colors cursor-pointer"
                 title="Search stories (Ctrl+K)"
                 aria-label="Search articles"
               >
                 <Search size={14} />
                 <span className="hidden sm:inline">Search...</span>
-                <kbd className="hidden sm:inline text-[10px] bg-white border border-ink-300 rounded px-1.5 text-ink-400">?K</kbd>
+                <kbd className="hidden sm:inline text-[10px] bg-white border border-ink-300 rounded px-1.5 text-ink-400">âŒ˜K</kbd>
               </button>
-
-              
 
               {/* Mobile hamburger */}
               <button
@@ -108,16 +107,16 @@ export default function Header({ categories = [], onOpenSearchModal }) {
                 className="md:hidden p-2 text-ink-700 hover:text-ink-900 hover:bg-ink-100 rounded-lg transition-colors"
                 aria-label="Toggle navigation menu"
               >
-                {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
               </button>
             </div>
 
           </div>
         </div>
 
-        {/*  Mobile Drawer  */}
+        {/* Mobile Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-ink-200 bg-white px-5 py-4 space-y-3 animate-fadeIn">
+          <div className="md:hidden border-t border-ink-200 bg-white px-6 py-5 space-y-4 animate-fadeIn">
             <Link
               to="/"
               onClick={() => setMobileMenuOpen(false)}
@@ -135,20 +134,6 @@ export default function Header({ categories = [], onOpenSearchModal }) {
             </Link>
 
             <Link
-              to="/write"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between py-2 text-base font-semibold text-brand-accent hover:text-brand-muted"
-            >
-              <span className="flex items-center gap-2">
-                <Feather size={16} />
-                Write for Us (Guest Post)
-              </span>
-              <span className="text-xs font-bold uppercase bg-brand-accent/10 px-2 py-0.5 rounded-full">
-                Free
-              </span>
-            </Link>
-
-            <Link
               to="/about"
               onClick={() => setMobileMenuOpen(false)}
               className="block py-2 text-base font-medium text-ink-900 hover:text-ink-600"
@@ -157,24 +142,13 @@ export default function Header({ categories = [], onOpenSearchModal }) {
             </Link>
 
             <Link
-              to="/contact"
+              to="/write"
               onClick={() => setMobileMenuOpen(false)}
-              className="block py-2 text-base font-medium text-ink-900 hover:text-ink-600"
+              className="flex items-center gap-2 py-2 text-base font-medium text-ink-900 hover:text-ink-600"
             >
-              Contact
+              <PenLine size={16} />
+              <span>Write</span>
             </Link>
-
-            {/* Mobile CTA */}
-            <div className="pt-3 border-t border-ink-200">
-              <Link
-                to="/write"
-                onClick={() => setMobileMenuOpen(false)}
-                className="btn-gold w-full justify-center text-sm py-3 rounded-xl"
-              >
-                <Feather size={15} />
-                Submit a Guest Post - It's Free
-              </Link>
-            </div>
           </div>
         )}
       </header>
