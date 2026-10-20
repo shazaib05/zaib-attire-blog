@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { PenLine, ExternalLink, Calendar, Eye, Trash2, CheckCircle2, User, LogOut } from 'lucide-react';
-import { api } from '../utils/api';
+import { PenLine, ExternalLink, Trash2, CheckCircle2, User, LogOut } from 'lucide-react';
 import SEO from '../components/SEO';
 
 export default function MyArticlesPage() {
@@ -15,6 +14,10 @@ export default function MyArticlesPage() {
       const stored = localStorage.getItem('zaib_contributor_auth');
       if (stored) {
         setUser(JSON.parse(stored));
+      } else {
+        // If not logged in, redirect to /write for sign in
+        navigate('/write');
+        return;
       }
     } catch {}
 
@@ -30,11 +33,12 @@ export default function MyArticlesPage() {
       }
     };
     loadMyArticles();
-  }, []);
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('zaib_contributor_auth');
     setUser(null);
+    window.dispatchEvent(new Event('storage'));
     navigate('/write');
   };
 
@@ -60,7 +64,7 @@ export default function MyArticlesPage() {
               My Articles
             </h1>
             <p className="text-sm text-ink-500 mt-1">
-              {user ? `Logged in as ${user.name} (${user.email})` : 'All your instantly published live articles'}
+              {user ? `Logged in as ${user.username || user.name} (${user.email})` : 'Your published articles'}
             </p>
           </div>
 
@@ -91,9 +95,9 @@ export default function MyArticlesPage() {
           <div className="py-20 text-center border border-dashed border-ink-200 rounded-2xl p-8">
             <PenLine size={40} className="mx-auto text-ink-300 mb-3" />
             <h3 className="font-serif text-xl font-bold text-ink-800 mb-1">No articles published yet</h3>
-            <p className="text-sm text-ink-500 mb-6">You haven't published any articles yet. Submit one to see it live immediately!</p>
+            <p className="text-sm text-ink-500 mb-6">You haven't published any articles yet. Write one to publish it live immediately!</p>
             <Link to="/write" className="btn-primary">
-              Write Your First Article
+              Write New Article
             </Link>
           </div>
         ) : (
@@ -102,7 +106,7 @@ export default function MyArticlesPage() {
               const liveUrl = `https://www.zaibattire.com/blog/${art.slug}`;
               return (
                 <div
-                  key={art.id}
+                  key={art.id || art.slug}
                   className="p-5 border border-ink-200 rounded-xl hover:border-ink-900 transition flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white shadow-2xs"
                 >
                   <div className="flex-1 min-w-0">
@@ -117,6 +121,12 @@ export default function MyArticlesPage() {
                     <h3 className="font-serif text-lg font-bold text-ink-900 truncate">
                       {art.title}
                     </h3>
+
+                    {art.summary && (
+                      <p className="text-xs text-ink-500 mt-1 line-clamp-1 italic">
+                        "{art.summary}"
+                      </p>
+                    )}
 
                     <div className="flex items-center gap-4 text-xs text-ink-400 mt-2 font-mono">
                       <span>{art.created_at ? new Date(art.created_at).toLocaleDateString() : 'Just now'}</span>
@@ -146,6 +156,14 @@ export default function MyArticlesPage() {
                 </div>
               );
             })}
+
+            {/* Bottom Write New Article button */}
+            <div className="pt-6 text-center">
+              <Link to="/write" className="btn-primary inline-flex items-center gap-2">
+                <PenLine size={15} />
+                <span>Write New Article</span>
+              </Link>
+            </div>
           </div>
         )}
       </div>
