@@ -200,6 +200,12 @@ function AppShell() {
 }
 
 export default function App() {
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hostname === 'zaibattire.com') {
+      window.location.replace(`https://www.zaibattire.com${window.location.pathname}${window.location.search}${window.location.hash}`);
+    }
+  }, []);
+
   return (
     <BrowserRouter>
       <AppShell />
