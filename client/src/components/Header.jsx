@@ -5,6 +5,7 @@ import {
   PenLine,
   Menu,
   X,
+  FileText
 } from 'lucide-react';
 
 export default function Header({ onOpenSearchModal }) {
@@ -39,8 +40,8 @@ export default function Header({ onOpenSearchModal }) {
                 </span>
               </Link>
 
-              {/* Desktop Navigation: Exactly 4 options with generous, elegant spacing */}
-              <nav className="hidden md:flex items-center space-x-8 lg:space-x-10">
+              {/* Desktop Navigation: Home, Blog, About, Write, My Articles with generous, elegant spacing */}
+              <nav className="hidden md:flex items-center space-x-7 lg:space-x-9">
                 <Link
                   to="/"
                   className={`text-sm tracking-wide transition-colors py-2 ${
@@ -84,6 +85,18 @@ export default function Header({ onOpenSearchModal }) {
                 >
                   <PenLine size={15} />
                   <span>Write</span>
+                </Link>
+
+                <Link
+                  to="/my-articles"
+                  className={`text-sm tracking-wide transition-colors py-2 flex items-center gap-1.5 ${
+                    isActive('/my-articles')
+                      ? 'text-ink-900 font-semibold border-b-2 border-ink-900'
+                      : 'text-ink-600 hover:text-ink-900 font-medium'
+                  }`}
+                >
+                  <FileText size={15} />
+                  <span>My Articles</span>
                 </Link>
               </nav>
             </div>
@@ -148,6 +161,15 @@ export default function Header({ onOpenSearchModal }) {
             >
               <PenLine size={16} />
               <span>Write</span>
+            </Link>
+
+            <Link
+              to="/my-articles"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 py-2 text-base font-medium text-ink-900 hover:text-ink-600"
+            >
+              <FileText size={16} />
+              <span>My Articles</span>
             </Link>
           </div>
         )}
