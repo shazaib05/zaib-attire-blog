@@ -127,3 +127,5 @@ moda-etoile-blog/
             ├── NewsletterSection.jsx# VIP Atelier newsletter
             └── Footer.jsx           # Editorial colophon & manifesto
 ```
+
+<!-- trigger deploy: 2026-10-21 03:50:08 -->
