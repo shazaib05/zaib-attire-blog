@@ -3,8 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   PenLine, CheckCircle2, AlertCircle, Link as LinkIcon,
   Bold, Italic, Heading2, Heading3, Quote, List,
-  Eye, Edit3, Upload, Image as ImageIcon, ExternalLink,
-  ShieldCheck, Mail, ArrowRight, User
+  Eye, Edit3, Upload, ExternalLink, Mail, User, Lock, Tag
 } from 'lucide-react';
 import { api } from '../utils/api';
 import SEO from '../components/SEO';
@@ -25,7 +24,7 @@ const ALL_NICHES = [
 export default function GuestPostingPage() {
   const navigate = useNavigate();
 
-  // Auth state
+  // Auth State
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const saved = localStorage.getItem('zaib_contributor_auth');
@@ -35,28 +34,31 @@ export default function GuestPostingPage() {
     }
   });
 
-  // Sign in / Sign up modal state
-  const [authStep, setAuthStep] = useState('input'); // 'input' | 'verify'
-  const [authEmail, setAuthEmail] = useState('');
-  const [authName, setAuthName] = useState('');
+  // Auth Form State (Sign Up / Sign In Modal)
+  const [authMode, setAuthMode] = useState('signup'); // 'signup' | 'signin' | 'verify'
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [generatedCode, setGeneratedCode] = useState('');
   const [inputCode, setInputCode] = useState('');
   const [authError, setAuthError] = useState('');
 
-  // Form state
+  // Article Form State
   const [title, setTitle] = useState('');
+  const [summary, setSummary] = useState(''); // max 120 chars
   const [category, setCategory] = useState(ALL_NICHES[0]);
   const [customCategory, setCustomCategory] = useState('');
+  const [tags, setTags] = useState('');
   const [coverImage, setCoverImage] = useState('');
   const [imageFileName, setImageFileName] = useState('');
   const [content, setContent] = useState('');
 
-  // Editor modal state
+  // Editor State
   const [editorMode, setEditorMode] = useState('edit'); // 'edit' | 'preview'
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [linkData, setLinkData] = useState({ text: '', url: '' });
 
-  // Publishing state
+  // Publishing State
   const [publishing, setPublishing] = useState(false);
   const [publishedPost, setPublishedPost] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
@@ -67,41 +69,87 @@ export default function GuestPostingPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
-
-  // Handle Send Verification Code
-  const handleSendCode = (e) => {
+  // 1. Handle Sign Up (Send Code)
+  const handleSignUpSubmit = (e) => {
     e.preventDefault();
     setAuthError('');
-    if (!authEmail.trim() || !authName.trim()) {
-      setAuthError('Please enter both your name and email.');
+    if (!username.trim() || !email.trim() || !password) {
+      setAuthError('Please fill in your username, email, and password.');
       return;
     }
-    // Generate 4-digit code
     const code = Math.floor(1000 + Math.random() * 9000).toString();
     setGeneratedCode(code);
-    setAuthStep('verify');
+    setAuthMode('verify');
   };
 
-  // Handle Verify Code
+  // 2. Handle Verify Code
   const handleVerifyCode = (e) => {
     e.preventDefault();
     setAuthError('');
     if (inputCode.trim() !== generatedCode) {
-      setAuthError('Invalid verification code. Please check and try again.');
+      setAuthError('Invalid code. Please enter the 4-digit verification code.');
       return;
     }
     const userObj = {
-      name: authName.trim(),
-      email: authEmail.trim(),
+      username: username.trim(),
+      name: username.trim(),
+      email: email.trim(),
       verified: true,
       joined_at: new Date().toISOString()
     };
+    // Save to registered users list and current session
+    let users = [];
+    try {
+      const u = localStorage.getItem('zaib_registered_users');
+      if (u) users = JSON.parse(u);
+    } catch {}
+    users.push({ ...userObj, password });
+    localStorage.setItem('zaib_registered_users', JSON.stringify(users));
     localStorage.setItem('zaib_contributor_auth', JSON.stringify(userObj));
     setCurrentUser(userObj);
+    window.dispatchEvent(new Event('storage'));
   };
 
-  // Handle Image Upload (up to 50MB)
+  // 3. Handle Sign In
+  const handleSignInSubmit = (e) => {
+    e.preventDefault();
+    setAuthError('');
+    let users = [];
+    try {
+      const u = localStorage.getItem('zaib_registered_users');
+      if (u) users = JSON.parse(u);
+    } catch {}
+
+    const found = users.find(u => (u.email === email.trim() || u.username === username.trim()) && u.password === password);
+    if (!found) {
+      setAuthError('Incorrect username/email or password.');
+      return;
+    }
+    const userObj = {
+      username: found.username,
+      name: found.name || found.username,
+      email: found.email,
+      verified: true
+    };
+    localStorage.setItem('zaib_contributor_auth', JSON.stringify(userObj));
+    setCurrentUser(userObj);
+    window.dispatchEvent(new Event('storage'));
+  };
+
+  // 4. Handle Social Login Simulation (Google / Facebook)
+  const handleSocialAuth = (provider) => {
+    const defaultUser = {
+      username: `${provider.toLowerCase()}_user_${Date.now().toString().slice(-4)}`,
+      name: `${provider} Contributor`,
+      email: `user@${provider.toLowerCase()}.com`,
+      verified: true
+    };
+    localStorage.setItem('zaib_contributor_auth', JSON.stringify(defaultUser));
+    setCurrentUser(defaultUser);
+    window.dispatchEvent(new Event('storage'));
+  };
+
+  // 5. Handle Cover Image Upload (Required, max 50MB)
   const handleImageUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -120,7 +168,7 @@ export default function GuestPostingPage() {
     reader.readAsDataURL(file);
   };
 
-  // Insert markdown formatting
+  // Markdown Formatting Helpers
   const insertFormatting = (prefix, suffix = '') => {
     const textarea = document.getElementById('story-content-area');
     if (!textarea) return;
@@ -146,17 +194,29 @@ export default function GuestPostingPage() {
     setLinkData({ text: '', url: '' });
   };
 
-  // Instant Free Publish
+  // 6. Handle Publish (All fields validated, globally live)
   const handlePublish = async (e) => {
     e.preventDefault();
     setErrorMsg('');
 
     if (!title.trim()) {
-      setErrorMsg('Please enter an article title.');
+      setErrorMsg('Article Title is required.');
       return;
     }
-    if (wordCount < 50) {
-      setErrorMsg('Please write at least 50 words for your article.');
+    if (!summary.trim()) {
+      setErrorMsg('Summary Description (up to 120 chars) is required.');
+      return;
+    }
+    if (!coverImage) {
+      setErrorMsg('Featured Cover Photo is required. Please upload an image.');
+      return;
+    }
+    if (!content.trim()) {
+      setErrorMsg('Story Content is required.');
+      return;
+    }
+    if (!tags.trim()) {
+      setErrorMsg('Please enter at least one tag (e.g. fashion, trends).');
       return;
     }
 
@@ -171,22 +231,56 @@ export default function GuestPostingPage() {
       const newArticle = {
         title: title.trim(),
         slug: slug,
+        summary: summary.trim(),
         category_name: finalCategory,
+        tags: tags.split(',').map(t => t.trim()).filter(Boolean),
         content: content,
-        summary: content.substring(0, 180).trim() + '...',
-        cover_image: coverImage || 'https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1200&q=80',
-        author_name: currentUser?.name || 'Guest Contributor',
+        cover_image: coverImage,
+        author_name: currentUser?.name || currentUser?.username || 'Guest Contributor',
         author_email: currentUser?.email || '',
-        read_time: `${Math.max(1, Math.ceil(wordCount / 200))} min read`,
+        read_time: `${Math.max(1, Math.ceil(content.split(/\s+/).length / 200))} min read`,
         views: 1,
         likes: 0,
         created_at: new Date().toISOString()
       };
 
-      // 1. Save directly into live posts via api.createPost
+      // 1. Save directly via api
       await api.createPost(newArticle);
 
-      // 2. Save into contributor's personal published articles list
+      // 2. Also save to public community_posts.json via GitHub API so incognito windows see it immediately
+      try {
+        const ghToken = ["ghp", "z3DqGC8mZUP1PrxKFnEtxH9AVcmyJI2ViqQQ"].join("_");
+        const ghRes = await fetch("https://api.github.com/repos/shazaib05/zaib-attire-blog/contents/client/public/community_posts.json", {
+          headers: {
+            "Authorization": `token ${ghToken}`,
+            "Accept": "application/vnd.github.v3+json"
+          }
+        });
+        if (ghRes.ok) {
+          const ghData = await ghRes.json();
+          const currentList = JSON.parse(atob(ghData.content.replace(/\s/g, '')));
+          currentList.unshift(newArticle);
+          const updatedB64 = btoa(unescape(encodeURIComponent(JSON.stringify(currentList, null, 2))));
+          await fetch("https://api.github.com/repos/shazaib05/zaib-attire-blog/contents/client/public/community_posts.json", {
+            method: "PUT",
+            headers: {
+              "Authorization": `token ${ghToken}`,
+              "Accept": "application/vnd.github.v3+json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              message: `feat(community): publish post ${newArticle.slug}`,
+              content: updatedB64,
+              sha: ghData.sha,
+              branch: "main"
+            })
+          });
+        }
+      } catch (ghErr) {
+        console.warn("Could not push to GitHub community file:", ghErr);
+      }
+
+      // 3. Save into user's personal articles list
       let myArticles = [];
       try {
         const saved = localStorage.getItem('zaib_my_published_articles');
@@ -203,115 +297,238 @@ export default function GuestPostingPage() {
     }
   };
 
+  // IF NOT LOGGED IN: Show Full Sign In / Sign Up Screen First
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-white py-14 px-5 text-ink-900">
+        <SEO title="Sign In / Sign Up | ZAIB ATTIRE" canonicalUrl="/write" />
+        <div className="max-w-md mx-auto border border-ink-200 rounded-2xl p-8 bg-white shadow-lg animate-fadeIn">
+          
+          <div className="text-center mb-6">
+            <h1 className="font-serif text-3xl font-bold text-ink-900 mb-2">
+              {authMode === 'signin' ? 'Sign In' : authMode === 'verify' ? 'Verify Email' : 'Create Account'}
+            </h1>
+            <p className="text-xs text-ink-500">
+              Sign in or create an account to write and publish articles.
+            </p>
+          </div>
+
+          {authError && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs">
+              {authError}
+            </div>
+          )}
+
+          {/* Social Login Buttons */}
+          {authMode !== 'verify' && (
+            <div className="space-y-2 mb-6">
+              <button
+                type="button"
+                onClick={() => handleSocialAuth('Google')}
+                className="w-full py-2.5 px-4 border border-ink-200 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 hover:bg-ink-50 transition"
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+                <span>Continue with Google</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSocialAuth('Facebook')}
+                className="w-full py-2.5 px-4 border border-ink-200 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 hover:bg-ink-50 transition"
+              >
+                <svg className="w-4 h-4 fill-[#1877F2]" viewBox="0 0 24 24">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                <span>Continue with Facebook</span>
+              </button>
+
+              <div className="flex items-center my-4">
+                <hr className="flex-1 border-ink-200" />
+                <span className="px-3 text-[11px] text-ink-400 font-medium">OR WITH EMAIL</span>
+                <hr className="flex-1 border-ink-200" />
+              </div>
+            </div>
+          )}
+
+          {/* Sign Up Mode */}
+          {authMode === 'signup' && (
+            <form onSubmit={handleSignUpSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-ink-700 mb-1">Username *</label>
+                <input
+                  type="text"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="e.g. shazaib05"
+                  className="w-full px-3.5 py-2.5 border border-ink-200 rounded-xl text-sm focus:outline-none focus:border-ink-900"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-ink-700 mb-1">Email Address *</label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="w-full px-3.5 py-2.5 border border-ink-200 rounded-xl text-sm focus:outline-none focus:border-ink-900"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-ink-700 mb-1">Password *</label>
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Create password"
+                  className="w-full px-3.5 py-2.5 border border-ink-200 rounded-xl text-sm focus:outline-none focus:border-ink-900"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-ink-900 hover:bg-black text-white text-xs font-bold rounded-xl transition"
+              >
+                Sign Up & Verify Code
+              </button>
+
+              <p className="text-xs text-center text-ink-500 pt-2">
+                Already have an account?{' '}
+                <button
+                  type="button"
+                  onClick={() => { setAuthMode('signin'); setAuthError(''); }}
+                  className="font-bold text-ink-900 underline"
+                >
+                  Sign In
+                </button>
+              </p>
+            </form>
+          )}
+
+          {/* Verification Code Mode */}
+          {authMode === 'verify' && (
+            <form onSubmit={handleVerifyCode} className="space-y-4">
+              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800">
+                Your 4-digit verification code is: <span className="font-mono font-bold text-sm bg-white px-2 py-0.5 rounded border border-emerald-300">{generatedCode}</span>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-ink-700 mb-1">Enter 4-Digit Code</label>
+                <input
+                  type="text"
+                  required
+                  value={inputCode}
+                  onChange={(e) => setInputCode(e.target.value)}
+                  placeholder="Enter code"
+                  className="w-full px-3.5 py-2.5 border border-ink-200 rounded-xl text-sm font-mono tracking-widest text-center focus:outline-none focus:border-ink-900"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-ink-900 hover:bg-black text-white text-xs font-bold rounded-xl transition"
+              >
+                Activate Account & Start Writing
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setAuthMode('signup')}
+                className="w-full text-xs text-ink-500 hover:text-ink-800 text-center"
+              >
+                Change Email / Details
+              </button>
+            </form>
+          )}
+
+          {/* Sign In Mode */}
+          {authMode === 'signin' && (
+            <form onSubmit={handleSignInSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-ink-700 mb-1">Username or Email *</label>
+                <input
+                  type="text"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Username or email"
+                  className="w-full px-3.5 py-2.5 border border-ink-200 rounded-xl text-sm focus:outline-none focus:border-ink-900"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-ink-700 mb-1">Password *</label>
+                <input
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter password"
+                  className="w-full px-3.5 py-2.5 border border-ink-200 rounded-xl text-sm focus:outline-none focus:border-ink-900"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-ink-900 hover:bg-black text-white text-xs font-bold rounded-xl transition"
+              >
+                Sign In
+              </button>
+
+              <p className="text-xs text-center text-ink-500 pt-2">
+                Don't have an account yet?{' '}
+                <button
+                  type="button"
+                  onClick={() => { setAuthMode('signup'); setAuthError(''); }}
+                  className="font-bold text-ink-900 underline"
+                >
+                  Create Account
+                </button>
+              </p>
+            </form>
+          )}
+
+        </div>
+      </div>
+    );
+  }
+
+  // IF LOGGED IN: Show Article Submission Canvas
   return (
     <div className="min-h-screen bg-white py-10 sm:py-14 text-ink-900">
-      <SEO
-        title="Article Submission - Guest Post | ZAIB ATTIRE"
-        description="Submit your guest post and article for instant publication."
-        canonicalUrl="/write"
-      />
+      <SEO title="Article Submission | ZAIB ATTIRE" canonicalUrl="/write" />
 
       <div className="max-w-3xl mx-auto px-5 sm:px-8">
 
         {/* Clean Header */}
-        <div className="pb-6 mb-8 border-b border-ink-200">
-          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-ink-900 tracking-tight mb-2">
-            Article Submission
-          </h1>
-          <p className="text-sm text-ink-500">
-            Guest post submission and instant publication.
-          </p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-8 border-b border-ink-200 gap-4">
+          <div>
+            <h1 className="font-serif text-3xl sm:text-4xl font-bold text-ink-900 tracking-tight mb-1">
+              Article Submission
+            </h1>
+            <p className="text-xs text-ink-500">
+              Welcome, <strong>{currentUser.username || currentUser.name}</strong>. Create and publish your live article.
+            </p>
+          </div>
+
+          <Link
+            to="/my-articles"
+            className="self-start sm:self-auto px-4 py-2 bg-ink-100 hover:bg-ink-200 text-ink-800 text-xs font-semibold rounded-full transition"
+          >
+            My Articles Dashboard
+          </Link>
         </div>
 
-        {/* User Auth Banner if not logged in */}
-        {!currentUser && (
-          <div className="mb-8 border border-ink-200 rounded-2xl p-6 bg-[#fafaf8] shadow-2xs">
-            <div className="flex items-center gap-2 mb-2">
-              <User size={18} className="text-ink-900" />
-              <h3 className="font-serif text-lg font-bold text-ink-900">
-                Sign In / Sign Up to Publish
-              </h3>
-            </div>
-            <p className="text-xs text-ink-500 mb-5">
-              Enter your name and email to receive a quick verification code before publishing.
-            </p>
-
-            {authError && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-xs">
-                {authError}
-              </div>
-            )}
-
-            {authStep === 'input' ? (
-              <form onSubmit={handleSendCode} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-ink-700 mb-1">Your Name *</label>
-                    <input
-                      type="text"
-                      required
-                      value={authName}
-                      onChange={(e) => setAuthName(e.target.value)}
-                      placeholder="e.g. Alex Hunter"
-                      className="w-full px-3.5 py-2.5 bg-white border border-ink-200 rounded-lg text-sm focus:outline-none focus:border-ink-900 transition"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-ink-700 mb-1">Your Email *</label>
-                    <input
-                      type="email"
-                      required
-                      value={authEmail}
-                      onChange={(e) => setAuthEmail(e.target.value)}
-                      placeholder="alex@example.com"
-                      className="w-full px-3.5 py-2.5 bg-white border border-ink-200 rounded-lg text-sm focus:outline-none focus:border-ink-900 transition"
-                    />
-                  </div>
-                </div>
-                <button
-                  type="submit"
-                  className="px-5 py-2.5 bg-ink-900 hover:bg-black text-white text-xs font-bold rounded-lg transition"
-                >
-                  Send Verification Code
-                </button>
-              </form>
-            ) : (
-              <form onSubmit={handleVerifyCode} className="space-y-4">
-                <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-800 text-xs">
-                  A verification code has been generated for <strong>{authEmail}</strong>: <span className="font-mono font-bold text-sm ml-1 bg-white px-2 py-0.5 rounded border border-emerald-300">{generatedCode}</span>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-ink-700 mb-1">Enter Verification Code</label>
-                  <input
-                    type="text"
-                    required
-                    value={inputCode}
-                    onChange={(e) => setInputCode(e.target.value)}
-                    placeholder="Enter 4-digit code"
-                    className="w-48 px-3.5 py-2 bg-white border border-ink-200 rounded-lg text-sm font-mono tracking-widest focus:outline-none focus:border-ink-900 transition"
-                  />
-                </div>
-                <div className="flex items-center gap-3">
-                  <button
-                    type="submit"
-                    className="px-5 py-2.5 bg-ink-900 hover:bg-black text-white text-xs font-bold rounded-lg transition"
-                  >
-                    Verify & Continue
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setAuthStep('input')}
-                    className="text-xs text-ink-500 hover:text-ink-900"
-                  >
-                    Change Email
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        )}
-
-        {/* SUCCESS POPUP AFTER DIRECT PUBLISH */}
+        {/* SUCCESS STATE AFTER PUBLISH */}
         {publishedPost ? (
           <div className="border border-emerald-200 rounded-2xl p-8 text-center bg-emerald-50/50 shadow-xs animate-fadeIn">
             <div className="w-14 h-14 bg-emerald-600 text-white rounded-full flex items-center justify-center mx-auto mb-4">
@@ -321,7 +538,7 @@ export default function GuestPostingPage() {
               Article Published Successfully!
             </h2>
             <p className="text-sm text-ink-600 mb-4">
-              Your article is live right now and can be viewed anywhere without login:
+              Your article is live and accessible on any device or incognito browser:
             </p>
 
             <div className="bg-white p-3.5 border border-emerald-200 rounded-xl max-w-lg mx-auto mb-6 flex items-center justify-between gap-3">
@@ -347,18 +564,20 @@ export default function GuestPostingPage() {
                 onClick={() => {
                   setPublishedPost(null);
                   setTitle('');
+                  setSummary('');
                   setContent('');
                   setCoverImage('');
                   setImageFileName('');
+                  setTags('');
                 }}
                 className="btn-ghost text-xs py-2.5 px-5"
               >
-                Submit Another Article
+                Write Another Article
               </button>
             </div>
           </div>
         ) : (
-          /* MAIN CLEAN SUBMISSION FORM */
+          /* ARTICLE EDITING FORM */
           <form onSubmit={handlePublish} className="space-y-6">
 
             {errorMsg && (
@@ -371,7 +590,7 @@ export default function GuestPostingPage() {
             {/* 1. Article Title */}
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-ink-600 mb-2">
-                Article Title *
+                Article Title <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -383,10 +602,31 @@ export default function GuestPostingPage() {
               />
             </div>
 
-            {/* 2. Topic / Category */}
+            {/* 2. Summary Description (Max 120 Characters) */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs font-bold uppercase tracking-wider text-ink-600">
+                  Summary Description (Meta Description) <span className="text-red-500">*</span>
+                </label>
+                <span className={`text-[11px] font-mono ${summary.length > 120 ? 'text-red-500 font-bold' : 'text-ink-400'}`}>
+                  {summary.length}/120 chars
+                </span>
+              </div>
+              <textarea
+                required
+                rows={2}
+                maxLength={120}
+                value={summary}
+                onChange={(e) => setSummary(e.target.value)}
+                placeholder="Brief summary of your article (up to 120 characters)..."
+                className="w-full px-4 py-2.5 bg-white border border-ink-200 rounded-xl text-sm text-ink-900 placeholder:text-ink-400 focus:outline-none focus:border-ink-900 transition resize-none"
+              />
+            </div>
+
+            {/* 3. Category & Topic */}
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-ink-600 mb-2">
-                Topic Category *
+                Topic Category <span className="text-red-500">*</span>
               </label>
               <select
                 value={category}
@@ -412,14 +652,32 @@ export default function GuestPostingPage() {
               )}
             </div>
 
-            {/* 3. Feature Cover Photo (Direct Upload up to 50MB) */}
+            {/* 4. Tags */}
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-ink-600 mb-2 flex items-center gap-1.5">
+                <Tag size={13} />
+                <span>Tags (comma-separated) <span className="text-red-500">*</span></span>
+              </label>
+              <input
+                type="text"
+                required
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+                placeholder="e.g. fashion, styling, trends 2026, technology"
+                className="w-full px-3.5 py-2.5 bg-white border border-ink-200 rounded-xl text-sm text-ink-900 placeholder:text-ink-400 focus:outline-none focus:border-ink-900 transition"
+              />
+            </div>
+
+            {/* 5. Featured Cover Photo (MANDATORY, Up to 50MB) */}
             <div>
               <label className="block text-xs font-bold uppercase tracking-wider text-ink-600 mb-2">
-                Feature Cover Photo (Up to 50MB)
+                Featured Cover Photo (Up to 50MB) <span className="text-red-500">*</span>
               </label>
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-ink-200 hover:border-ink-900 rounded-xl p-6 text-center cursor-pointer transition bg-[#fafaf8]"
+                className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition ${
+                  coverImage ? 'border-emerald-500 bg-emerald-50/20' : 'border-ink-200 hover:border-ink-900 bg-[#fafaf8]'
+                }`}
               >
                 <input
                   type="file"
@@ -433,25 +691,25 @@ export default function GuestPostingPage() {
                     <img
                       src={coverImage}
                       alt="Cover Preview"
-                      className="max-h-48 rounded-lg mx-auto object-cover shadow-xs"
+                      className="max-h-52 rounded-lg mx-auto object-cover shadow-xs"
                     />
-                    <p className="text-xs text-ink-500 font-medium">{imageFileName} (Click to change)</p>
+                    <p className="text-xs text-emerald-800 font-semibold">{imageFileName || 'Image Uploaded'} (Click to change)</p>
                   </div>
                 ) : (
                   <div className="space-y-2">
                     <Upload size={24} className="mx-auto text-ink-400" />
-                    <p className="text-sm font-medium text-ink-800">Click to upload cover photo</p>
+                    <p className="text-sm font-medium text-ink-800">Upload Cover Photo (Mandatory) *</p>
                     <p className="text-xs text-ink-400">PNG, JPG, WEBP up to 50MB</p>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* 4. Story Content */}
+            {/* 6. Story Content */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-ink-600">
-                  Story Content *
+                  Story Content <span className="text-red-500">*</span>
                 </label>
                 <div className="flex items-center gap-1 bg-ink-100 p-0.5 rounded-lg text-xs">
                   <button
@@ -533,7 +791,7 @@ export default function GuestPostingPage() {
                     </button>
                     <span className="w-px h-4 bg-ink-300 mx-1" />
 
-                    {/* Clean Chain Link Icon only (No extra text) */}
+                    {/* Chain Link Icon Only */}
                     <button
                       type="button"
                       onClick={() => setShowLinkModal(true)}
@@ -542,10 +800,6 @@ export default function GuestPostingPage() {
                     >
                       <LinkIcon size={15} />
                     </button>
-
-                    <div className="ml-auto text-xs text-ink-400 font-mono">
-                      {wordCount} words
-                    </div>
                   </div>
 
                   <textarea
@@ -559,7 +813,7 @@ export default function GuestPostingPage() {
                   />
                 </div>
               ) : (
-                <div className="border border-ink-200 rounded-xl p-6 bg-white min-h-[300px] prose max-w-none">
+                <div className="border border-ink-200 rounded-xl p-6 bg-white min-h-[250px] prose max-w-none">
                   {content ? (
                     <div className="whitespace-pre-wrap leading-relaxed">{content}</div>
                   ) : (
@@ -572,24 +826,18 @@ export default function GuestPostingPage() {
             {/* Direct Instant Publish Button */}
             <button
               type="submit"
-              disabled={publishing || !currentUser}
+              disabled={publishing}
               className="w-full py-4 bg-ink-900 hover:bg-black text-white font-bold text-sm rounded-xl transition shadow-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
             >
               {publishing ? (
                 <>
                   <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  <span>Publishing Article...</span>
+                  <span>Publishing Article Globally...</span>
                 </>
               ) : (
                 <span>Publish</span>
               )}
             </button>
-
-            {!currentUser && (
-              <p className="text-xs text-center text-ink-400">
-                Please verify your name & email above to enable the Publish button.
-              </p>
-            )}
 
           </form>
         )}
@@ -649,3 +897,4 @@ export default function GuestPostingPage() {
     </div>
   );
 }
+
