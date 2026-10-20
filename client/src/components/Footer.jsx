@@ -31,10 +31,10 @@ export default function Footer({ categories = [] }) {
     <footer className="border-t border-ink-200 bg-white mt-16">
       {/* Main content */}
       <div className="max-w-content mx-auto px-5 sm:px-8 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
 
           {/* Brand column */}
-          <div className="sm:col-span-2 lg:col-span-1 space-y-4">
+          <div className="space-y-4">
             <Link to="/" className="inline-block group">
               <img
                 src="/logo.png"
@@ -73,15 +73,14 @@ export default function Footer({ categories = [] }) {
 
           {/* Navigation */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold text-ink-900 uppercase tracking-widest">Navigate</h4>
+            <h4 className="text-xs font-bold text-ink-900 uppercase tracking-widest">Quick Links</h4>
             <ul className="space-y-2.5">
               {[
                 { to: '/', label: 'Home' },
-                { to: '/blog', label: 'Stories & Blog' },
-                { to: '/write', label: 'Write for Us', highlight: true },
-                { to: '/advertise', label: 'Advertise' },
-                { to: '/about', label: 'About' },
-                { to: '/contact', label: 'Contact' },
+                { to: '/blog', label: 'Blog' },
+                { to: '/write', label: 'Write for Us (Free Guest Post)', highlight: true },
+                { to: '/about', label: 'About Us' },
+                { to: '/contact', label: 'Contact Us' },
               ].map(({ to, label, highlight }) => (
                 <li key={to}>
                   <Link
@@ -100,33 +99,11 @@ export default function Footer({ categories = [] }) {
             </ul>
           </div>
 
-          {/* Topics */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-bold text-ink-900 uppercase tracking-widest">Topics</h4>
-            <ul className="space-y-2.5">
-              <li>
-                <Link to="/blog" className="text-sm text-ink-500 hover:text-ink-900 transition-colors">
-                  All Topics
-                </Link>
-              </li>
-              {categories.slice(0, 7).map((cat) => (
-                <li key={cat.id}>
-                  <Link
-                    to={`/trends?category=${encodeURIComponent(cat.name)}`}
-                    className="text-sm text-ink-500 hover:text-ink-900 transition-colors"
-                  >
-                    {cat.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
           {/* Guest post CTA */}
           <div className="space-y-4">
-            <h4 className="text-xs font-bold text-ink-900 uppercase tracking-widest">Write for Us</h4>
+            <h4 className="text-xs font-bold text-ink-900 uppercase tracking-widest">Free Guest Posting</h4>
             <p className="text-sm text-ink-500 leading-relaxed">
-              Publish fashion articles, trend analyses, and brand stories on ZAIB ATTIRE — completely free, with a dofollow backlink.
+              Publish fashion articles, trend analyses, and brand stories on ZAIB ATTIRE - completely free, with a permanent dofollow backlink.
             </p>
             <Link
               to="/write"
@@ -136,7 +113,7 @@ export default function Footer({ categories = [] }) {
               <Feather size={14} />
               Submit a Guest Post
             </Link>
-            <p className="text-xs text-ink-400 mt-1">Fast 48-hour review · 100% Free</p>
+            <p className="text-xs text-ink-400 mt-1">Fast 48-hour review Â· 100% Free</p>
           </div>
 
         </div>
@@ -145,12 +122,11 @@ export default function Footer({ categories = [] }) {
       {/* Bottom bar */}
       <div className="border-t border-ink-200">
         <div className="max-w-content mx-auto px-5 sm:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ink-400">
-          <p>© {currentYear} ZAIB ATTIRE Journal. All rights reserved.</p>
+          <p>Â© {currentYear} ZAIB ATTIRE Journal. All rights reserved.</p>
           <div className="flex flex-wrap items-center gap-4">
             <Link to="/privacy" className="hover:text-ink-700 transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-ink-700 transition-colors">Terms of Use</Link>
             <Link to="/write" className="hover:text-ink-700 transition-colors">Guest Post Guidelines</Link>
-            <Link to="/advertise" className="hover:text-ink-700 transition-colors">Media Kit</Link>
           </div>
         </div>
       </div>
