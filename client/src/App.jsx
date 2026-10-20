@@ -13,6 +13,7 @@ import ContactPage from './pages/ContactPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsPage from './pages/TermsPage';
 import AdminPage from './pages/AdminPage';
+import MyArticlesPage from './pages/MyArticlesPage';
 import { api } from './utils/api';
 
 // Helper component to scroll to top automatically on route changes
@@ -140,6 +141,10 @@ function AppShell() {
             <Route
               path="/blog/:slug"
               element={<BlogDetailPage />}
+            />
+            <Route
+              path="/my-articles"
+              element={<MyArticlesPage />}
             />
             <Route
               path="/write"
