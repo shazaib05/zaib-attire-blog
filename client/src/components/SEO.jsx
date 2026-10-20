@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 
 const SITE_NAME = 'ZAIB ATTIRE';
-const BASE_URL = 'https://zaibattire.com';
+const BASE_URL = 'https://www.zaibattire.com';
 const DEFAULT_IMAGE = `${BASE_URL}/logo.png`;
 const DEFAULT_DESC = 'ZAIB ATTIRE — The premier luxury fashion blog, runway trend forecast, and guest editorial platform. Discover haute couture, street style subcultures, quiet luxury, and publish guest posts.';
 
