@@ -152,7 +152,7 @@ export default function TrendsPage({ categories = [] }) {
                     : 'bg-ink-100 text-ink-600 hover:bg-ink-200'
                 }`}
               >
-                All Stories
+                All Blog Posts
               </button>
               <button
                 onClick={() => handleTypeChange('editorial')}
@@ -285,7 +285,7 @@ export default function TrendsPage({ categories = [] }) {
               </Link>
             </div>
 
-            {/* Trending stories list */}
+            {/* Trending posts list */}
             {posts.length > 0 && (
               <div className="border-t border-ink-200 pt-6">
                 <div className="flex items-center gap-2 mb-4">
@@ -339,7 +339,7 @@ export default function TrendsPage({ categories = [] }) {
 
             {/* Ad Banner placement */}
             <div className="pt-2">
-              <AdBanner placement="sidebar" />
+              
             </div>
 
           </div>
