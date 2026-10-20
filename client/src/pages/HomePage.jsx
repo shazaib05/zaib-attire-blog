@@ -234,14 +234,14 @@ export default function HomePage({ categories = [], tickerItems = [] }) {
 
                 {/* Top ad insertion */}
                 <div className="py-4">
-                  <AdBanner type="leaderboard" />
+                  
                 </div>
 
                 {/* Next articles as grid */}
                 {filteredPosts.length > 3 && (
                   <div>
                     <h2 className="font-serif text-xl font-bold text-ink-900 mb-5 mt-2">
-                      More Stories
+                      More From Our Blog
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                       {filteredPosts.slice(3, 9).map((post) => (
@@ -282,7 +282,7 @@ export default function HomePage({ categories = [], tickerItems = [] }) {
                     className="btn-ghost text-sm inline-flex py-3 px-8"
                   >
                     <BookOpen size={15} />
-                    <span>Browse All Stories</span>
+                    <span>Browse All Blog Posts</span>
                   </Link>
                 </div>
               </div>
@@ -307,7 +307,7 @@ export default function HomePage({ categories = [], tickerItems = [] }) {
             <GuestPostCTA />
 
             {/* Topics */}
-            <TopicsWidget categories={categories} />
+            
 
             <div className="border-t border-ink-200 pt-6">
               {/* Trending sidebar */}
@@ -319,7 +319,7 @@ export default function HomePage({ categories = [], tickerItems = [] }) {
 
             {/* Sidebar ad */}
             <div className="mt-4">
-              <AdBanner type="sidebar" />
+              
             </div>
           </aside>
         </div>
