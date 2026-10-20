@@ -100,15 +100,7 @@ export default function Header({ categories = [], onOpenSearchModal }) {
                 <kbd className="hidden sm:inline text-[10px] bg-white border border-ink-300 rounded px-1.5 text-ink-400">?K</kbd>
               </button>
 
-              {/* Guest Post Button (desktop) */}
-              <Link
-                to="/write"
-                className="hidden sm:inline-flex btn-gold text-xs py-2 px-4 rounded-full"
-                id="header-write-btn"
-              >
-                <Feather size={13} />
-                <span>Submit Guest Post</span>
-              </Link>
+              
 
               {/* Mobile hamburger */}
               <button
