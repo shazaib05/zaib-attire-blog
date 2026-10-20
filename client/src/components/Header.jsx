@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Search,
@@ -10,7 +10,22 @@ import {
 
 export default function Header({ onOpenSearchModal }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const checkAuth = () => {
+      try {
+        const user = localStorage.getItem('zaib_contributor_auth');
+        setIsLoggedIn(!!user);
+      } catch {
+        setIsLoggedIn(false);
+      }
+    };
+    checkAuth();
+    window.addEventListener('storage', checkAuth);
+    return () => window.removeEventListener('storage', checkAuth);
+  }, [location.pathname]);
 
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';
@@ -40,7 +55,7 @@ export default function Header({ onOpenSearchModal }) {
                 </span>
               </Link>
 
-              {/* Desktop Navigation: Home, Blog, About, Write, My Articles with generous, elegant spacing */}
+              {/* Desktop Navigation: Home, Blog, About, Write (and My Articles ONLY if logged in) */}
               <nav className="hidden md:flex items-center space-x-7 lg:space-x-9">
                 <Link
                   to="/"
@@ -87,17 +102,20 @@ export default function Header({ onOpenSearchModal }) {
                   <span>Write</span>
                 </Link>
 
-                <Link
-                  to="/my-articles"
-                  className={`text-sm tracking-wide transition-colors py-2 flex items-center gap-1.5 ${
-                    isActive('/my-articles')
-                      ? 'text-ink-900 font-semibold border-b-2 border-ink-900'
-                      : 'text-ink-600 hover:text-ink-900 font-medium'
-                  }`}
-                >
-                  <FileText size={15} />
-                  <span>My Articles</span>
-                </Link>
+                {/* Show My Articles ONLY when logged in! */}
+                {isLoggedIn && (
+                  <Link
+                    to="/my-articles"
+                    className={`text-sm tracking-wide transition-colors py-2 flex items-center gap-1.5 ${
+                      isActive('/my-articles')
+                        ? 'text-ink-900 font-semibold border-b-2 border-ink-900'
+                        : 'text-ink-600 hover:text-ink-900 font-medium'
+                    }`}
+                  >
+                    <FileText size={15} />
+                    <span>My Articles</span>
+                  </Link>
+                )}
               </nav>
             </div>
 
@@ -163,14 +181,16 @@ export default function Header({ onOpenSearchModal }) {
               <span>Write</span>
             </Link>
 
-            <Link
-              to="/my-articles"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 py-2 text-base font-medium text-ink-900 hover:text-ink-600"
-            >
-              <FileText size={16} />
-              <span>My Articles</span>
-            </Link>
+            {isLoggedIn && (
+              <Link
+                to="/my-articles"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-2 py-2 text-base font-medium text-ink-900 hover:text-ink-600"
+              >
+                <FileText size={16} />
+                <span>My Articles</span>
+              </Link>
+            )}
           </div>
         )}
       </header>
