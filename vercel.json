@@ -2,6 +2,43 @@
   "buildCommand": "cd client && npm install && npm run build",
   "outputDirectory": "client/dist",
   "framework": "vite",
+  "redirects": [
+    {
+      "source": "/collections/:match*",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/products/:match*",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/cart",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/checkout",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/account/:match*",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/search",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/pages/:match*",
+      "destination": "/blog",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
