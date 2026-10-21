@@ -34,14 +34,14 @@ export default function GuestPostingPage() {
     }
   });
 
-  // Auth Form State (Sign Up / Sign In Modal)
+  // Auth Form State
   const [authMode, setAuthMode] = useState('signup'); // 'signup' | 'signin' | 'verify'
-  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [generatedCode, setGeneratedCode] = useState('');
   const [inputCode, setInputCode] = useState('');
   const [authError, setAuthError] = useState('');
+  const [socialProvider, setSocialProvider] = useState(''); // 'Google' | 'Facebook' | ''
 
   // Article Form State
   const [title, setTitle] = useState('');
@@ -69,12 +69,52 @@ export default function GuestPostingPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  // 1. Handle Sign Up (Send Code)
+  // 1. Handle Sign Up (Send Code to Email)
   const handleSignUpSubmit = (e) => {
     e.preventDefault();
     setAuthError('');
-    if (!username.trim() || !email.trim() || !password) {
-      setAuthError('Please fill in your username, email, and password.');
+    if (!email.trim() || !password) {
+      setAuthError('Please enter your email address and create a password.');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setAuthError('Please enter a valid email address.');
+      return;
+    }
+    // Check if email already registered
+    let users = [];
+    try {
+      const u = localStorage.getItem('zaib_registered_users');
+      if (u) users = JSON.parse(u);
+    } catch {}
+    if (users.find(u => u.email === email.trim())) {
+      setAuthError('This email is already registered. Please sign in instead.');
+      return;
+    }
+    const code = Math.floor(1000 + Math.random() * 9000).toString();
+    setGeneratedCode(code);
+    setSocialProvider('');
+    setAuthMode('verify');
+  };
+
+  // 2. Handle Social Login (Google / Facebook) — asks for email first
+  const handleSocialAuth = (provider) => {
+    setSocialProvider(provider);
+    setAuthError('');
+    setEmail('');
+    setAuthMode('social_email'); // new mode: ask for email
+  };
+
+  // 2b. Handle Social Email Submit — send verification code
+  const handleSocialEmailSubmit = (e) => {
+    e.preventDefault();
+    setAuthError('');
+    if (!email.trim()) {
+      setAuthError(`Please enter your ${socialProvider} email address.`);
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setAuthError('Please enter a valid email address.');
       return;
     }
     const code = Math.floor(1000 + Math.random() * 9000).toString();
@@ -82,18 +122,20 @@ export default function GuestPostingPage() {
     setAuthMode('verify');
   };
 
-  // 2. Handle Verify Code
+  // 3. Handle Verify Code
   const handleVerifyCode = (e) => {
     e.preventDefault();
     setAuthError('');
     if (inputCode.trim() !== generatedCode) {
-      setAuthError('Invalid code. Please enter the 4-digit verification code.');
+      setAuthError('Invalid verification code. Please check and try again.');
       return;
     }
+    const displayName = email.trim().split('@')[0];
     const userObj = {
-      username: username.trim(),
-      name: username.trim(),
+      username: displayName,
+      name: socialProvider ? `${socialProvider} User` : displayName,
       email: email.trim(),
+      provider: socialProvider || 'email',
       verified: true,
       joined_at: new Date().toISOString()
     };
@@ -103,14 +145,16 @@ export default function GuestPostingPage() {
       const u = localStorage.getItem('zaib_registered_users');
       if (u) users = JSON.parse(u);
     } catch {}
-    users.push({ ...userObj, password });
-    localStorage.setItem('zaib_registered_users', JSON.stringify(users));
+    if (!users.find(u => u.email === email.trim())) {
+      users.push({ ...userObj, password: password || '' });
+      localStorage.setItem('zaib_registered_users', JSON.stringify(users));
+    }
     localStorage.setItem('zaib_contributor_auth', JSON.stringify(userObj));
     setCurrentUser(userObj);
     window.dispatchEvent(new Event('storage'));
   };
 
-  // 3. Handle Sign In
+  // 4. Handle Sign In (Email + Password only)
   const handleSignInSubmit = (e) => {
     e.preventDefault();
     setAuthError('');
@@ -120,9 +164,9 @@ export default function GuestPostingPage() {
       if (u) users = JSON.parse(u);
     } catch {}
 
-    const found = users.find(u => (u.email === email.trim() || u.username === username.trim()) && u.password === password);
+    const found = users.find(u => u.email === email.trim() && u.password === password);
     if (!found) {
-      setAuthError('Incorrect username/email or password.');
+      setAuthError('Incorrect email or password. Please try again.');
       return;
     }
     const userObj = {
@@ -133,19 +177,6 @@ export default function GuestPostingPage() {
     };
     localStorage.setItem('zaib_contributor_auth', JSON.stringify(userObj));
     setCurrentUser(userObj);
-    window.dispatchEvent(new Event('storage'));
-  };
-
-  // 4. Handle Social Login Simulation (Google / Facebook)
-  const handleSocialAuth = (provider) => {
-    const defaultUser = {
-      username: `${provider.toLowerCase()}_user_${Date.now().toString().slice(-4)}`,
-      name: `${provider} Contributor`,
-      email: `user@${provider.toLowerCase()}.com`,
-      verified: true
-    };
-    localStorage.setItem('zaib_contributor_auth', JSON.stringify(defaultUser));
-    setCurrentUser(defaultUser);
     window.dispatchEvent(new Event('storage'));
   };
 
@@ -306,10 +337,14 @@ export default function GuestPostingPage() {
           
           <div className="text-center mb-6">
             <h1 className="font-serif text-3xl font-bold text-ink-900 mb-2">
-              {authMode === 'signin' ? 'Sign In' : authMode === 'verify' ? 'Verify Email' : 'Create Account'}
+              {authMode === 'signin' ? 'Sign In' : authMode === 'verify' ? 'Verify Email' : authMode === 'social_email' ? `Continue with ${socialProvider}` : 'Create Account'}
             </h1>
             <p className="text-xs text-ink-500">
-              Sign in or create an account to write and publish articles.
+              {authMode === 'social_email'
+                ? `Enter your ${socialProvider} email to continue`
+                : authMode === 'verify'
+                ? 'A verification code has been sent to your email'
+                : 'Sign in or create an account to write and publish articles.'}
             </p>
           </div>
 
@@ -319,8 +354,8 @@ export default function GuestPostingPage() {
             </div>
           )}
 
-          {/* Social Login Buttons */}
-          {authMode !== 'verify' && (
+          {/* Social Login Buttons — only show on signup and signin modes */}
+          {(authMode === 'signup' || authMode === 'signin') && (
             <div className="space-y-2 mb-6">
               <button
                 type="button"
@@ -355,21 +390,59 @@ export default function GuestPostingPage() {
             </div>
           )}
 
-          {/* Sign Up Mode */}
-          {authMode === 'signup' && (
-            <form onSubmit={handleSignUpSubmit} className="space-y-4">
+          {/* Social Email Input Mode — user clicked Google/Facebook, now enter email */}
+          {authMode === 'social_email' && (
+            <form onSubmit={handleSocialEmailSubmit} className="space-y-4">
+              <div className="flex items-center justify-center gap-2 mb-4 p-3 bg-ink-50 rounded-xl">
+                {socialProvider === 'Google' ? (
+                  <svg className="w-5 h-5" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 fill-[#1877F2]" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                )}
+                <span className="text-sm font-semibold text-ink-700">Signing in with {socialProvider}</span>
+              </div>
+
               <div>
-                <label className="block text-xs font-semibold text-ink-700 mb-1">Username *</label>
+                <label className="block text-xs font-semibold text-ink-700 mb-1">
+                  {socialProvider} Email Address *
+                </label>
                 <input
-                  type="text"
+                  type="email"
                   required
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  placeholder="e.g. shazaib05"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={`your@${socialProvider.toLowerCase()}.com`}
                   className="w-full px-3.5 py-2.5 border border-ink-200 rounded-xl text-sm focus:outline-none focus:border-ink-900"
                 />
               </div>
 
+              <button
+                type="submit"
+                className="w-full py-3 bg-ink-900 hover:bg-black text-white text-xs font-bold rounded-xl transition"
+              >
+                Send Verification Code
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { setAuthMode('signup'); setSocialProvider(''); setAuthError(''); }}
+                className="w-full text-xs text-ink-500 hover:text-ink-800 text-center"
+              >
+                ← Back to Sign In Options
+              </button>
+            </form>
+          )}
+
+          {/* Sign Up Mode — email + password only (no username) */}
+          {authMode === 'signup' && (
+            <form onSubmit={handleSignUpSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-ink-700 mb-1">Email Address *</label>
                 <input
@@ -377,7 +450,7 @@ export default function GuestPostingPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
+                  placeholder="you@gmail.com"
                   className="w-full px-3.5 py-2.5 border border-ink-200 rounded-xl text-sm focus:outline-none focus:border-ink-900"
                 />
               </div>
@@ -398,7 +471,7 @@ export default function GuestPostingPage() {
                 type="submit"
                 className="w-full py-3 bg-ink-900 hover:bg-black text-white text-xs font-bold rounded-xl transition"
               >
-                Sign Up & Verify Code
+                Sign Up & Verify Email
               </button>
 
               <p className="text-xs text-center text-ink-500 pt-2">
@@ -417,8 +490,13 @@ export default function GuestPostingPage() {
           {/* Verification Code Mode */}
           {authMode === 'verify' && (
             <form onSubmit={handleVerifyCode} className="space-y-4">
-              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800">
-                Your 4-digit verification code is: <span className="font-mono font-bold text-sm bg-white px-2 py-0.5 rounded border border-emerald-300">{generatedCode}</span>
+              <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800">
+                <Mail className="inline w-3.5 h-3.5 mr-1" />
+                We've sent a 4-digit verification code to <strong>{email}</strong>. Please check your inbox.
+              </div>
+
+              <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 text-center">
+                <strong>Demo Mode:</strong> Your code is <span className="font-mono font-bold text-sm bg-white px-2 py-0.5 rounded border border-amber-300">{generatedCode}</span>
               </div>
 
               <div>
@@ -426,9 +504,10 @@ export default function GuestPostingPage() {
                 <input
                   type="text"
                   required
+                  maxLength={4}
                   value={inputCode}
-                  onChange={(e) => setInputCode(e.target.value)}
-                  placeholder="Enter code"
+                  onChange={(e) => setInputCode(e.target.value.replace(/\D/g, '').slice(0, 4))}
+                  placeholder="0000"
                   className="w-full px-3.5 py-2.5 border border-ink-200 rounded-xl text-sm font-mono tracking-widest text-center focus:outline-none focus:border-ink-900"
                 />
               </div>
@@ -437,30 +516,30 @@ export default function GuestPostingPage() {
                 type="submit"
                 className="w-full py-3 bg-ink-900 hover:bg-black text-white text-xs font-bold rounded-xl transition"
               >
-                Activate Account & Start Writing
+                Verify & Continue
               </button>
 
               <button
                 type="button"
-                onClick={() => setAuthMode('signup')}
+                onClick={() => { setAuthMode(socialProvider ? 'social_email' : 'signup'); setInputCode(''); setAuthError(''); }}
                 className="w-full text-xs text-ink-500 hover:text-ink-800 text-center"
               >
-                Change Email / Details
+                ← Change Email / Resend Code
               </button>
             </form>
           )}
 
-          {/* Sign In Mode */}
+          {/* Sign In Mode — email + password only */}
           {authMode === 'signin' && (
             <form onSubmit={handleSignInSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-ink-700 mb-1">Username or Email *</label>
+                <label className="block text-xs font-semibold text-ink-700 mb-1">Email Address *</label>
                 <input
-                  type="text"
+                  type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Username or email"
+                  placeholder="you@gmail.com"
                   className="w-full px-3.5 py-2.5 border border-ink-200 rounded-xl text-sm focus:outline-none focus:border-ink-900"
                 />
               </div>
@@ -516,7 +595,7 @@ export default function GuestPostingPage() {
               Article Submission
             </h1>
             <p className="text-xs text-ink-500">
-              Welcome, <strong>{currentUser.username || currentUser.name}</strong>. Create and publish your live article.
+              Welcome, <strong>{currentUser.name || currentUser.email}</strong>. Create and publish your live article.
             </p>
           </div>
 
@@ -897,4 +976,3 @@ export default function GuestPostingPage() {
     </div>
   );
 }
-
