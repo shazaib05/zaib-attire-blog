@@ -48,6 +48,9 @@ export default function BlogDetailPage() {
       try {
         const data = await api.getPostBySlug(slug);
         setPost(data);
+        if (data?.liked || api.isPostLiked?.(data?.id)) {
+          setLiked(true);
+        }
         if (data?.category_name) {
           const relatedRes = await api.getPosts({ category: data.category_name, limit: 3 });
           setRelatedPosts((relatedRes.posts || []).filter(p => p.slug !== slug).slice(0, 3));
@@ -169,7 +172,7 @@ export default function BlogDetailPage() {
     });
   };
 
-  // ── Loading state ──
+  // â”€â”€ Loading state â”€â”€
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center py-32">
@@ -179,7 +182,7 @@ export default function BlogDetailPage() {
     );
   }
 
-  // ── 404 state ──
+  // â”€â”€ 404 state â”€â”€
   if (!post) {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center py-32 px-4 text-center">
@@ -217,7 +220,7 @@ export default function BlogDetailPage() {
         type="article"
       />
 
-      {/* ── Reading Progress Bar ── */}
+      {/* â”€â”€ Reading Progress Bar â”€â”€ */}
       <div className="fixed top-0 left-0 right-0 h-[3px] bg-[#f0f0f0] z-50">
         <div
           className="h-full bg-[#d4af37] transition-all duration-150"
@@ -225,7 +228,7 @@ export default function BlogDetailPage() {
         />
       </div>
 
-      {/* ── Sticky breadcrumb + actions bar ── */}
+      {/* â”€â”€ Sticky breadcrumb + actions bar â”€â”€ */}
       <div className="sticky top-0 bg-white/95 backdrop-blur-sm border-b border-[#e0e0e0] z-30">
         <div className="max-w-[728px] mx-auto px-5 py-3 flex items-center justify-between">
           <div className="flex items-center gap-1.5 text-sm text-[#6b6b6b] overflow-hidden">
@@ -259,7 +262,7 @@ export default function BlogDetailPage() {
         </div>
       </div>
 
-      {/* ── Article container ── */}
+      {/* â”€â”€ Article container â”€â”€ */}
       <article className="max-w-[728px] mx-auto px-5 pt-10 pb-20">
 
         {/* Category + Guest badge */}
@@ -289,7 +292,7 @@ export default function BlogDetailPage() {
           </p>
         )}
 
-        {/* Author + meta row — Medium style */}
+        {/* Author + meta row â€” Medium style */}
         <div className="flex items-center gap-3 py-4 border-y border-[#e0e0e0] mb-8">
           {post.author_avatar ? (
             <img src={post.author_avatar} alt={post.author_name} className="w-10 h-10 rounded-full object-cover shrink-0" />
@@ -305,14 +308,14 @@ export default function BlogDetailPage() {
             </p>
             <div className="flex flex-wrap items-center gap-2 text-xs text-[#6b6b6b] mt-0.5">
               {post.created_at && <span>{formatDate(post.created_at)}</span>}
-              <span>·</span>
+              <span>Â·</span>
               <span className="flex items-center gap-1">
                 <Clock size={11} />
                 {post.read_time || `${post.read_time_min || 5} min read`}
               </span>
               {post.views > 0 && (
                 <>
-                  <span>·</span>
+                  <span>Â·</span>
                   <span className="flex items-center gap-1">
                     <Eye size={11} />
                     {Number(post.views).toLocaleString()} views
@@ -357,7 +360,7 @@ export default function BlogDetailPage() {
           </div>
         )}
 
-        {/* Article body — Medium reading style */}
+        {/* Article body â€” Medium reading style */}
         <div className="prose-reading">
           {renderContent(post.content)}
         </div>
@@ -373,7 +376,7 @@ export default function BlogDetailPage() {
           </div>
         )}
 
-        {/* ── Clap + Share actions — Medium style ── */}
+        {/* â”€â”€ Clap + Share actions â€” Medium style â”€â”€ */}
         <div className="flex items-center justify-between my-10 py-6 border-y border-[#e0e0e0]">
           <button
             onClick={handleLike}
@@ -402,7 +405,7 @@ export default function BlogDetailPage() {
           </div>
         </div>
 
-        {/* ── Author bio box — Medium style ── */}
+        {/* â”€â”€ Author bio box â€” Medium style â”€â”€ */}
         <div className="bg-[#f7f7f7] rounded-2xl p-6 sm:p-8 mb-12">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
             {post.author_avatar ? (
@@ -436,7 +439,7 @@ export default function BlogDetailPage() {
           </div>
         </div>
 
-        {/* ── Comments — Medium style ── */}
+        {/* â”€â”€ Comments â€” Medium style â”€â”€ */}
         <div className="border-t border-[#e0e0e0] pt-10 mb-12">
           <h3 className="font-serif text-2xl font-bold text-[#1a1a1a] mb-6 flex items-center gap-2">
             <MessageSquare size={20} />
@@ -513,7 +516,7 @@ export default function BlogDetailPage() {
           )}
         </div>
 
-        {/* ── Related posts ── */}
+        {/* â”€â”€ Related posts â”€â”€ */}
         {relatedPosts.length > 0 && (
           <div className="border-t border-[#e0e0e0] pt-10">
             <div className="flex items-center justify-between mb-6">
