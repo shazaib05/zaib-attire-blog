@@ -31,6 +31,9 @@ export default function ArticleModal({ slug, onClose, onSelectPost }) {
     api.getPostBySlug(slug)
       .then(data => {
         setPost(data);
+        if (data?.liked || api.isPostLiked?.(data?.id)) {
+          setLiked(true);
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
