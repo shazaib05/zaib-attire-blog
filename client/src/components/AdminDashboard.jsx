@@ -31,6 +31,25 @@ export default function AdminDashboard({ onClose, onSelectPost, onLogout }) {
   const [loading, setLoading] = useState(true);
   const [notification, setNotification] = useState('');
 
+  const [customUploadName, setCustomUploadName] = useState('');
+  const adminFileInputRef = React.useRef(null);
+
+  const handleAdminImageUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 50 * 1024 * 1024) {
+      showToast('Image size must be under 50MB.');
+      return;
+    }
+    setCustomUploadName(file.name);
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setPostForm(prev => ({ ...prev, cover_image: event.target.result }));
+      showToast('Custom image loaded successfully!');
+    };
+    reader.readAsDataURL(file);
+  };
+
   // Post Editor State (Create / Edit)
   const [editingPostId, setEditingPostId] = useState(null);
   const [postForm, setPostForm] = useState({
@@ -150,14 +169,14 @@ export default function AdminDashboard({ onClose, onSelectPost, onLogout }) {
     try {
       const res = await api.testGoogleSheetsSync();
       if (res.success) {
-        setSheetsTestMsg('✓ ' + res.message);
+        setSheetsTestMsg('âœ“ ' + res.message);
         showToast('Test row transmitted to Google Sheet!');
         loadSheetsConfig();
       } else {
-        setSheetsTestMsg('✗ ' + (res.error || 'Failed to ping Google Sheet.'));
+        setSheetsTestMsg('âœ— ' + (res.error || 'Failed to ping Google Sheet.'));
       }
     } catch (err) {
-      setSheetsTestMsg('✗ Connection failed. Please ensure your Google Apps Script is deployed as Web App (Anyone).');
+      setSheetsTestMsg('âœ— Connection failed. Please ensure your Google Apps Script is deployed as Web App (Anyone).');
     } finally {
       setSheetsTesting(false);
     }
@@ -215,7 +234,7 @@ export default function AdminDashboard({ onClose, onSelectPost, onLogout }) {
       tags: '',
       author_name: 'Camille de Valois',
       author_email: 'admin@modaetoile.com',
-      author_bio: 'Editor-in-Chief at MODA ÉTOILE.',
+      author_bio: 'Editor-in-Chief at MODA Ã‰TOILE.',
       author_avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
       author_website: 'https://modaetoile.com',
       author_social: '@camille_valois'
@@ -295,7 +314,7 @@ export default function AdminDashboard({ onClose, onSelectPost, onLogout }) {
   const handleApproveGuest = async (id) => {
     try {
       const res = await api.approveGuestSubmission(id, reviewFeedback, true);
-      showToast('✓ Guest piece approved and published live!');
+      showToast('âœ“ Guest piece approved and published live!');
       setSelectedSubmission(null);
       setReviewFeedback('');
       loadAllData();
@@ -809,7 +828,7 @@ export default function AdminDashboard({ onClose, onSelectPost, onLogout }) {
                             {sub.category_name}
                           </span>
                           <span className="text-[10px] text-luxury-400">
-                            • Submitted {new Date(sub.created_at).toLocaleDateString()}
+                            â€¢ Submitted {new Date(sub.created_at).toLocaleDateString()}
                           </span>
                         </div>
 
@@ -1021,10 +1040,10 @@ export default function AdminDashboard({ onClose, onSelectPost, onLogout }) {
                               </span>
                               <div className="text-[10px] text-luxury-500 flex items-center gap-2 mt-0.5">
                                 <span>{post.views} views</span>
-                                <span>•</span>
+                                <span>â€¢</span>
                                 <span>{post.likes} likes</span>
                                 {post.is_guest_post && (
-                                  <span className="text-gold-700 font-bold uppercase text-[9px]">• Guest Post</span>
+                                  <span className="text-gold-700 font-bold uppercase text-[9px]">â€¢ Guest Post</span>
                                 )}
                               </div>
                             </div>
@@ -1065,7 +1084,7 @@ export default function AdminDashboard({ onClose, onSelectPost, onLogout }) {
                               }`}
                               title="Toggle Hero Cover Story"
                             >
-                              ★ Hero
+                              â˜… Hero
                             </button>
                             <button
                               onClick={() => handleToggleTrending(post.id)}
@@ -1219,30 +1238,70 @@ export default function AdminDashboard({ onClose, onSelectPost, onLogout }) {
                   </div>
 
                   {/* Cover Photography */}
-                  <div className="sm:col-span-2">
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-luxury-700 mb-1">
-                      Cover Image URL
+                  <div className="sm:col-span-2 space-y-3">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-luxury-700">
+                      Cover Image (Choose Any Custom Image or Paste Direct URL) *
                     </label>
-                    <input
-                      type="url"
-                      value={postForm.cover_image}
-                      onChange={(e) => setPostForm(prev => ({ ...prev, cover_image: e.target.value }))}
-                      className="w-full p-2.5 border border-luxury-300 text-xs font-mono focus:outline-none focus:border-gold-500"
-                    />
-                    
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      <span className="text-[10px] text-luxury-500 uppercase font-semibold">Quick Presets:</span>
-                      {FASHION_IMAGE_PRESETS.map((p, i) => (
+
+                    {/* Custom File Upload Option */}
+                    <div className="flex flex-col sm:flex-row items-center gap-3">
+                      <input
+                        ref={adminFileInputRef}
+                        type="file"
+                        accept="image/*"
+                        onChange={handleAdminImageUpload}
+                        className="hidden"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => adminFileInputRef.current?.click()}
+                        className="px-4 py-2.5 bg-luxury-900 border border-gold-500/50 text-gold-400 hover:bg-gold-500 hover:text-luxury-950 font-bold text-xs uppercase tracking-luxury transition flex items-center gap-2"
+                      >
+                        <ImageIcon size={14} />
+                        <span>Upload Custom Image from Device</span>
+                      </button>
+                      {customUploadName && (
+                        <span className="text-xs text-emerald-600 font-medium">
+                          ✓ Selected: {customUploadName}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Direct Image URL input */}
+                    <div>
+                      <span className="text-[11px] text-luxury-500 block mb-1">Or paste any image web URL:</span>
+                      <input
+                        type="url"
+                        value={postForm.cover_image}
+                        onChange={(e) => {
+                          setPostForm(prev => ({ ...prev, cover_image: e.target.value }));
+                          setCustomUploadName('');
+                        }}
+                        placeholder="https://images.unsplash.com/... or any image link"
+                        className="w-full p-2.5 border border-luxury-300 text-xs font-mono focus:outline-none focus:border-gold-500"
+                      />
+                    </div>
+
+                    {/* Live Image Preview */}
+                    {postForm.cover_image && (
+                      <div className="relative w-full sm:w-64 h-36 border border-luxury-200 overflow-hidden bg-black/5">
+                        <img
+                          src={postForm.cover_image}
+                          alt="Cover preview"
+                          className="w-full h-full object-cover"
+                        />
                         <button
                           type="button"
-                          key={i}
-                          onClick={() => setPostForm(prev => ({ ...prev, cover_image: p.url }))}
-                          className="text-[10px] px-2 py-0.5 border border-luxury-200 hover:border-gold-500 bg-white"
+                          onClick={() => {
+                            setPostForm(prev => ({ ...prev, cover_image: '' }));
+                            setCustomUploadName('');
+                          }}
+                          className="absolute top-2 right-2 bg-rose-600 text-white text-[10px] px-2 py-0.5 font-bold uppercase rounded shadow hover:bg-rose-700"
                         >
-                          {p.label}
+                          Remove
                         </button>
-                      ))}
-                    </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Article Content */}
@@ -1626,7 +1685,7 @@ export default function AdminDashboard({ onClose, onSelectPost, onLogout }) {
                   </button>
 
                   {sheetsTestMsg && (
-                    <span className={`text-xs font-semibold ${sheetsTestMsg.startsWith('✓') ? 'text-emerald-700' : 'text-rose-600'}`}>
+                    <span className={`text-xs font-semibold ${sheetsTestMsg.startsWith('âœ“') ? 'text-emerald-700' : 'text-rose-600'}`}>
                       {sheetsTestMsg}
                     </span>
                   )}
